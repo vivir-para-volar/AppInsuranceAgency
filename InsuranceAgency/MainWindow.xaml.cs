@@ -23,6 +23,8 @@ namespace InsuranceAgency
         public MainWindow()
         {
             InitializeComponent();
+            Authorization authorization = new Authorization();
+            authorization.Show();
         }
     }
 }
