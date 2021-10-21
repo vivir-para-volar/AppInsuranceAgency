@@ -60,13 +60,12 @@ namespace InsuranceAgency
             string login = TbLogin.Text.Trim();
             string password = TbPassword.Password.Trim();
 
-            Database db = new Database();
             try
             {
-                db.Authorization(login, password);
+                Database.Authorization(login, password);
 
                 this.Hide();
-                Application.Current.MainWindow.Show();
+                Application.Current.MainWindow.ShowPlusLogin();
             }
             catch(Exception ex)
             {

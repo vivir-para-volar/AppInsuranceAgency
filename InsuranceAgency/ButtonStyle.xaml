@@ -5,13 +5,13 @@
         <Setter Property="FontFamily" Value="Helvettica"/>
         <Setter Property="FontWeight" Value="Medium"/>
 
-        <Setter Property="Background" Value="#6069CA"/>
+        <Setter Property="Background" Value="#007ACC"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border Background="{TemplateBinding Background}" CornerRadius="20"
                                                                       BorderThickness="2"
-                                                                      BorderBrush="#604DCA">
+                                                                      BorderBrush="#004AAB">
                         <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center"/>
                     </Border>
@@ -21,7 +21,7 @@
 
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#604DCA"/>
+                <Setter Property="Background" Value="#004AAB"/>
                 <Setter Property="Foreground" Value="White"/>
             </Trigger>
         </Style.Triggers>

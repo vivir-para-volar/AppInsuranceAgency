@@ -3,14 +3,19 @@ using System.Data.SqlClient;
 
 namespace InsuranceAgency
 {
-    class Database
+    public static class Database
     {
-        private string ConnectionString = "Server=localhost;" + "database=InsuranceAgency;" + "Integrated Security=True";
+        private static string ConnectionString = "Server=localhost;" + "database=InsuranceAgency;" + "Integrated Security=True";
 
-        private string Login;
-        private bool Admin;
+        private static string _login;
+        private static bool _admin;
 
-        public void Authorization(string login, string password)
+        public static string Login
+        {
+            get => _login;
+        }
+
+        public static void Authorization(string login, string password)
         {
             using (SqlConnection con = new SqlConnection(ConnectionString))
             {
@@ -30,8 +35,8 @@ namespace InsuranceAgency
                 }
                 while (reader.Read())
                 {
-                    Login = reader["Login"].ToString();
-                    Admin = Convert.ToBoolean(reader["Admin"]);
+                    _login = reader["Login"].ToString();
+                    _admin = Convert.ToBoolean(reader["Admin"]);
                 }
                 reader.Close();
             }

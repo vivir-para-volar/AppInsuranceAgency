@@ -63,11 +63,43 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Pages\All.xaml.cs">
+      <DependentUpon>All.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Car.xaml.cs">
+      <DependentUpon>Car.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Employee.xaml.cs">
+      <DependentUpon>Employee.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\New.xaml.cs">
+      <DependentUpon>New.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\PersonAllowedToDrive.xaml.cs">
+      <DependentUpon>PersonAllowedToDrive.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Policy.xaml.cs">
+      <DependentUpon>Policy.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Policyholder.xaml.cs">
+      <DependentUpon>Policyholder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\CommandViewModel.cs" />
+    <Compile Include="ViewModel\SideMenuViewModel.cs" />
+    <Compile Include="WindowExtension.cs" />
+    <Page Include="Assets\IconDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Authorization.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ButtonStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\MenuWithSubMenuControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -82,11 +114,42 @@
     <Compile Include="Authorization.xaml.cs">
       <DependentUpon>Authorization.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\MenuWithSubMenuControl.xaml.cs">
+      <DependentUpon>MenuWithSubMenuControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Database.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Pages\All.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Car.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Employee.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\New.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\PersonAllowedToDrive.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Policy.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Policyholder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -118,5 +181,6 @@
   <ItemGroup>
     <Resource Include="Resources\Main.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

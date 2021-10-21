@@ -23,8 +23,8 @@
             <Border CornerRadius="10" Grid.RowSpan="3">
                 <Border.Background>
                     <LinearGradientBrush>
-                        <GradientStop Color="#0D193E" Offset="0.0"/>
-                        <GradientStop Color="#282F40" Offset="1"/>
+                        <GradientStop Color="#1E1E1E" Offset="0.0"/>
+                        <GradientStop Color="#3E3E42" Offset="1"/>
                     </LinearGradientBrush>
                 </Border.Background>
             </Border>
@@ -46,7 +46,7 @@
                             <Setter Property="Background" Value="Transparent"/>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="#091637"/>
+                                    <Setter Property="Background" Value="#1B1B1C"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
