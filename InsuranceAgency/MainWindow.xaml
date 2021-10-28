@@ -9,9 +9,11 @@
         Height="768" Width="1366"
         WindowStyle="None" ResizeMode="NoResize" 
         WindowStartupLocation="CenterScreen"
-        Background="#1E1E1E"
+        Background="#012F47"
         MouseDown="DragMove_MouseDown">
+    
     <Grid>
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
             <ColumnDefinition/>
@@ -27,8 +29,8 @@
                         VerticalAlignment="Center"
                         HorizontalAlignment="Right"
                         Orientation="Horizontal">
-            <StackPanel Grid.Row="0" Grid.Column="0" 
-                        Margin="11,0"
+
+            <StackPanel Margin="11,0"
                         VerticalAlignment="Center"
                         Background="Transparent"
                         Orientation="Horizontal">
@@ -47,6 +49,7 @@
             <iconPacks:PackIconMaterial x:Name="BtnMinimize" Kind="WindowMinimize" 
                                         Height="30" Width="30"
                                         Padding="8"
+                                        Margin="0,0,17,0"
                                         VerticalAlignment="Center" 
                                         HorizontalAlignment="Center"
                                         Foreground="White" 
@@ -56,12 +59,33 @@
                         <Setter Property="Background" Value="Transparent"/>
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#3E3E42"/>
+                                <Setter Property="Background" Value="#9DB2BE"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>
                 </iconPacks:PackIconMaterial.Style>
             </iconPacks:PackIconMaterial>
+
+            <iconPacks:PackIconMaterial x:Name="BtnMaximized" Kind="WindowMaximize" 
+                                        Height="30" Width="30"
+                                        Padding="8"
+                                        Margin="0,0,17,0"
+                                        VerticalAlignment="Center" 
+                                        HorizontalAlignment="Center"
+                                        Foreground="White" 
+                                        MouseDown="BtnMaximized_MouseDown">
+                <iconPacks:PackIconMaterial.Style>
+                    <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#9DB2BE"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </iconPacks:PackIconMaterial.Style>
+            </iconPacks:PackIconMaterial>
+
             <iconPacks:PackIconMaterial x:Name="BtnClose" Kind="Close" 
                                         Height="30" Width="30"
                                         Padding="8"
@@ -85,7 +109,7 @@
         <StackPanel Grid.Row="0" Grid.Column="0" Margin="11,0"
                     VerticalAlignment="Center"
                     Background="Transparent">
-                <TextBlock Text="СТРАХОВОЕ АГЕНТСТВО"
+            <TextBlock Text="СТРАХОВОЕ АГЕНТСТВО"
                            FontWeight="Normal"
                            FontFamily="Helvetica"
                            FontSize="16"
@@ -100,6 +124,7 @@
         </StackPanel>
 
         <Frame x:Name="MainWindowFrame" Grid.Row="1" Grid.Column="1" NavigationUIVisibility="Hidden"/>
+        
 
     </Grid>
 </Window>

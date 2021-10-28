@@ -16,13 +16,14 @@ using System.Windows.Shapes;
 namespace InsuranceAgency.Pages
 {
     /// <summary>
-    /// Логика взаимодействия для New.xaml
+    /// Логика взаимодействия для AllEmployee.xaml
     /// </summary>
-    public partial class New : Page
+    public partial class AllEmployee : Page
     {
-        public New()
+        public AllEmployee()
         {
             InitializeComponent();
+
         }
     }
 }

@@ -12,81 +12,80 @@
         WindowStartupLocation="CenterScreen"
         MouseDown="DragMove_MouseDown">
     <Grid>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
 
 
-            <Border CornerRadius="10" Grid.RowSpan="3">
-                <Border.Background>
-                    <LinearGradientBrush>
-                        <GradientStop Color="#1E1E1E" Offset="0.0"/>
-                        <GradientStop Color="#3E3E42" Offset="1"/>
-                    </LinearGradientBrush>
-                </Border.Background>
-            </Border>
+        <Border CornerRadius="10" Grid.RowSpan="3">
+            <Border.Background>
+                <LinearGradientBrush>
+                    <GradientStop Color="#012F47" Offset="0.0"/>
+                    <GradientStop Color="#88A2B0" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
 
-            <StackPanel x:Name="ToolBar" 
+        <StackPanel x:Name="ToolBar" 
                         Background="Transparent"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Right"
                         Orientation="Horizontal">
-                <iconPacks:PackIconMaterial x:Name="BtnMinimize" Kind="WindowMinimize" 
+            <iconPacks:PackIconMaterial x:Name="BtnMinimize" Kind="WindowMinimize" 
                                             Height="30" Width="30"
                                             Padding="8"
                                             VerticalAlignment="Center" 
                                             HorizontalAlignment="Center"
                                             Foreground="White" 
                                             MouseDown="BtnMinimize_MouseDown">
-                    <iconPacks:PackIconMaterial.Style>
-                        <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
-                            <Setter Property="Background" Value="Transparent"/>
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="#1B1B1C"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </iconPacks:PackIconMaterial.Style>
-                </iconPacks:PackIconMaterial>
-                <iconPacks:PackIconMaterial x:Name="BtnClose" Kind="Close" 
+                <iconPacks:PackIconMaterial.Style>
+                    <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#012F47"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </iconPacks:PackIconMaterial.Style>
+            </iconPacks:PackIconMaterial>
+            <iconPacks:PackIconMaterial x:Name="BtnClose" Kind="Close" 
                                             Height="30" Width="30"
                                             Padding="8"
                                             VerticalAlignment="Center" 
                                             HorizontalAlignment="Center" 
                                             Foreground="White" 
                                             MouseDown="BtnClose_MouseDown">
-                    <iconPacks:PackIconMaterial.Style>
-                        <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
-                            <Setter Property="Background" Value="Transparent"/>
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="#CF2E2D"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </iconPacks:PackIconMaterial.Style>
-                </iconPacks:PackIconMaterial>
-            </StackPanel>
+                <iconPacks:PackIconMaterial.Style>
+                    <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#CF2E2D"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </iconPacks:PackIconMaterial.Style>
+            </iconPacks:PackIconMaterial>
+        </StackPanel>
 
-            <StackPanel VerticalAlignment="Center" Grid.Row="1"
+        <StackPanel VerticalAlignment="Center" Grid.Row="1"
                         Background="Transparent">
-                <Image Source="Resources/Main.png" Width="120"/>
-                <TextBlock Margin="0,15,0,0"
+            <Image Source="Resources/Main.png" Width="120"/>
+            <TextBlock Margin="0,15,0,0"
                            Text="СТРАХОВОЕ АГЕНТСТВО"
                            FontWeight="Normal"
                            FontFamily="Helvetica"
                            FontSize="22"
                            Foreground="White"
                            HorizontalAlignment="Center"/>
-            </StackPanel>
+        </StackPanel>
 
-            <StackPanel Grid.Row="2" >
-                <StackPanel Orientation="Horizontal">
-                    <TextBox Name="TbLogin"
+        <StackPanel Grid.Row="2" >
+            <StackPanel Orientation="Horizontal">
+                <TextBox Name="TbLogin"
                              FontFamily="Helvetica"
                              FontWeight="Light"
                              FontSize="20"
@@ -100,7 +99,7 @@
                              Height="25"
                              Margin="63,0,0,0" TextChanged="TbLogin_TextChanged"/>
 
-                    <TextBlock Name="TbLoginHint"
+                <TextBlock Name="TbLoginHint"
                                IsHitTestVisible="False"
                                VerticalAlignment="Top"
                                Margin="-234,0,0,0"
@@ -112,22 +111,22 @@
                                Foreground="White"
                                HorizontalAlignment="Left"/>
 
-                    <iconPacks:PackIconMaterial Kind="Account" 
+                <iconPacks:PackIconMaterial Kind="Account" 
                                                 VerticalAlignment="Center" 
                                                 HorizontalAlignment="Center" 
                                                 Foreground="White"/>
 
-                    
-                </StackPanel>
-                <Border Width="250"
+
+            </StackPanel>
+            <Border Width="250"
                         Height="2"
                         Background="White"
                         Opacity="0.7"/>
 
-              
 
-                <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
-                    <PasswordBox Name="TbPassword"
+
+            <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                <PasswordBox Name="TbPassword"
                                  FontFamily="Helvetica"
                                  FontWeight="Light"
                                  FontSize="20"
@@ -142,7 +141,7 @@
                                  Margin="63,0,0,0" 
                                  PasswordChanged="TbPassword_PasswordChanged"/>
 
-                    <TextBlock Name="TbPasswordHint"
+                <TextBlock Name="TbPasswordHint"
                                IsHitTestVisible="False"
                                VerticalAlignment="Top"
                                Margin="-234,0,0,0"
@@ -153,34 +152,35 @@
                                Opacity="0.7"
                                Foreground="White"
                                HorizontalAlignment="Left"/>
-                    
-                    <iconPacks:PackIconMaterial Kind="Lock" 
+
+                <iconPacks:PackIconMaterial Kind="Lock" 
                                                 VerticalAlignment="Center" 
                                                 HorizontalAlignment="Center" 
                                                 Foreground="White"/>
-                </StackPanel>
-                <Border Width="250"
+            </StackPanel>
+            <Border Width="250"
                         Height="2"
                         Background="White"
                         Opacity="0.7"/>
 
-                <StackPanel Margin="0,15,0,0" 
-                            VerticalAlignment="Center">
-                    <TextBlock Name="TbException"
-                               VerticalAlignment="Bottom"
-                               FontFamily="Helvetica"
-                               FontWeight="Light"
-                               FontSize="14"
-                               Foreground="Red"
-                               HorizontalAlignment="Center"/>
-                </StackPanel>
-                
-                <StackPanel Margin="0,21,0,0" VerticalAlignment="Center">
-                    <Button Width="100" Height="40" Content="ВОЙТИ" Click="BtnEnter_Click"/>
-                </StackPanel>
-
+            <StackPanel Margin="0,15,0,0" 
+                        VerticalAlignment="Center">
+                <TextBlock Name="TbException"
+                           VerticalAlignment="Bottom"
+                           FontFamily="Helvetica"
+                           FontWeight="Light"
+                           FontSize="14"
+                           Foreground="Red"
+                           HorizontalAlignment="Center"/>
             </StackPanel>
 
-        </Grid>
+            <StackPanel Margin="0,21,0,0" VerticalAlignment="Center">
+                <Button Width="100" Height="40"
+                        Content="войти" 
+                        Click="BtnEnter_Click"/>
+            </StackPanel>
+
+        </StackPanel>
+
     </Grid>
 </Window>

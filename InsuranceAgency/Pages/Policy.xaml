@@ -3,16 +3,82 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:InsuranceAgency.Pages"
+      xmlns:local="clr-namespace:InsuranceAgency.Pages" xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
       mc:Ignorable="d" 
       d:DesignHeight="738" d:DesignWidth="1166"
       Title="Policy">
 
     <Grid>
-        <Border CornerRadius="20,0,0,0"
-                Background="#3E3E42">
-        </Border>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="85"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Border CornerRadius="20,0,0,0" Grid.RowSpan="3"
+                Background="#3E3E42"/>
+
+
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal"
+                    VerticalAlignment="Center">
+            <Border Margin="25,25,0,0"
+                    Padding="5"
+                    CornerRadius="10"
+                    SnapsToDevicePixels="True" 
+                    Background="#1E1E1E">
+                <TextBox Name="TbSearch"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Center"
+                         Height="40"
+                         Width="480"
+                         Padding="0,0,40,0"
+                         Background="#1E1E1E"
+                         FontFamily="Helvetica"
+                         FontWeight="Normal"
+                         FontSize="20"
+                         Foreground="White"
+                         BorderThickness="0"
+                         HorizontalContentAlignment="Left"
+                         VerticalContentAlignment="Center"
+                         Opacity="0.7"
+                         TextChanged="TbSearch_TextChanged"/>
+            </Border>
+
+
+            <TextBlock Name="TbSearchHint"
+                       IsHitTestVisible="False"
+                       VerticalAlignment="Top"
+                       Margin="-482,40,0,0"
+                       Text="Введите паспорт или телефон страхователя"
+                       FontFamily="Helvetica"
+                       FontWeight="Normal"
+                       FontSize="20"
+                       Opacity="0.7"
+                       Foreground="White"
+                       HorizontalAlignment="Left"/>
+
+            <StackPanel Margin="0,25,0,0"
+                        VerticalAlignment="Center">
+                <Button x:Name="btnSearch"
+                        Height="45"
+                        Width="30"
+                        Margin="-40,0,0,0"
+                        Background="#1E1E1E" Click="btnSearch_Click">
+                    <iconPacks:PackIconMaterial Kind="Magnify" 
+                                        Background="#1E1E1E"
+                                        Foreground="White"/>
+                </Button>
+            </StackPanel>
+        </StackPanel>
         
-        <TextBlock FontSize="30" Text="This is Policy" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <DataGrid x:Name="dgv"
+                  Height="276" 
+                  Width="1116"
+                  Margin="25,25,0,0" 
+                  Grid.Row="1" 
+                  VerticalAlignment="Top" 
+                  HorizontalAlignment="Left" 
+                  Background="#1E1E1E"/>
+
     </Grid>
 </Page>

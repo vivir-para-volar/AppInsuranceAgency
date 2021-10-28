@@ -1,0 +1,360 @@
+﻿<Page x:Class="InsuranceAgency.Pages.AddEmployee"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:InsuranceAgency.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="738" d:DesignWidth="1166"
+      Title="AddEmployee">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="85"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="900"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Border CornerRadius="20,0,0,0" Grid.RowSpan="3" Grid.ColumnSpan="3">
+            <Border.Background>
+                <LinearGradientBrush>
+                    <GradientStop Color="#013957" Offset="0.0"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+
+
+        <StackPanel Grid.Row="0" Grid.Column="1"
+                    Width="400"
+                    Margin="0,25,0,0">
+            <Border Padding="5"
+                    CornerRadius="10"
+                    SnapsToDevicePixels="True" 
+                    Background="#012F47">
+                <StackPanel Grid.Row="0" Grid.Column="1"
+                    Width="400"
+                    Background="#012F47"
+                    VerticalAlignment="Center" >
+                    <TextBlock Text="ДОБАВЛЕНИЕ СОТРУДНИКА"
+                       Margin="10"
+                       FontWeight="Normal"
+                       FontFamily="Helvetica"
+                       FontSize="22"
+                       Foreground="White"
+                       HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+
+
+        <StackPanel Grid.Row="1" Grid.Column="1"
+                    VerticalAlignment="Center">
+            <Border Margin="25"
+                    Padding="5"
+                    CornerRadius="10"
+                    SnapsToDevicePixels="True" 
+                    Background="#012F47">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="25"/>
+                        <ColumnDefinition Width="260"/>
+                        <ColumnDefinition Width="530"/>
+                        <ColumnDefinition Width="25"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="25"/>
+                    </Grid.RowDefinitions>
+
+
+                    <!--ФИО-->
+                    <TextBlock Margin="5"
+                               Text="ФИО"
+                               Grid.Row="1" Grid.Column="1"
+                               VerticalAlignment="Bottom"
+                               FontFamily="Helvetica"
+                               FontWeight="Normal"
+                               FontSize="20"
+                               Foreground="White"/>
+                    <TextBox Name="tbFullName"
+                             Grid.Row="1" Grid.Column="2"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Bottom"
+                             Height="40"
+                             Width="480"
+                             Padding="5,0"
+                             Background="White"
+                             FontFamily="Helvetica"
+                             FontWeight="Normal"
+                             FontSize="20"
+                             Foreground="Black"
+                             BorderThickness="2"
+                             BorderBrush="White"
+                             HorizontalContentAlignment="Left"
+                             VerticalContentAlignment="Center"/>
+
+                    <!--Дата рождения-->
+                    <TextBlock Margin="5"
+                               Text="Дата рождения"
+                               Grid.Row="2" Grid.Column="1"
+                               VerticalAlignment="Bottom"
+                               FontFamily="Helvetica"
+                               FontWeight="Normal"
+                               FontSize="20"
+                               Foreground="White"/>
+                    <DatePicker Name="dpBirthday" 
+                                Grid.Row="2" Grid.Column="2"
+                                SelectedDate="01.01.1990"
+                                IsDropDownOpen="False" 
+                                Focusable = "False"
+                                SelectedDateFormat="Short" 
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Bottom"
+                                Height="40"
+                                Width="480"
+                                Padding="5,0"
+                                Background="White"
+                                FontFamily="Helvetica"
+                                FontWeight="Normal"
+                                FontSize="20"
+                                Foreground="Black"
+                                BorderThickness="2"
+                                BorderBrush="White"
+                                VerticalContentAlignment="Center">
+                                
+                    </DatePicker>
+
+                    <!--Номер телефона-->
+                    <TextBlock Margin="5"
+                               Text="Номер телефона"
+                               Grid.Row="3" Grid.Column="1"
+                               VerticalAlignment="Bottom"
+                               FontFamily="Helvetica"
+                               FontWeight="Normal"
+                               FontSize="20"
+                               Foreground="White"/>
+                    <TextBox Name="tbTelephone"
+                             Grid.Row="3" Grid.Column="2"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Bottom"
+                             Height="40"
+                             Width="480"
+                             Padding="5,0"
+                             Background="White"
+                             FontFamily="Helvetica"
+                             FontWeight="Normal"
+                             FontSize="20"
+                             Foreground="Black"
+                             BorderThickness="2"
+                             BorderBrush="White"
+                             HorizontalContentAlignment="Left"
+                             VerticalContentAlignment="Center"/>
+                    
+
+                    <!--Паспортные данные-->
+                    <TextBlock Margin="5"
+                               Text="Паспортные данные"
+                               Grid.Row="4" Grid.Column="1"
+                               VerticalAlignment="Bottom"
+                               FontFamily="Helvetica"
+                               FontWeight="Normal"
+                               FontSize="20"
+                               Foreground="White"/>
+                    <TextBox Name="tbPassportSeries"
+                             Grid.Row="4" Grid.Column="2"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Bottom"
+                             Height="40"
+                             Width="220"
+                             Padding="5,0"
+                             Background="White"
+                             FontFamily="Helvetica"
+                             FontWeight="Normal"
+                             FontSize="20"
+                             Foreground="Black"
+                             BorderThickness="2"
+                             BorderBrush="White"
+                             HorizontalContentAlignment="Left"
+                             VerticalContentAlignment="Center"
+                             TextChanged="tbPassportSeries_TextChanged"/>
+                    <TextBlock Name="tbPassportSeriesHint"
+                               Text="Серия"
+                               Grid.Row="4" Grid.Column="2"
+                               IsHitTestVisible="False"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Bottom"
+                               Height="25"
+                               Width="70"
+                               Margin="10,0,0,6"
+                               Background="White"
+                               FontFamily="Helvetica"
+                               FontWeight="Normal"
+                               FontSize="20"
+                               Foreground="Black"
+                               Opacity="0.7"/>
+                    <TextBox Name="tbPassportNumber"
+                             Grid.Row="4" Grid.Column="2"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Bottom"
+                             Height="40"
+                             Width="220"
+                             Margin="260,0,0,0"
+                             Padding="5,0"
+                             Background="White"
+                             FontFamily="Helvetica"
+                             FontWeight="Normal"
+                             FontSize="20"
+                             Foreground="Black"
+                             BorderThickness="2"
+                             BorderBrush="White"
+                             HorizontalContentAlignment="Left"
+                             VerticalContentAlignment="Center"
+                             TextChanged="tbPassportNumber_TextChanged"/>
+                    <TextBlock Name="tbPassportNumberHint"
+                               Text="Номер"
+                               Grid.Row="4" Grid.Column="2"
+                               IsHitTestVisible="False"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Bottom"
+                               Height="25"
+                               Width="70"
+                               Margin="270,0,0,6"
+                               Background="White"
+                               FontFamily="Helvetica"
+                               FontWeight="Normal"
+                               FontSize="20"
+                               Foreground="Black"
+                               Opacity="0.7"/>
+
+                    <!--Логин-->
+                    <TextBlock Margin="5"
+                               Text="Логин"
+                               Grid.Row="5" Grid.Column="1"
+                               VerticalAlignment="Bottom"
+                               FontFamily="Helvetica"
+                               FontWeight="Normal"
+                               FontSize="20"
+                               Foreground="White"/>
+                    <TextBox Name="tbLogin"
+                             Grid.Row="5" Grid.Column="2"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Bottom"
+                             Height="40"
+                             Width="480"
+                             Padding="5,0"
+                             Background="White"
+                             FontFamily="Helvetica"
+                             FontWeight="Normal"
+                             FontSize="20"
+                             Foreground="Black"
+                             BorderThickness="2"
+                             BorderBrush="White"
+                             HorizontalContentAlignment="Left"
+                             VerticalContentAlignment="Center"/>
+
+                    <!--Пароль-->
+                    <TextBlock Margin="5"
+                               Text="Пароль"
+                               Grid.Row="6" Grid.Column="1"
+                               VerticalAlignment="Bottom"
+                               FontFamily="Helvetica"
+                               FontWeight="Normal"
+                               FontSize="20"
+                               Foreground="White"/>
+                    <TextBox Name="tbPassword"
+                             Grid.Row="6" Grid.Column="2"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Bottom"
+                             Height="40"
+                             Width="480"
+                             Padding="5,0"
+                             Background="White"
+                             FontFamily="Helvetica"
+                             FontWeight="Normal"
+                             FontSize="20"
+                             Foreground="Black"
+                             BorderThickness="2"
+                             BorderBrush="White"
+                             HorizontalContentAlignment="Left"
+                             VerticalContentAlignment="Center"/>
+
+                    <!--Администратор-->
+                    <TextBlock Margin="7"
+                               Text="Администратор"
+                               Grid.Row="7" Grid.Column="1"
+                               VerticalAlignment="Bottom"
+                               FontFamily="Helvetica"
+                               FontWeight="Normal"
+                               FontSize="20"
+                               Foreground="White"/>
+                    <ComboBox Name="cbAdmin"
+                              Grid.Row="7" Grid.Column="2"
+                              Height="40"
+                              Width="480"
+                              Padding="5,0"
+                              Background="White"
+                              FontFamily="Helvetica"
+                              FontWeight="Normal"
+                              FontSize="20"
+                              Foreground="Black"
+                              VerticalAlignment="Bottom"
+                              HorizontalAlignment="Left"
+                              VerticalContentAlignment="Center"
+                              HorizontalContentAlignment="Left">
+                        <TextBlock FontFamily="Helvetica"
+                                   FontWeight="Normal"
+                                   FontSize="20">
+                            Не администратор
+                        </TextBlock>
+                        <TextBlock FontFamily="Helvetica"
+                                   FontWeight="Normal"
+                                   FontSize="20">
+                            Администратор
+                        </TextBlock>
+                    </ComboBox>
+
+                    <!--Ошибка-->
+                    <StackPanel Grid.ColumnSpan="4" Grid.Row="8"
+                                VerticalAlignment="Center">
+                        <TextBlock Name="tbException"
+                                   Visibility="Hidden"
+                                   VerticalAlignment="Bottom"
+                                   FontFamily="Helvetica"
+                                   FontWeight="Light"
+                                   FontSize="14"
+                                   Foreground="Red"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+
+                </Grid>
+            </Border>
+
+            <StackPanel Margin="0,-160,0,0"
+                        VerticalAlignment="Center">
+                <Button x:Name="btnAddEmployee"
+                        Width="120" Height="50"
+                        Content="Добавить" 
+                        Click="btnAddEmployee_Click"/>
+            </StackPanel>
+
+        </StackPanel>
+
+    </Grid>
+</Page>

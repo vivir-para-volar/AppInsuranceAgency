@@ -24,5 +24,22 @@ namespace InsuranceAgency.Pages
         {
             InitializeComponent();
         }
+
+        private void TbSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (TbSearch.Text.Length == 0)
+            {
+                TbSearchHint.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                TbSearchHint.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void btnSearch_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

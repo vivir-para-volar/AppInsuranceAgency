@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using InsuranceAgency.Pages;
+using System.Windows;
 using System.Windows.Input;
 
 namespace InsuranceAgency
@@ -8,14 +9,19 @@ namespace InsuranceAgency
         public MainWindow()
         {
             InitializeComponent();
-            //Authorization authorization = new Authorization();
-            //authorization.Show();
+            TbToolBarLogin.Text = Database.Login;
+            MainWindowFrame.Content = new AddEmployee();
         }
 
 
         private void BtnMinimize_MouseDown(object sender, MouseButtonEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
+        }
+
+        private void BtnMaximized_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            this.WindowState = WindowState.Maximized;
         }
 
         private void BtnClose_MouseDown(object sender, MouseButtonEventArgs e)
@@ -30,5 +36,7 @@ namespace InsuranceAgency
                 this.DragMove();
             }
         }
+
+        
     }
 }

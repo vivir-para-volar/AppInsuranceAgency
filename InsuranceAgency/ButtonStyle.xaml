@@ -4,6 +4,7 @@
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontFamily" Value="Helvettica"/>
         <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="FontSize" Value="20"/>
 
         <Setter Property="Background" Value="#007ACC"/>
         <Setter Property="Template">

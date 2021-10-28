@@ -63,30 +63,40 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Pages\All.xaml.cs">
-      <DependentUpon>All.xaml</DependentUpon>
+    <Compile Include="Pages\AddCar.xaml.cs">
+      <DependentUpon>AddCar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Car.xaml.cs">
-      <DependentUpon>Car.xaml</DependentUpon>
+    <Compile Include="Pages\AddEmployee.xaml.cs">
+      <DependentUpon>AddEmployee.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Employee.xaml.cs">
-      <DependentUpon>Employee.xaml</DependentUpon>
+    <Compile Include="Pages\AddPersonAllowedToDrive.xaml.cs">
+      <DependentUpon>AddPersonAllowedToDrive.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\New.xaml.cs">
-      <DependentUpon>New.xaml</DependentUpon>
+    <Compile Include="Pages\AddPolicyholder.xaml.cs">
+      <DependentUpon>AddPolicyholder.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\PersonAllowedToDrive.xaml.cs">
-      <DependentUpon>PersonAllowedToDrive.xaml</DependentUpon>
+    <Compile Include="Pages\AllEmployee.xaml.cs">
+      <DependentUpon>AllEmployee.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Policy.xaml.cs">
       <DependentUpon>Policy.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Policyholder.xaml.cs">
-      <DependentUpon>Policyholder.xaml</DependentUpon>
+    <Compile Include="Pages\СhangeCar.xaml.cs">
+      <DependentUpon>СhangeCar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\СhangeEmployee.xaml.cs">
+      <DependentUpon>СhangeEmployee.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\СhangePersonAllowedToDrive.xaml.cs">
+      <DependentUpon>СhangePersonAllowedToDrive.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\СhangePolicyholder.xaml.cs">
+      <DependentUpon>СhangePolicyholder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Struct\Employee.cs" />
+    <Compile Include="Struct\Policyholder.cs" />
     <Compile Include="ViewModel\CommandViewModel.cs" />
     <Compile Include="ViewModel\SideMenuViewModel.cs" />
-    <Compile Include="WindowExtension.cs" />
     <Page Include="Assets\IconDictionary.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -122,23 +132,23 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Pages\All.xaml">
+    <Page Include="Pages\AddCar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Car.xaml">
+    <Page Include="Pages\AddEmployee.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Employee.xaml">
+    <Page Include="Pages\AddPersonAllowedToDrive.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\New.xaml">
+    <Page Include="Pages\AddPolicyholder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\PersonAllowedToDrive.xaml">
+    <Page Include="Pages\AllEmployee.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -146,7 +156,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Policyholder.xaml">
+    <Page Include="Pages\СhangeCar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\СhangeEmployee.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\СhangePersonAllowedToDrive.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\СhangePolicyholder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -181,6 +203,8 @@
   <ItemGroup>
     <Resource Include="Resources\Main.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Assets\car.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

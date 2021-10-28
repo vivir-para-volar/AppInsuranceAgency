@@ -17,43 +17,87 @@ namespace InsuranceAgency.ViewModel
         {
             get
             {
-                return new List<MenuItemsData>
+                if (Database.Admin)
                 {
-                    //MainMenu without SubMenu Button 
-                    new MenuItemsData(){ PathData= (PathGeometry)dict["icon_policy"], MenuText="Policy", MenuName = "Полис"
-                    //SubMenu Button
-                    , SubMenuList=new List<SubMenuItemsData>{
-                    new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_add"], SubMenuText="New", SubMenuName = "Добавить" },
-                    new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_all"], SubMenuText="All", SubMenuName = "Добавить" }}},
+                    return new List<MenuItemsData>
+                    {
+                        //MainMenu without SubMenu Button 
+                        new MenuItemsData(){ PathData= (PathGeometry)dict["icon_policy"], MenuText="Policy", MenuName = "Полис"
+                        //SubMenu Button
+                        , SubMenuList=new List<SubMenuItemsData>{
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_add"], SubMenuText="New", SubMenuName = "Добавить" },
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_all"], SubMenuText="All", SubMenuName = "Добавить" }}
+                        },
 
-                    //MainMenu Button
-                    new MenuItemsData(){ PathData= (PathGeometry)dict["icon_policyholder"], MenuText="Policyholder", MenuName = "Страхователь"
-                    //SubMenu Button
-                    , SubMenuList=new List<SubMenuItemsData>{
-                    new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_add"], SubMenuText="New", SubMenuName = "Добавить" },
-                    new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_all"], SubMenuText="All", SubMenuName = "Весь список" }}
-                    },
+                        //MainMenu Button
+                        new MenuItemsData(){ PathData= (PathGeometry)dict["icon_policyholder"], MenuText="AddPolicyholder", MenuName = "Страхователи"
+                        //SubMenu Button
+                        , SubMenuList=new List<SubMenuItemsData>{
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_add"], SubMenuText="AddPolicyholder", SubMenuName = "Добавить" },
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_change"], SubMenuText="СhangePolicyholder", SubMenuName = "Изменить" }}
+                        },
 
-                    //MainMenu Button
-                    new MenuItemsData(){ PathData= (PathGeometry)dict["icon_people"], MenuText="PersonAllowedToDrive", MenuName = "Люди", SubMenuList=null},
+                        //MainMenu Button
+                        new MenuItemsData(){ PathData= (PathGeometry)dict["icon_people"], MenuText="AddPersonAllowedToDrive", MenuName = "Водители"
+                        //SubMenu Button
+                        , SubMenuList=new List<SubMenuItemsData>{
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_add"], SubMenuText="AddPersonAllowedToDrive", SubMenuName = "Добавить" },
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_change"], SubMenuText="СhangePersonAllowedToDrive", SubMenuName = "Изменить" }}
+                        },
+                        
+                        //MainMenu Button
+                        new MenuItemsData(){ PathData= (PathGeometry)dict["icon_car"], MenuText="AddCar", MenuName = "Автомобили"
+                        //SubMenu Button
+                        , SubMenuList=new List<SubMenuItemsData>{
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_add"], SubMenuText="AddCar", SubMenuName = "Добавить" },
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_change"], SubMenuText="СhangeCar", SubMenuName = "Изменить" }}
+                        },
 
-                     //MainMenu without SubMenu Button
-                    new MenuItemsData(){ PathData= (PathGeometry)dict["icon_car"], MenuText="Car", MenuName = "Автомобиль"
-                    //SubMenu Button
-                    , SubMenuList=new List<SubMenuItemsData>{
-                    new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_add"], SubMenuText="New", SubMenuName = "Добавить" },
-                    new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_all"], SubMenuText="All", SubMenuName = "Все страхователи" }}
-                    },
+                        //MainMenu Button
+                        new MenuItemsData(){ PathData= (PathGeometry)dict["icon_employee"], MenuText="AddEmployee", MenuName = "Сотрудники"
+                        //SubMenu Button
+                        , SubMenuList=new List<SubMenuItemsData>{
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_add"], SubMenuText="AddEmployee", SubMenuName = "Добавить" },
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_change"], SubMenuText="СhangeEmployee", SubMenuName = "Изменить" },
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_all"], SubMenuText="AllEmployee", SubMenuName = "Все" }}
+                        },
 
-                    //MainMenu Button
-                    new MenuItemsData(){ PathData= (PathGeometry)dict["icon_employee"], MenuText="Employee", MenuName = "Сотрудник"
-                    //SubMenu Button
-                    , SubMenuList=new List<SubMenuItemsData>{
-                    new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_add"], SubMenuText="New", SubMenuName = "Добавить" },
-                    new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_all"], SubMenuText="All", SubMenuName = "Все страхователи" }}
-                    },
+                        //MainMenu without SubMenu Button
+                    };
+                }
+                else
+                {
+                    return new List<MenuItemsData>
+                    {
+                        //MainMenu without SubMenu Button 
+                        new MenuItemsData(){ PathData= (PathGeometry)dict["icon_policy"], MenuText="Policy", MenuName = "Полис"
+                        //SubMenu Button
+                        , SubMenuList=new List<SubMenuItemsData>{
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_add"], SubMenuText="New", SubMenuName = "Добавить" },
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_all"], SubMenuText="All", SubMenuName = "Добавить" }}},
 
-                };
+                        //MainMenu Button
+                        new MenuItemsData(){ PathData= (PathGeometry)dict["icon_policyholder"], MenuText="Policyholder", MenuName = "Страхователь"
+                        //SubMenu Button
+                        , SubMenuList=new List<SubMenuItemsData>{
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_add"], SubMenuText="New", SubMenuName = "Добавить" },
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_all"], SubMenuText="All", SubMenuName = "Весь список" }}
+                        },
+
+                        //MainMenu Button
+                        new MenuItemsData(){ PathData= (PathGeometry)dict["icon_people"], MenuText="PersonAllowedToDrive", MenuName = "Люди", SubMenuList=null},
+
+                         //MainMenu without SubMenu Button
+                        new MenuItemsData(){ PathData= (PathGeometry)dict["icon_car"], MenuText="Car", MenuName = "Автомобиль"
+                        //SubMenu Button
+                        , SubMenuList=new List<SubMenuItemsData>{
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_add"], SubMenuText="New", SubMenuName = "Добавить" },
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_all"], SubMenuText="All", SubMenuName = "Все страхователи" }}
+                        },
+
+                        
+                    };
+                }
             }
         }
     }

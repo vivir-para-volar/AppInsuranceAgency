@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:InsuranceAgency.CustomControl"
              mc:Ignorable="d" 
              x:Name="this" 
-             Background="#1E1E1E">
+             Background="#012F47">
     <UserControl.Resources>
         <!--Default Icon-->
         <PathGeometry x:Key="icon_default" Figures="M4,2L4,22 12.683594,22C12.387594,21.378,12.181078,20.707,12.080078,20L12.074219,20C12.026219,19.673 12,19.34 12,19 12,15.474 14.609,12.566078 18,12.080078 18.327,12.033078 18.66,12 19,12 19.34,12 19.673,12.033078 20,12.080078L20,8 14,2 4,2z M13,3.4550781L18.5,9 13,9 13,3.4550781z M19,14C16.25,14 14,16.25 14,19 14,21.75 16.25,24 19,24 21.75,24 24,21.75 24,19 24,16.25 21.75,14 19,14z M19,16C19.461147,16,19.892436,16.114019,20.283203,16.300781L16.300781,20.285156C16.113553,19.893994 16,19.461758 16,19 16,17.346 17.346,16 19,16z M21.699219,17.716797C21.885981,18.107564 22,18.538853 22,19 22,20.654 20.654,22 19,22 18.538242,22 18.106006,21.886447 17.714844,21.699219L21.699219,17.716797z"/>
@@ -16,7 +16,7 @@
         <Style x:Key="MenuTextStyle" TargetType="{x:Type TextBlock}">
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontSize" Value="20"/>
             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
             <Setter Property="FontFamily" Value="Helvetica"/>
             <Setter Property="FontWeight" Value="Normal"/>
@@ -24,16 +24,16 @@
             <!--to change fore ground on MouseOver and Menu Item Selection-->
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ToggleButton}}" Value="True">
-                    <Setter Property="Foreground" Value="#007ACC"/>
+                    <Setter Property="Foreground" Value="Black"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ToggleButton}}" Value="True">
-                    <Setter Property="Foreground" Value="#007ACC"/>
+                    <Setter Property="Foreground" Value="Black"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}}" Value="True">
-                    <Setter Property="Foreground" Value="#007ACC"/>
+                    <Setter Property="Foreground" Value="Black"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}}" Value="True">
-                    <Setter Property="Foreground" Value="#007ACC"/>
+                    <Setter Property="Foreground" Value="Black"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -74,9 +74,9 @@
 
                                     <Path Data="{Binding PathData, FallbackValue={StaticResource icon_default}, TargetNullValue={StaticResource icon_default}}"
                                           Stretch="Uniform"
-                                          Height="17"
-                                          Width="18"
-                                          Fill="#007ACC"/>
+                                          Height="20"
+                                          Width="20"
+                                          Fill="White"/>
                                 </Grid>
                                 <!--#endregion-->
 
@@ -99,7 +99,7 @@
         <!--#region Customizing Listbox & ListboxItems-->
         <Style TargetType="{x:Type ListBox}">
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Background" Value="#1E1E1E"/>
+            <Setter Property="Background" Value="#012F47"/>
             <Setter Property="SelectionMode" Value="Single"/>
             <Setter Property="Focusable" Value="False"/>
             <Setter Property="SelectedIndex" Value="0"/>

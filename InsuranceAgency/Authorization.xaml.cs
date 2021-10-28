@@ -10,7 +10,12 @@ namespace InsuranceAgency
         public Authorization()
         {
             InitializeComponent();
-            Application.Current.MainWindow.Hide();
+
+            //Database.Authorization("1", "1");
+
+            this.Hide();
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.Show();
         }
 
         private void BtnClose_MouseDown(object sender, MouseButtonEventArgs e)
@@ -65,7 +70,8 @@ namespace InsuranceAgency
                 Database.Authorization(login, password);
 
                 this.Hide();
-                Application.Current.MainWindow.ShowPlusLogin();
+                MainWindow mainWindow = new MainWindow();
+                mainWindow.Show();
             }
             catch(Exception ex)
             {
