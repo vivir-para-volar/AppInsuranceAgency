@@ -45,6 +45,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -63,6 +64,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DBImage.cs" />
     <Compile Include="Pages\AddCar.xaml.cs">
       <DependentUpon>AddCar.xaml</DependentUpon>
     </Compile>
@@ -93,7 +95,12 @@
     <Compile Include="Pages\СhangePolicyholder.xaml.cs">
       <DependentUpon>СhangePolicyholder.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Struct\Car.cs" />
+    <Compile Include="Struct\Connection.cs" />
     <Compile Include="Struct\Employee.cs" />
+    <Compile Include="Struct\InsuranceEvent.cs" />
+    <Compile Include="Struct\PersonAllowedToDrive.cs" />
+    <Compile Include="Struct\Policy.cs" />
     <Compile Include="Struct\Policyholder.cs" />
     <Compile Include="ViewModel\CommandViewModel.cs" />
     <Compile Include="ViewModel\SideMenuViewModel.cs" />

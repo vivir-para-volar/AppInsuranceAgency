@@ -54,7 +54,7 @@
         
         
         <StackPanel Grid.Row="0" Grid.ColumnSpan="3"
-                    Width="520"
+                    Width="460"
                     Margin="0,25,25,0"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
@@ -66,7 +66,7 @@
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center"
                          Height="40"
-                         Width="510"
+                         Width="450"
                          Padding="0,0,40,0"
                          Background="#012F47"
                          FontFamily="Helvetica"
@@ -82,8 +82,8 @@
             <TextBlock Name="tbSearchHint"
                        IsHitTestVisible="False"
                        VerticalAlignment="Top"
-                       Margin="-510,20,0,0"
-                       Text="Введите логин, паспорт или телефон сотрудника"
+                       Margin="-450,20,0,0"
+                       Text="Введите паспорт или телефон сотрудника"
                        FontFamily="Helvetica"
                        FontWeight="Normal"
                        FontSize="20"
@@ -176,27 +176,22 @@
                                FontWeight="Normal"
                                FontSize="20"
                                Foreground="White"/>
-                    <DatePicker Name="dpBirthday" 
-                                Grid.Row="2" Grid.Column="2"
-                                SelectedDate="01.01.1990"
-                                IsDropDownOpen="False" 
-                                Focusable = "False"
-                                SelectedDateFormat="Short" 
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom"
-                                Height="40"
-                                Width="480"
-                                Padding="5,0"
-                                Background="White"
-                                FontFamily="Helvetica"
-                                FontWeight="Normal"
-                                FontSize="20"
-                                Foreground="Black"
-                                BorderThickness="2"
-                                BorderBrush="White"
-                                VerticalContentAlignment="Center">
-
-                    </DatePicker>
+                    <TextBox Name="tbBirthday" 
+                             Grid.Row="2" Grid.Column="2"
+                             IsReadOnly="True"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Bottom"
+                             Height="40"
+                             Width="480"
+                             Padding="5,0"
+                             Background="White"
+                             FontFamily="Helvetica"
+                             FontWeight="Normal"
+                             FontSize="20"
+                             Foreground="Black"
+                             BorderThickness="2"
+                             BorderBrush="White"
+                             VerticalContentAlignment="Center"/>
 
                     <!--Номер телефона-->
                     <TextBlock Margin="5"
@@ -349,7 +344,23 @@
                              BorderThickness="2"
                              BorderBrush="White"
                              HorizontalContentAlignment="Left"
-                             VerticalContentAlignment="Center"/>
+                             VerticalContentAlignment="Center"
+                             TextChanged="tbPassword_TextChanged"/>
+                    <TextBlock Name="tbPasswordHint"
+                               Text="Пароль не доступен, но можно ввести новый"
+                               Grid.Row="6" Grid.Column="2"
+                               IsHitTestVisible="False"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Bottom"
+                               Height="25"
+                               Width="460"
+                               Margin="10,0,0,6"
+                               Background="White"
+                               FontFamily="Helvetica"
+                               FontWeight="Normal"
+                               FontSize="20"
+                               Foreground="Black"
+                               Opacity="0.7"/>
 
                     <!--Администратор-->
                     <TextBlock Margin="7"

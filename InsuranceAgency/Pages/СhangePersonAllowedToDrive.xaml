@@ -56,7 +56,7 @@
 
 
         <StackPanel Grid.Row="2" Grid.ColumnSpan="3"
-                    Width="460"
+                    Width="410"
                     Margin="0,25,25,0"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
@@ -68,7 +68,7 @@
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center"
                          Height="40"
-                         Width="450"
+                         Width="400"
                          Padding="0,0,40,0"
                          Background="#012F47"
                          FontFamily="Helvetica"
@@ -84,8 +84,8 @@
             <TextBlock Name="tbSearchHint"
                        IsHitTestVisible="False"
                        VerticalAlignment="Top"
-                       Margin="-450,20,0,0"
-                       Text="Введите логин или паспорт страхователя"
+                       Margin="-400,20,0,0"
+                       Text="Введите водительское удостоврение"
                        FontFamily="Helvetica"
                        FontWeight="Normal"
                        FontSize="20"

@@ -152,6 +152,7 @@
                                Foreground="White"/>
                     <TextBox Name="tbModel"
                              Grid.Row="1" Grid.Column="2"
+                             IsReadOnly="True"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Bottom"
                              Height="40"
@@ -178,6 +179,7 @@
                                Foreground="White"/>
                     <TextBox Name="tbVIN"
                              Grid.Row="2" Grid.Column="2"
+                             IsReadOnly="True"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Bottom"
                              Height="40"

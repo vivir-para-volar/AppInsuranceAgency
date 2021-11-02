@@ -172,27 +172,22 @@
                                FontWeight="Normal"
                                FontSize="20"
                                Foreground="White"/>
-                    <DatePicker Name="dpBirthday" 
-                                Grid.Row="2" Grid.Column="2"
-                                SelectedDate="01.01.1990"
-                                IsDropDownOpen="False" 
-                                Focusable = "False"
-                                SelectedDateFormat="Short" 
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom"
-                                Height="40"
-                                Width="480"
-                                Padding="5,0"
-                                Background="White"
-                                FontFamily="Helvetica"
-                                FontWeight="Normal"
-                                FontSize="20"
-                                Foreground="Black"
-                                BorderThickness="2"
-                                BorderBrush="White"
-                                VerticalContentAlignment="Center">
-
-                    </DatePicker>
+                    <TextBox Name="tbBirthday" 
+                             Grid.Row="2" Grid.Column="2"
+                             IsReadOnly="True"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Bottom"
+                             Height="40"
+                             Width="480"
+                             Padding="5,0"
+                             Background="White"
+                             FontFamily="Helvetica"
+                             FontWeight="Normal"
+                             FontSize="20"
+                             Foreground="Black"
+                             BorderThickness="2"
+                             BorderBrush="White"
+                             VerticalContentAlignment="Center"/>
 
                     <!--Номер телефона-->
                     <TextBlock Margin="5"

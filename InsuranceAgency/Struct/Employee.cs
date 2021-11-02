@@ -2,8 +2,9 @@
 
 namespace InsuranceAgency.Struct
 {
-    public struct Employee
+    public class Employee
     {
+        public string ID { get; }
         public string FullName { get; }
         public DateTime Birthday { get; }
         public string Telephone { get; }
@@ -16,6 +17,18 @@ namespace InsuranceAgency.Struct
 
         public Employee(string fullName, DateTime birthday, string telephone, string passport, string login, string password, bool admin, bool works)
         {
+            FullName = fullName;
+            Birthday = birthday;
+            Telephone = telephone;
+            Passport = passport;
+            Login = login;
+            Password = password;
+            Admin = admin;
+            Works = works;
+        }
+        public Employee(string id, string fullName, DateTime birthday, string telephone, string passport, string login, string password, bool admin, bool works)
+        {
+            ID = id;
             FullName = fullName;
             Birthday = birthday;
             Telephone = telephone;
