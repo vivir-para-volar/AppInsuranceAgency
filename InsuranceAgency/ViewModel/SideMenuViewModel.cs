@@ -34,7 +34,8 @@ namespace InsuranceAgency.ViewModel
                         //SubMenu Button
                         , SubMenuList=new List<SubMenuItemsData>{
                         new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_add"], SubMenuText="AddPolicyholder", SubMenuName = "Добавить" },
-                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_change"], SubMenuText="СhangePolicyholder", SubMenuName = "Изменить" }}
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_change"], SubMenuText="СhangePolicyholder", SubMenuName = "Изменить" },
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_all"], SubMenuText="AllPolicyholders", SubMenuName = "Все" }}
                         },
 
                         //MainMenu Button
@@ -42,7 +43,8 @@ namespace InsuranceAgency.ViewModel
                         //SubMenu Button
                         , SubMenuList=new List<SubMenuItemsData>{
                         new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_add"], SubMenuText="AddPersonAllowedToDrive", SubMenuName = "Добавить" },
-                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_change"], SubMenuText="СhangePersonAllowedToDrive", SubMenuName = "Изменить" }}
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_change"], SubMenuText="СhangePersonAllowedToDrive", SubMenuName = "Изменить" },
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_all"], SubMenuText="AllPersonsAllowedToDrive", SubMenuName = "Все" }}
                         },
                         
                         //MainMenu Button
@@ -50,7 +52,8 @@ namespace InsuranceAgency.ViewModel
                         //SubMenu Button
                         , SubMenuList=new List<SubMenuItemsData>{
                         new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_add"], SubMenuText="AddCar", SubMenuName = "Добавить" },
-                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_change"], SubMenuText="СhangeCar", SubMenuName = "Изменить" }}
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_change"], SubMenuText="СhangeCar", SubMenuName = "Изменить" },
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_all"], SubMenuText="AllCars", SubMenuName = "Все" }}
                         },
 
                         //MainMenu Button
@@ -59,7 +62,7 @@ namespace InsuranceAgency.ViewModel
                         , SubMenuList=new List<SubMenuItemsData>{
                         new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_add"], SubMenuText="AddEmployee", SubMenuName = "Добавить" },
                         new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_change"], SubMenuText="СhangeEmployee", SubMenuName = "Изменить" },
-                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_all"], SubMenuText="AllEmployee", SubMenuName = "Все" }}
+                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_all"], SubMenuText="AllEmployees", SubMenuName = "Все" }}
                         },
 
                         //MainMenu without SubMenu Button

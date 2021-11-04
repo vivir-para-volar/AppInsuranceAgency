@@ -12,6 +12,12 @@ namespace InsuranceAgency.Pages
             InitializeComponent();
         }
 
+        public СhangePersonAllowedToDrive(PersonAllowedToDrive personAllowedToDrive)
+        {
+            InitializeComponent();
+            AddInfoInTb(personAllowedToDrive);
+        }
+
         private void tbSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (tbSearch.Text.Length == 0)
@@ -46,11 +52,7 @@ namespace InsuranceAgency.Pages
 
                 searchPersonAllowedToDrive = Database.SearchPersonAllowedToDrive(search);
 
-                tbFullName.Text = searchPersonAllowedToDrive.FullName;
-                tbDrivingLicenceSeries.Text = "";
-                tbDrivingLicenceNumber.Text = "";
-                for (var i = 0; i < 4; i++) tbDrivingLicenceSeries.Text += searchPersonAllowedToDrive.DrivingLicence[i];
-                for (var i = 4; i < 10; i++) tbDrivingLicenceNumber.Text += searchPersonAllowedToDrive.DrivingLicence[i];
+                AddInfoInTb(searchPersonAllowedToDrive);
 
                 tbSearch.Text = "";
             }
@@ -58,6 +60,15 @@ namespace InsuranceAgency.Pages
             {
                 MessageBox.Show(exp.Message, "", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void AddInfoInTb(PersonAllowedToDrive personAllowedToDrive)
+        {
+            tbFullName.Text = personAllowedToDrive.FullName;
+            tbDrivingLicenceSeries.Text = "";
+            tbDrivingLicenceNumber.Text = "";
+            for (var i = 0; i < 4; i++) tbDrivingLicenceSeries.Text += personAllowedToDrive.DrivingLicence[i];
+            for (var i = 4; i < 10; i++) tbDrivingLicenceNumber.Text += personAllowedToDrive.DrivingLicence[i];
         }
 
         private void tbDrivingLicenceSeries_TextChanged(object sender, TextChangedEventArgs e)

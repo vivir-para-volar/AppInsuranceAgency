@@ -25,10 +25,10 @@
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="ToolBar" Grid.Column="2"
-                        Background="Transparent"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Right"
-                        Orientation="Horizontal">
+                    Background="Transparent"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
 
             <StackPanel Margin="11,0"
                         VerticalAlignment="Center"

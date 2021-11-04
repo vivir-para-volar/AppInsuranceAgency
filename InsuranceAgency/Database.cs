@@ -1,5 +1,6 @@
 ﻿using InsuranceAgency.Struct;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Security.Cryptography;
 using System.Text;
@@ -30,7 +31,7 @@ namespace InsuranceAgency
         {
             using (SqlConnection con = new SqlConnection(ConnectionString))
             {
-                string query = "SELECT Login, Admin FROM Employees WHERE Login = @login AND Password = @password";
+                string query = "SELECT Login, Admin, Works FROM Employees WHERE Login = @login AND Password = @password";
                 SqlCommand command = new SqlCommand(query, con);
 
                 command.Parameters.Add(new SqlParameter("@login", login));
@@ -45,13 +46,21 @@ namespace InsuranceAgency
                 }
                 while (reader.Read())
                 {
-                    _login = reader["Login"].ToString();
-                    _admin = Convert.ToBoolean(reader["Admin"]);
+                    if (Convert.ToBoolean(reader["Works"]))
+                    {
+                        _login = reader["Login"].ToString();
+                        _admin = Convert.ToBoolean(reader["Admin"]);
+                    }
+                    else
+                    {
+                        throw new Exception("Данный сотрудник больше не работает");
+                    }
                 }
                 reader.Close();
                 con.Close();
             }
         }
+
 
 
         //Функции добавления
@@ -284,6 +293,7 @@ namespace InsuranceAgency
         }
 
 
+
         //Функции изменения
         public static void ChangeCar(Car car)
         {
@@ -311,7 +321,7 @@ namespace InsuranceAgency
             }
         }
 
-        public static void ChangeEmployee(Employee employee)
+        public static void ChangeEmployee(Employee employee, bool changePassword)
         {
             using (SqlConnection con = new SqlConnection(ConnectionString))
             {
@@ -325,6 +335,7 @@ namespace InsuranceAgency
                                    "Admin = @admin,  " +
                                    "Works = @works " +
                                "WHERE ID = @id";
+
                 SqlCommand command = new SqlCommand(query, con);
 
                 command.Parameters.Add(new SqlParameter("@id", employee.ID));
@@ -333,7 +344,8 @@ namespace InsuranceAgency
                 command.Parameters.Add(new SqlParameter("@telephone", employee.Telephone));
                 command.Parameters.Add(new SqlParameter("@passport", employee.Passport));
                 command.Parameters.Add(new SqlParameter("@login", employee.Login));
-                command.Parameters.Add(new SqlParameter("@password", GetHash(employee.Password)));
+                if (changePassword) command.Parameters.Add(new SqlParameter("@password", GetHash(employee.Password)));
+                else command.Parameters.Add(new SqlParameter("@password", employee.Password));
                 command.Parameters.Add(new SqlParameter("@admin", employee.Admin));
                 command.Parameters.Add(new SqlParameter("@works", employee.Works));
 
@@ -440,6 +452,7 @@ namespace InsuranceAgency
                 con.Close();
             }
         }
+
 
 
         //Функции удаления
@@ -549,6 +562,7 @@ namespace InsuranceAgency
             }
         }
 
+        
 
         //Функции поиска
         public static Car SearchCar(string search)
@@ -583,13 +597,44 @@ namespace InsuranceAgency
             }
         }
 
+        public static Car SearchCarID(string id)
+        {
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                string query = "SELECT * FROM Cars WHERE ID = @id";
+                SqlCommand command = new SqlCommand(query, con);
+                command.Parameters.Add(new SqlParameter("@id", id));
+
+                con.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                Car car;
+                if (!reader.HasRows)
+                {
+                    throw new Exception("Данного автомобиля не существует");
+                }
+                while (reader.Read())
+                {
+                    car = new Car(reader["Model"].ToString(),
+                                  reader["VIN"].ToString(),
+                                  reader["RegistrationPlate"].ToString(),
+                                  reader["VehiclePassport"].ToString(),
+                                  reader["Image"].ToString());
+                    reader.Close();
+                    con.Close();
+                    return car;
+                }
+                return null;
+            }
+        }
+
         //public static void SearchConnection(Connection connection) { }
 
         public static Employee SearchEmployee(string search)
         {
             using (SqlConnection con = new SqlConnection(ConnectionString))
             {
-                string query = "SELECT * FROM Employees WHERE Telephone = @search OR Passport = @search OR Login = @search";
+                string query = "SELECT * FROM Employees WHERE Telephone = @search OR Passport = @search";
                 SqlCommand command = new SqlCommand(query, con);
                 command.Parameters.Add(new SqlParameter("@search", search));
 
@@ -714,7 +759,7 @@ namespace InsuranceAgency
                 Policyholder policyholder;
                 if (!reader.HasRows)
                 {
-                    throw new Exception("Данного сотрудника не существует");
+                    throw new Exception("Данного страхователя не существует");
                 }
                 while (reader.Read())
                 {
@@ -728,6 +773,205 @@ namespace InsuranceAgency
                     return policyholder;
                 }
                 return null;
+            }
+        }
+
+
+
+        //Функции получения всего списка
+        public static List<Car> AllCars()
+        {
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                var list = new List<Car>();
+
+                string query = "SELECT * FROM Cars";
+                SqlCommand command = new SqlCommand(query, con);
+
+                con.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    var car = new Car(reader["ID"].ToString(),
+                                      reader["Model"].ToString(),
+                                      reader["VIN"].ToString(),
+                                      reader["RegistrationPlate"].ToString(),
+                                      reader["VehiclePassport"].ToString(),
+                                      reader["Image"].ToString());
+                    list.Add(car);
+                }
+                reader.Close();
+                con.Close();
+                return list;
+            }
+        }
+
+        public static List<Car> AllCarsDG()
+        {
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                var list = new List<Car>();
+
+                string query = "SELECT ID, Model, VIN, RegistrationPlate, VehiclePassport FROM Cars";
+                SqlCommand command = new SqlCommand(query, con);
+
+                con.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    var car = new Car(reader["ID"].ToString(),
+                                      reader["Model"].ToString(),
+                                      reader["VIN"].ToString(),
+                                      reader["RegistrationPlate"].ToString(),
+                                      reader["VehiclePassport"].ToString(),
+                                      "1");
+                    list.Add(car);
+                }
+                reader.Close();
+                con.Close();
+                return list;
+            }
+        }
+
+        public static List<Employee> AllEmployees()
+        {
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                var list = new List<Employee>();
+
+                string query = "SELECT * FROM Employees ORDER BY Works DESC, FullName";
+                SqlCommand command = new SqlCommand(query, con);
+
+                con.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    var employee = new Employee(reader["ID"].ToString(),
+                                                reader["FullName"].ToString(),
+                                                Convert.ToDateTime(reader["Birthday"].ToString()),
+                                                reader["Telephone"].ToString(),
+                                                reader["Passport"].ToString(),
+                                                reader["Login"].ToString(),
+                                                reader["Password"].ToString(),
+                                                Convert.ToBoolean(reader["Admin"].ToString()),
+                                                Convert.ToBoolean(reader["Works"].ToString()));
+                    list.Add(employee);
+                }
+                reader.Close();
+                con.Close();
+                return list;
+            }
+        }
+
+        //public static List<InsuranceEvent> AllInsuranceEvents()
+        //{
+        //    using (SqlConnection con = new SqlConnection(ConnectionString))
+        //    {
+        //        var list = new List<InsuranceEvent>();
+
+        //        string query = "SELECT * FROM InsuranceEvents";
+        //        SqlCommand command = new SqlCommand(query, con);
+
+        //        con.Open();
+        //        SqlDataReader reader = command.ExecuteReader();
+
+        //        while (reader.Read())
+        //        {
+        //            var insuranceEvent = new InsuranceEvent(reader["ID"].ToString(),
+        //                                                    Convert.ToDateTime(reader["Date"].ToString()),
+        //                                                    Convert.ToInt32(reader["InsurancePayment"].ToString()),
+        //                                                    reader["PolicyID"].ToString());
+        //            list.Add(insuranceEvent);
+        //        }
+        //        reader.Close();
+        //        con.Close();
+        //        return list;
+        //    }
+        //}
+
+        public static List<PersonAllowedToDrive> AllPersonsAllowedToDrive()
+        {
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                var list = new List<PersonAllowedToDrive>();
+
+                string query = "SELECT * FROM PersonsAllowedToDrive ORDER BY FullName";
+                SqlCommand command = new SqlCommand(query, con);
+
+                con.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    var personAllowedToDrive = new PersonAllowedToDrive(reader["ID"].ToString(),
+                                                                        reader["FullName"].ToString(),
+                                                                        reader["DrivingLicence"].ToString());
+                    list.Add(personAllowedToDrive);
+                }
+                reader.Close();
+                con.Close();
+                return list;
+            }
+        }
+
+        //public static List<Policy> AllPolicies()
+        //{
+        //    using (SqlConnection con = new SqlConnection(ConnectionString))
+        //    {
+        //        var list = new List<Policy>();
+
+        //        string query = "SELECT * FROM Policies"; 
+        //        SqlCommand command = new SqlCommand(query, con);
+
+        //        con.Open();
+        //        SqlDataReader reader = command.ExecuteReader();
+
+        //        while (reader.Read())
+        //        {
+        //            var policy = new Policy(reader["ID"].ToString(),
+        //                                    reader["InsuranceType"].ToString(),
+        //                                    Convert.ToInt32(reader["InsuranceAmount"].ToString()),
+        //                                    Convert.ToInt32(reader["InsurancePremium"].ToString()),
+        //                                    Convert.ToDateTime(reader["DateOfConclusion"].ToString()),
+        //                                    Convert.ToDateTime(reader["ExpirationDate"].ToString()),
+        //                                    reader["PolicyholderPassport"].ToString(),
+        //                                    reader["VIN"].ToString(),
+        //                                    reader["EmployeePassport"].ToString());
+        //            list.Add(policy);
+        //        }
+        //        reader.Close();
+        //        con.Close();
+        //        return list;
+        //    }
+        //}
+
+        public static List<Policyholder> AllPolicyholders()
+        {
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                var list = new List<Policyholder>();
+
+                string query = "SELECT * FROM Policyholders ORDER BY FullName";
+                SqlCommand command = new SqlCommand(query, con);
+
+                con.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    var policyholder = new Policyholder(reader["ID"].ToString(),
+                                                        reader["FullName"].ToString(),
+                                                        Convert.ToDateTime(reader["Birthday"].ToString()),
+                                                        reader["Telephone"].ToString(),
+                                                        reader["Passport"].ToString());
+                    list.Add(policyholder);
+                }
+                reader.Close();
+                con.Close();
+                return list;
             }
         }
     }

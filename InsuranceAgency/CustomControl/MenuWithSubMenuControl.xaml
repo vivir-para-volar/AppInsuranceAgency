@@ -24,16 +24,16 @@
             <!--to change fore ground on MouseOver and Menu Item Selection-->
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ToggleButton}}" Value="True">
-                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Foreground" Value="#007ACC"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ToggleButton}}" Value="True">
-                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Foreground" Value="#007ACC"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}}" Value="True">
-                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Foreground" Value="#007ACC"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}}" Value="True">
-                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Foreground" Value="#007ACC"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>

@@ -77,8 +77,17 @@
     <Compile Include="Pages\AddPolicyholder.xaml.cs">
       <DependentUpon>AddPolicyholder.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\AllEmployee.xaml.cs">
-      <DependentUpon>AllEmployee.xaml</DependentUpon>
+    <Compile Include="Pages\AllCars.xaml.cs">
+      <DependentUpon>AllCars.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\AllEmployees.xaml.cs">
+      <DependentUpon>AllEmployees.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\AllPersonsAllowedToDrive.xaml.cs">
+      <DependentUpon>AllPersonsAllowedToDrive.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\AllPolicyholders.xaml.cs">
+      <DependentUpon>AllPolicyholders.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Policy.xaml.cs">
       <DependentUpon>Policy.xaml</DependentUpon>
@@ -155,7 +164,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\AllEmployee.xaml">
+    <Page Include="Pages\AllCars.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\AllEmployees.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\AllPersonsAllowedToDrive.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\AllPolicyholders.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -12,6 +12,13 @@ namespace InsuranceAgency.Pages
             InitializeComponent();
         }
 
+        public СhangePolicyholder(Policyholder policyholder)
+        {
+            InitializeComponent();
+
+            AddInfoInTb(policyholder);
+        }
+
         private void tbPassportSeries_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (tbPassportSeries.Text.Length == 0)
@@ -70,13 +77,7 @@ namespace InsuranceAgency.Pages
 
                 searchPolicyholder = Database.SearchPolicyholder(search);
 
-                tbFullName.Text = searchPolicyholder.FullName;
-                tbBirthday.Text = searchPolicyholder.Birthday.ToString("d");
-                tbTelephone.Text = searchPolicyholder.Telephone;
-                tbPassportSeries.Text = "";
-                tbPassportNumber.Text = "";
-                for (var i = 0; i < 4; i++) tbPassportSeries.Text += searchPolicyholder.Passport[i];
-                for (var i = 4; i < 10; i++) tbPassportNumber.Text += searchPolicyholder.Passport[i];
+                AddInfoInTb(searchPolicyholder);
 
                 tbSearch.Text = "";
             }
@@ -84,6 +85,17 @@ namespace InsuranceAgency.Pages
             {
                 MessageBox.Show(exp.Message, "", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void AddInfoInTb(Policyholder policyholder)
+        {
+            tbFullName.Text = policyholder.FullName;
+            tbBirthday.Text = policyholder.Birthday.ToString("d");
+            tbTelephone.Text = policyholder.Telephone;
+            tbPassportSeries.Text = "";
+            tbPassportNumber.Text = "";
+            for (var i = 0; i < 4; i++) tbPassportSeries.Text += policyholder.Passport[i];
+            for (var i = 4; i < 10; i++) tbPassportNumber.Text += policyholder.Passport[i];
         }
 
         private void btnChangePolicyholder_Click(object sender, RoutedEventArgs e)

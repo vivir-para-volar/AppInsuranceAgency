@@ -14,6 +14,13 @@ namespace InsuranceAgency.Pages
             InitializeComponent();
         }
 
+        public СhangeCar(string id)
+        {
+            InitializeComponent();
+            Car car = Database.SearchCarID(id);
+            AddInfoInTb(car);
+        }
+
         Car searchCar;
 
         private void tbSearch_TextChanged(object sender, TextChangedEventArgs e)
@@ -32,30 +39,15 @@ namespace InsuranceAgency.Pages
         {
             try
             {
-                string search_temp = tbSearch.Text.Trim();
-                string search = "";
-                if (search_temp == "")
+                string search = tbSearch.Text.Trim();
+                if (search == "")
                 {
                     throw new Exception("Строка поиска пуста");
-                }
-                foreach (var item in search_temp)
-                {
-                    if (char.IsDigit(item))
-                    {
-                        search += item;
-                    }
                 }
 
                 searchCar = Database.SearchCar(search);
 
-                tbModel.Text = searchCar.Model;
-                tbVIN.Text = searchCar.VIN;
-                tbRegistrationPlate.Text = searchCar.RegistrationPlate;
-                tbVehiclePassportSeries.Text = "";
-                tbVehiclePassportNumber.Text = "";
-                for (var i = 0; i < 4; i++) tbVehiclePassportSeries.Text += searchCar.VehiclePassport[i];
-                for (var i = 4; i < 10; i++) tbVehiclePassportNumber.Text += searchCar.VehiclePassport[i];
-                imgCar.Source = DBImage.Decode(searchCar.Image);
+                AddInfoInTb(searchCar);
 
                 tbSearch.Text = "";
             }
@@ -63,6 +55,18 @@ namespace InsuranceAgency.Pages
             {
                 MessageBox.Show(exp.Message, "", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void AddInfoInTb(Car car)
+        {
+            tbModel.Text = car.Model;
+            tbVIN.Text = car.VIN;
+            tbRegistrationPlate.Text = car.RegistrationPlate;
+            tbVehiclePassportSeries.Text = "";
+            tbVehiclePassportNumber.Text = "";
+            for (var i = 0; i < 4; i++) tbVehiclePassportSeries.Text += car.VehiclePassport[i];
+            for (var i = 4; i < 10; i++) tbVehiclePassportNumber.Text += car.VehiclePassport[i];
+            imgCar.Source = DBImage.Decode(car.Image);
         }
 
         private void tbVehiclePassportSeries_TextChanged(object sender, TextChangedEventArgs e)

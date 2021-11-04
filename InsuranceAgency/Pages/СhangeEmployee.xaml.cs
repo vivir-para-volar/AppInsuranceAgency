@@ -12,6 +12,13 @@ namespace InsuranceAgency.Pages
             InitializeComponent();
         }
 
+        public СhangeEmployee(Employee employee)
+        {
+            InitializeComponent();
+
+            AddInfoInTb(employee);
+        }
+
         private void tbPassportSeries_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (tbPassportSeries.Text.Length == 0)
@@ -82,31 +89,7 @@ namespace InsuranceAgency.Pages
 
                 searchEmployee = Database.SearchEmployee(search);
 
-                tbFullName.Text = searchEmployee.FullName;
-                tbBirthday.Text = searchEmployee.Birthday.ToString("d");
-                tbTelephone.Text = searchEmployee.Telephone;
-                tbPassportSeries.Text = "";
-                tbPassportNumber.Text = "";
-                for (var i = 0; i < 4; i++) tbPassportSeries.Text += searchEmployee.Passport[i];
-                for (var i = 4; i < 10; i++) tbPassportNumber.Text += searchEmployee.Passport[i];
-                tbLogin.Text = searchEmployee.Login;
-                tbPassword.Text = "";
-                if (searchEmployee.Admin == false)
-                {
-                    cbAdmin.SelectedIndex = 0;
-                }
-                else
-                {
-                    cbAdmin.SelectedIndex = 1;
-                }
-                if (searchEmployee.Works == true)
-                {
-                    cbWorks.SelectedIndex = 0;
-                }
-                else
-                {
-                    cbWorks.SelectedIndex = 1;
-                }
+                AddInfoInTb(searchEmployee);
 
                 tbSearch.Text = "";
             }
@@ -116,18 +99,47 @@ namespace InsuranceAgency.Pages
             }
         }
 
+        private void AddInfoInTb(Employee employee)
+        {
+            tbFullName.Text = employee.FullName;
+            tbBirthday.Text = employee.Birthday.ToString("d");
+            tbTelephone.Text = employee.Telephone;
+            tbPassportSeries.Text = "";
+            tbPassportNumber.Text = "";
+            for (var i = 0; i < 4; i++) tbPassportSeries.Text += employee.Passport[i];
+            for (var i = 4; i < 10; i++) tbPassportNumber.Text += employee.Passport[i];
+            tbLogin.Text = employee.Login;
+            tbPassword.Text = "";
+            if (employee.Admin == false)
+            {
+                cbAdmin.SelectedIndex = 0;
+            }
+            else
+            {
+                cbAdmin.SelectedIndex = 1;
+            }
+            if (employee.Works == true)
+            {
+                cbWorks.SelectedIndex = 0;
+            }
+            else
+            {
+                cbWorks.SelectedIndex = 1;
+            }
+        }
+
         private void btnChangeEmployee_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 string fullName = tbFullName.Text.Trim();
-                if (fullName == "")
+                if (fullName.Trim() == "")
                 {
                     throw new Exception("Заполните поле ФИО");
                 }
 
                 string telephone = tbTelephone.Text.Trim();
-                if (telephone == "")
+                if (telephone.Trim() == "")
                 {
                     throw new Exception("Заполните поле Номер телефона");
                 }
@@ -176,12 +188,14 @@ namespace InsuranceAgency.Pages
                 }
 
                 string password = tbPassword.Text.Trim();
-                if(tbPassword.Text == "")
+                bool changePassword = false;
+                if (tbPassword.Text.Trim() == "")
                 {
                     password = searchEmployee.Password;
                 }
                 else
                 {
+                    changePassword = true;
                     if (password.Length < 4 || password.Length > 32)
                     {
                         throw new Exception("Длина пароля должна быть от 4 до 32 символов");
@@ -209,9 +223,23 @@ namespace InsuranceAgency.Pages
                     admin = true;
                 }
 
-                Employee employee = new Employee(searchEmployee.ID, fullName, searchEmployee.Birthday, telephone, passport, login, password, admin, true);
+                bool works;
+                if (cbWorks.Text == "")
+                {
+                    throw new Exception("Заполните поле Работает ли");
+                }
+                else if (cbWorks.Text == "Не работает")
+                {
+                    works = false;
+                }
+                else
+                {
+                    works = true;
+                }
 
-                Database.ChangeEmployee(employee);
+                Employee employee = new Employee(searchEmployee.ID, fullName, searchEmployee.Birthday, telephone, passport, login, password, admin, works);
+
+                Database.ChangeEmployee(employee, changePassword);
 
                 MessageBox.Show("Сотрудник успешно изменён", "", MessageBoxButton.OK, MessageBoxImage.Information);
 

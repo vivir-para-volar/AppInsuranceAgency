@@ -1,0 +1,152 @@
+﻿<Page x:Class="InsuranceAgency.Pages.AllCars"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:InsuranceAgency.Pages" xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+      mc:Ignorable="d" 
+      d:DesignHeight="738" d:DesignWidth="1166"
+      Title="AllCars">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="85"/>
+            <RowDefinition/>
+            <RowDefinition Height="85"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="1116"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Border CornerRadius="20,0,0,0" Grid.RowSpan="4" Grid.ColumnSpan="3">
+            <Border.Background>
+                <LinearGradientBrush>
+                    <GradientStop Color="#013957" Offset="0.0"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="3"
+                    Width="260"
+                    Margin="25,25,0,0"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Left">
+            <Border Padding="5"
+                    CornerRadius="10"
+                    SnapsToDevicePixels="True" 
+                    Background="#012F47">
+                <StackPanel Width="250"
+                            Background="#012F47"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="ВСЕ АВТОМОБИЛИ"
+                               Margin="10"
+                               FontWeight="Normal"
+                               FontFamily="Helvetica"
+                               FontSize="22"
+                               Foreground="White"
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="3"
+                    Width="410"
+                    Margin="0,25,25,0"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+            <Border Padding="5"
+                    CornerRadius="10"
+                    SnapsToDevicePixels="True" 
+                    Background="#012F47">
+                <TextBox Name="tbSearch"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Center"
+                         Height="40"
+                         Width="400"
+                         Padding="0,0,40,0"
+                         Background="#012F47"
+                         FontFamily="Helvetica"
+                         FontWeight="Normal"
+                         FontSize="20"
+                         Foreground="White"
+                         BorderThickness="0"
+                         HorizontalContentAlignment="Left"
+                         VerticalContentAlignment="Center"
+                         TextChanged="tbSearch_TextChanged"/>
+            </Border>
+
+            <TextBlock Name="tbSearchHint"
+                       IsHitTestVisible="False"
+                       VerticalAlignment="Top"
+                       Margin="-400,20,0,0"
+                       Text="Введите VIN номер автомобиля"
+                       FontFamily="Helvetica"
+                       FontWeight="Normal"
+                       FontSize="20"
+                       Opacity="0.7"
+                       Foreground="White"
+                       HorizontalAlignment="Left"/>
+        </StackPanel>
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="3"
+                    Width="40"
+                    Margin="0,25,0,0"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center">
+            <Button x:Name="btnSearch"
+                    Height="45"
+                    Width="30"
+                    Margin="-25,0,0,0"
+                    Background="#012F47" 
+                    Click="btnSearch_Click">
+                <iconPacks:PackIconMaterial Kind="Magnify" 
+                                        Background="#012F47"
+                                        Foreground="White"/>
+            </Button>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="1"
+                    VerticalAlignment="Center">
+            <Border Margin="0,25,0,0"
+                    Padding="5"
+                    CornerRadius="10"
+                    SnapsToDevicePixels="True" 
+                    Background="#012F47">
+                <DataGrid x:Name="dgCars"
+                          AutoGenerateColumns="False"
+                          Height="500" 
+                          Width="1100"
+                          FontFamily="Helvetica"
+                          FontWeight="Normal"
+                          FontSize="18"
+                          VerticalAlignment="Center" 
+                          HorizontalAlignment="Center" 
+                          Background="#012F47"
+                          ColumnWidth="SizeToCells"
+                          IsReadOnly="True"
+                          MinRowHeight="30" 
+                          CurrentCellChanged="dgCars_CurrentCellChanged">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn     Binding="{Binding Path=ID}"                Header="ID"                   Visibility="Hidden"/>
+                        <DataGridTextColumn     Binding="{Binding Path=Model}"             Header="Модель, марка"        Width="Auto"/>
+                        <DataGridTextColumn     Binding="{Binding Path=VIN}"               Header="VIN номер"            Width="*"/>
+                        <DataGridTextColumn     Binding="{Binding Path=RegistrationPlate}" Header="Регистрационный знак" Width="*"/>
+                        <DataGridTextColumn     Binding="{Binding Path=VehiclePassport}"   Header="Паспорт ТС"           Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Grid.Column="1"
+                    VerticalAlignment="Center">
+            <Button Name="btnDeleteEmployee"
+                    Width="250" Height="50"
+                    Content="Исходное состояние" 
+                    Click="btnTable_Click"/>
+        </StackPanel>
+    </Grid>
+</Page>

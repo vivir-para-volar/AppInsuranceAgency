@@ -51,8 +51,8 @@
                 </StackPanel>
             </Border>
         </StackPanel>
-        
-        
+
+
         <StackPanel Grid.Row="0" Grid.ColumnSpan="3"
                     Width="460"
                     Margin="0,25,25,0"
