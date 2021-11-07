@@ -2,13 +2,13 @@
 {
     public class Connection
     {
-        public string PolicyholderPassport { get; }
-        public string DrivingLicence { get; }
+        public string PolicyID { get; }
+        public string PersonAllowedToDriveID { get; }
 
-        public Connection(string policyholderPassport, string drivingLicence)
+        public Connection(string policyID, string personAllowedToDriveID)
         {
-            PolicyholderPassport = policyholderPassport;
-            DrivingLicence = drivingLicence;
+            PolicyID = policyID;
+            PersonAllowedToDriveID = personAllowedToDriveID;
         }
     }
 }

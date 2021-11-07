@@ -131,11 +131,11 @@
                           MinRowHeight="30" 
                           CurrentCellChanged="dgCars_CurrentCellChanged">
                     <DataGrid.Columns>
-                        <DataGridTextColumn     Binding="{Binding Path=ID}"                Header="ID"                   Visibility="Hidden"/>
-                        <DataGridTextColumn     Binding="{Binding Path=Model}"             Header="Модель, марка"        Width="Auto"/>
-                        <DataGridTextColumn     Binding="{Binding Path=VIN}"               Header="VIN номер"            Width="*"/>
-                        <DataGridTextColumn     Binding="{Binding Path=RegistrationPlate}" Header="Регистрационный знак" Width="*"/>
-                        <DataGridTextColumn     Binding="{Binding Path=VehiclePassport}"   Header="Паспорт ТС"           Width="*"/>
+                        <DataGridTextColumn Binding="{Binding Path=ID}"                Header="ID"                   Visibility="Hidden"/>
+                        <DataGridTextColumn Binding="{Binding Path=Model}"             Header="Модель, марка"        Width="Auto"/>
+                        <DataGridTextColumn Binding="{Binding Path=VIN}"               Header="VIN номер"            Width="*"/>
+                        <DataGridTextColumn Binding="{Binding Path=RegistrationPlate}" Header="Регистрационный знак" Width="*"/>
+                        <DataGridTextColumn Binding="{Binding Path=VehiclePassport}"   Header="Паспорт ТС"           Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>
@@ -143,8 +143,7 @@
 
         <StackPanel Grid.Row="3" Grid.Column="1"
                     VerticalAlignment="Center">
-            <Button Name="btnDeleteEmployee"
-                    Width="250" Height="50"
+            <Button Width="250" Height="50"
                     Content="Исходное состояние" 
                     Click="btnTable_Click"/>
         </StackPanel>

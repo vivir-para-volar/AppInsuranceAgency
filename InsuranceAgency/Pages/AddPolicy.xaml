@@ -1,0 +1,334 @@
+﻿<Page x:Class="InsuranceAgency.Pages.AddPolicy"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:InsuranceAgency.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="738" d:DesignWidth="1166"
+      Title="AddPolicy">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="85"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="1000"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Border CornerRadius="20,0,0,0" Grid.RowSpan="3" Grid.ColumnSpan="3">
+            <Border.Background>
+                <LinearGradientBrush>
+                    <GradientStop Color="#013957" Offset="0.0"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+
+
+        <StackPanel Grid.Row="0" Grid.Column="1"
+                    Width="340"
+                    Margin="0,25,0,0">
+            <Border Padding="5"
+                    CornerRadius="10"
+                    SnapsToDevicePixels="True" 
+                    Background="#012F47">
+                <StackPanel Grid.Row="0" Grid.Column="1"
+                    Width="330"
+                    Background="#012F47"
+                    VerticalAlignment="Center" >
+                    <TextBlock Text="ДОБАВЛЕНИЕ ПОЛИСА"
+                       Margin="10"
+                       FontWeight="Normal"
+                       FontFamily="Helvetica"
+                       FontSize="22"
+                       Foreground="White"
+                       HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+
+
+        <StackPanel Grid.Row="1" Grid.Column="1"
+                    VerticalAlignment="Center">
+            <Border Margin="25"
+                    Padding="5"
+                    CornerRadius="10"
+                    SnapsToDevicePixels="True" 
+                    Background="#012F47">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="330"/>
+                        <ColumnDefinition Width="490"/>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="25"/>
+                    </Grid.RowDefinitions>
+
+
+                    <!--Вид страхования -->
+                    <TextBlock Margin="5"
+                               Text="Вид страхования"
+                               Grid.Row="1" Grid.Column="1"
+                               VerticalAlignment="Bottom"
+                               FontFamily="Helvetica"
+                               FontWeight="Normal"
+                               FontSize="20"
+                               Foreground="White"/>
+                    <ComboBox Name="cbInsuranceType"
+                              Grid.Row="1" Grid.Column="2"
+                              Height="40"
+                              Width="480"
+                              Padding="5,0"
+                              Background="White"
+                              FontFamily="Helvetica"
+                              FontWeight="Normal"
+                              FontSize="20"
+                              Foreground="Black"
+                              VerticalAlignment="Bottom"
+                              HorizontalAlignment="Left"
+                              VerticalContentAlignment="Center"
+                              HorizontalContentAlignment="Left">
+                        <ComboBoxItem FontFamily="Helvetica"
+                                      FontWeight="Normal"
+                                      FontSize="20">
+                            ОСАГО
+                        </ComboBoxItem>
+                        <ComboBoxItem FontFamily="Helvetica"
+                                      FontWeight="Normal"
+                                      FontSize="20">
+                            КАСКО
+                        </ComboBoxItem>
+                    </ComboBox>
+
+                    <!--Страховая премия-->
+                    <TextBlock Margin="5"
+                               Text="Страховая премия"
+                               Grid.Row="2" Grid.Column="1"
+                               VerticalAlignment="Bottom"
+                               FontFamily="Helvetica"
+                               FontWeight="Normal"
+                               FontSize="20"
+                               Foreground="White"/>
+                    <TextBox Name="tbInsurancePremium"
+                             Grid.Row="2" Grid.Column="2"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Bottom"
+                             Height="40"
+                             Width="480"
+                             Padding="5,0"
+                             Background="White"
+                             FontFamily="Helvetica"
+                             FontWeight="Normal"
+                             FontSize="20"
+                             Foreground="Black"
+                             BorderThickness="2"
+                             BorderBrush="White"
+                             HorizontalContentAlignment="Left"
+                             VerticalContentAlignment="Center"/>
+
+                    <!--Страховая сумма -->
+                    <TextBlock Margin="5"
+                               Text="Страховая сумма "
+                               Grid.Row="3" Grid.Column="1"
+                               VerticalAlignment="Bottom"
+                               FontFamily="Helvetica"
+                               FontWeight="Normal"
+                               FontSize="20"
+                               Foreground="White"/>
+                    <TextBox Name="tbInsuranceAmount"
+                             Grid.Row="3" Grid.Column="2"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Bottom"
+                             Height="40"
+                             Width="480"
+                             Padding="5,0"
+                             Background="White"
+                             FontFamily="Helvetica"
+                             FontWeight="Normal"
+                             FontSize="20"
+                             Foreground="Black"
+                             BorderThickness="2"
+                             BorderBrush="White"
+                             HorizontalContentAlignment="Left"
+                             VerticalContentAlignment="Center"/>
+
+                    <!--Дата заключения -->
+                    <TextBlock Margin="5"
+                               Text="Дата заключения "
+                               Grid.Row="4" Grid.Column="1"
+                               VerticalAlignment="Bottom"
+                               FontFamily="Helvetica"
+                               FontWeight="Normal"
+                               FontSize="20"
+                               Foreground="White"/>
+                    <DatePicker Name="dpDateOfConclusion" 
+                                Grid.Row="4" Grid.Column="2"
+                                SelectedDate="01.01.2021"
+                                IsDropDownOpen="False" 
+                                Focusable = "False"
+                                SelectedDateFormat="Short" 
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Bottom"
+                                Height="40"
+                                Width="480"
+                                Padding="5,0"
+                                Background="White"
+                                FontFamily="Helvetica"
+                                FontWeight="Normal"
+                                FontSize="20"
+                                Foreground="Black"
+                                BorderThickness="2"
+                                BorderBrush="White"
+                                VerticalContentAlignment="Center"/>
+
+                    <!--Срок действия-->
+                    <TextBlock Margin="5"
+                               Text="Срок действия"
+                               Grid.Row="5" Grid.Column="1"
+                               VerticalAlignment="Bottom"
+                               FontFamily="Helvetica"
+                               FontWeight="Normal"
+                               FontSize="20"
+                               Foreground="White"/>
+                    <ComboBox Name="cbExpirationDate"
+                              Grid.Row="5" Grid.Column="2"
+                              Height="40"
+                              Width="480"
+                              Padding="5,0"
+                              Background="White"
+                              FontFamily="Helvetica"
+                              FontWeight="Normal"
+                              FontSize="20"
+                              Foreground="Black"
+                              VerticalAlignment="Bottom"
+                              HorizontalAlignment="Left"
+                              VerticalContentAlignment="Center"
+                              HorizontalContentAlignment="Left">
+                        <ComboBoxItem FontFamily="Helvetica"
+                                      FontWeight="Normal"
+                                      FontSize="20">
+                            6 месяцев
+                        </ComboBoxItem>
+                        <ComboBoxItem FontFamily="Helvetica"
+                                      FontWeight="Normal"
+                                      FontSize="20">
+                            12 месяцев
+                        </ComboBoxItem>
+                    </ComboBox>
+
+                    <!--VIN автомобиля-->
+                    <TextBlock Margin="5"
+                               Text="VIN автомобиля"
+                               Grid.Row="6" Grid.Column="1"
+                               VerticalAlignment="Bottom"
+                               FontFamily="Helvetica"
+                               FontWeight="Normal"
+                               FontSize="20"
+                               Foreground="White"/>
+                    <TextBox Name="tbVIN"
+                             Grid.Row="6" Grid.Column="2"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Bottom"
+                             Height="40"
+                             Width="480"
+                             Padding="5,0"
+                             Background="White"
+                             FontFamily="Helvetica"
+                             FontWeight="Normal"
+                             FontSize="20"
+                             Foreground="Black"
+                             BorderThickness="2"
+                             BorderBrush="White"
+                             HorizontalContentAlignment="Left"
+                             VerticalContentAlignment="Center"/>
+
+                    <!--Лица, допущенное к управлени-->
+                    <TextBlock Margin="5"
+                               Text="Лица, допущенные к управлению"
+                               Grid.Row="7" Grid.Column="1"
+                               VerticalAlignment="Bottom"
+                               FontFamily="Helvetica"
+                               FontWeight="Normal"
+                               FontSize="20"
+                               Foreground="White"/>
+                    <ComboBox Name="cbPersonsAllowedToDrive"
+                              IsReadOnly="False" IsEditable="True"
+                              Grid.Row="7" Grid.Column="2"
+                              Height="40"
+                              Width="480"
+                              Padding="5,0"
+                              Background="White"
+                              FontFamily="Helvetica"
+                              FontWeight="Normal"
+                              FontSize="20"
+                              Foreground="Black"
+                              VerticalAlignment="Bottom"
+                              HorizontalAlignment="Left"
+                              VerticalContentAlignment="Center"
+                              HorizontalContentAlignment="Left" 
+                              GotFocus="cbPersonsAllowedToDrive_GotFocus" 
+                              LostFocus="cbPersonsAllowedToDrive_LostFocus"/>
+                    <TextBlock Name="tbPersonsAllowedToDriveHint"
+                               Grid.Row="7" Grid.Column="2"
+                               IsHitTestVisible="False"
+                               VerticalAlignment="Top"
+                               Margin="10,27,0,0"
+                               Text="Введите водительское удостоврение"
+                               FontFamily="Helvetica"
+                               FontWeight="Normal"
+                               FontSize="20"
+                               Opacity="0.7"
+                               HorizontalAlignment="Left"/>
+                    <Button Width="40" Height="40"
+                            Grid.Row="7" Grid.Column="3"
+                            VerticalAlignment="Bottom"
+                            Content="+" 
+                            Click="btnAddPersonAllowedToDrive_Click"/>
+
+                    <!--Ошибка-->
+                    <StackPanel Grid.ColumnSpan="5" Grid.Row="8"
+                                VerticalAlignment="Center">
+                        <TextBlock Name="tbException"
+                                   Visibility="Hidden"
+                                   VerticalAlignment="Bottom"
+                                   FontFamily="Helvetica"
+                                   FontWeight="Light"
+                                   FontSize="14"
+                                   Foreground="Red"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+
+                </Grid>
+            </Border>
+
+            <StackPanel Margin="0,-160,0,0"
+                        VerticalAlignment="Center">
+                <Button Width="120" Height="50"
+                        Content="Добавить" 
+                        Click="btnAddPolicy_Click"/>
+            </StackPanel>
+
+        </StackPanel>
+
+    </Grid>
+</Page>

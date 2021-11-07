@@ -74,6 +74,9 @@
     <Compile Include="Pages\AddPersonAllowedToDrive.xaml.cs">
       <DependentUpon>AddPersonAllowedToDrive.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\AddPolicy.xaml.cs">
+      <DependentUpon>AddPolicy.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\AddPolicyholder.xaml.cs">
       <DependentUpon>AddPolicyholder.xaml</DependentUpon>
     </Compile>
@@ -157,6 +160,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\AddPersonAllowedToDrive.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\AddPolicy.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

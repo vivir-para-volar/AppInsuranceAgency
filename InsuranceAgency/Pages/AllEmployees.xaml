@@ -222,8 +222,7 @@
 
         <StackPanel Grid.Row="3" Grid.Column="1"
                     VerticalAlignment="Center">
-            <Button Name="btnDeleteEmployee"
-                    Width="250" Height="50"
+            <Button Width="250" Height="50"
                     Content="Исходное состояние" 
                     Click="btnTable_Click"/>
         </StackPanel>

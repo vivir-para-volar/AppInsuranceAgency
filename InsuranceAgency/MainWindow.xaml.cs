@@ -10,7 +10,7 @@ namespace InsuranceAgency
         {
             InitializeComponent();
             TbToolBarLogin.Text = Database.Login;
-            MainWindowFrame.Content = new AllPersonsAllowedToDrive();
+            MainWindowFrame.Content = new Policy();
         }
 
 

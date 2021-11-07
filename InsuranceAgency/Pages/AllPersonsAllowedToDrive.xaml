@@ -131,9 +131,9 @@
                           MinRowHeight="30" 
                           CurrentCellChanged="PersonsAllowedToDrive_CurrentCellChanged">
                     <DataGrid.Columns>
-                        <DataGridTextColumn     Binding="{Binding Path=ID}"              Header="ID"                         Visibility="Hidden"/>
-                        <DataGridTextColumn     Binding="{Binding Path=FullName}"        Header="ФИО"                        Width="*"/>
-                        <DataGridTextColumn     Binding="{Binding Path=DrivingLicence}"  Header="Водительское удостоверение" Width="*"/>
+                        <DataGridTextColumn Binding="{Binding Path=ID}"              Header="ID"                         Visibility="Hidden"/>
+                        <DataGridTextColumn Binding="{Binding Path=FullName}"        Header="ФИО"                        Width="*"/>
+                        <DataGridTextColumn Binding="{Binding Path=DrivingLicence}"  Header="Водительское удостоверение" Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>
@@ -141,8 +141,7 @@
 
         <StackPanel Grid.Row="3" Grid.Column="1"
                     VerticalAlignment="Center">
-            <Button Name="btnDeleteEmployee"
-                    Width="250" Height="50"
+            <Button Width="250" Height="50"
                     Content="Исходное состояние" 
                     Click="btnTable_Click"/>
         </StackPanel>

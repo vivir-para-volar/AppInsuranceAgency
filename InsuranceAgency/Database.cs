@@ -1,6 +1,7 @@
 ﻿using InsuranceAgency.Struct;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Security.Cryptography;
 using System.Text;
@@ -9,7 +10,7 @@ namespace InsuranceAgency
 {
     public static class Database
     {
-        private static string ConnectionString = "Server=localhost;" + "database=InsuranceAgency;" + "Integrated Security=True";
+        private static string ConnectionString = "Server=localhost;" + "database=DBInsuranceAgency;" + "Integrated Security=True";
 
         private static string _login;
         private static bool _admin = true;
@@ -95,26 +96,46 @@ namespace InsuranceAgency
             }
         }
 
-        //public static void AddConnection(Connection connection)
-        //{
-        //    using (SqlConnection con = new SqlConnection(ConnectionString))
-        //    {
+        public static void AddConnection(Connection connection)
+        {
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                string query1 = "SELECT ID FROM Policies WHERE ID = @id";
+                SqlCommand command1 = new SqlCommand(query1, con);
+                command1.Parameters.Add(new SqlParameter("@id", connection.PolicyID));
 
-        //        string query3 = "INSERT INTO Connections(PolicyID, PersonAllowedToDriveID) "+
-        //                       "VALUES(" +
-        //                           "@policyID, " +
-		      //                     "(SELECT ID FROM PersonsAllowedToDrive WHERE DrivingLicence = @drivingLicence)" +
-        //                       ")";
-        //        SqlCommand command3 = new SqlCommand(query3, con);
+                string query2 = "SELECT ID FROM PersonsAllowedToDrive WHERE ID = @id";
+                SqlCommand command2 = new SqlCommand(query2, con);
+                command2.Parameters.Add(new SqlParameter("@id", connection.PersonAllowedToDriveID));
 
-        //        command3.Parameters.Add(new SqlParameter("@policyID", connection.PolicyholderPassport));
-        //        command3.Parameters.Add(new SqlParameter("@drivingLicence", connection.DrivingLicence));
+                string query = "INSERT INTO Connections(PolicyID, PersonAllowedToDriveID) " +
+                               "VALUES(" +
+                                   "@policyID, " +
+                                   "@personAllowedToDriveID" +
+                               ")";
+                SqlCommand command = new SqlCommand(query, con);
 
-        //        con.Open();
-        //        command3.ExecuteNonQuery();
-        //        con.Close();
-        //    }
-        //}
+                command.Parameters.Add(new SqlParameter("@policyID", connection.PolicyID));
+                command.Parameters.Add(new SqlParameter("@personAllowedToDriveID", connection.PersonAllowedToDriveID));
+
+                con.Open();
+                SqlDataReader reader = command1.ExecuteReader();
+                if (!reader.HasRows)
+                {
+                    throw new Exception("Данного полиса не существует");
+                }
+                reader.Close();
+
+                reader = command2.ExecuteReader();
+                if (!reader.HasRows)
+                {
+                    throw new Exception("Данного водителя не существует");
+                }
+                reader.Close();
+                command.ExecuteNonQuery();
+                con.Close();
+            }
+        }
 
         public static void AddEmployee(Employee employee)
         {
@@ -218,38 +239,106 @@ namespace InsuranceAgency
             }
         }
 
-        //public static void AddPolicy(Policy policy)
-        //{
-        //    using (SqlConnection con = new SqlConnection(ConnectionString))
-        //    {
-        //        string query = "INSERT INTO Policies(InsuranceType, InsuranceAmount, InsurancePremium, DateOfConclusion, ExpirationDate, PolicyholderID, CarID, EmployeeID) " +
-        //                       "VALUES(" +
-        //                           "@insuranceType, " +
-        //                           "@insuranceAmount, " +
-        //                           "@insurancePremium, " +
-        //                           "@dateOfConclusion, " +
-        //                           "@expirationDate, " +
-        //                           "(SELECT ID FROM Policyholders WHERE Passport = @policyholderPassport), " +
-        //                           "(SELECT ID FROM Cars WHERE VIN = @vin), " +
-        //                           "(SELECT ID FROM Employees WHERE Passport = @employeePassport)" +
-        //                       ")"; 
-        //        SqlCommand command = new SqlCommand(query, con);
+        public static void AddPolicyWithConnections(Policy policy, List<PersonAllowedToDrive> listPersonAllowedToDrive)
+        {
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                string query1 = "SELECT ID FROM Policyholders WHERE ID = @id";
+                SqlCommand command1 = new SqlCommand(query1, con);
+                command1.Parameters.Add(new SqlParameter("@id", policy.PolicyholderID));
 
-        //        command.Parameters.Add(new SqlParameter("@id", policy.ID));
-        //        command.Parameters.Add(new SqlParameter("@insuranceType", policy.InsuranceType));
-        //        command.Parameters.Add(new SqlParameter("@insuranceAmount", policy.InsuranceAmount));
-        //        command.Parameters.Add(new SqlParameter("@insurancePremium", policy.InsurancePremium));
-        //        command.Parameters.Add(new SqlParameter("@dateOfConclusion", policy.DateOfConclusion));
-        //        command.Parameters.Add(new SqlParameter("@expirationDate", policy.ExpirationDate));
-        //        command.Parameters.Add(new SqlParameter("@policyholderPassport", policy.PolicyholderPassport));
-        //        command.Parameters.Add(new SqlParameter("@vin", policy.VIN));
-        //        command.Parameters.Add(new SqlParameter("@employeePassport", policy.EmployeePassport));
+                string query2 = "SELECT ID FROM Cars WHERE ID = @id";
+                SqlCommand command2 = new SqlCommand(query2, con);
+                command2.Parameters.Add(new SqlParameter("@id", policy.CarID));
 
-        //        con.Open();
-        //        command.ExecuteNonQuery();
-        //        con.Close();
-        //    }
-        //}
+                string query3 = "SELECT ID FROM Employees WHERE ID = @id";
+                SqlCommand command3 = new SqlCommand(query3, con);
+                command3.Parameters.Add(new SqlParameter("@id", policy.EmployeeID));
+
+                string query = "INSERT INTO Policies(InsuranceType, InsurancePremium, InsuranceAmount, DateOfConclusion, ExpirationDate, PolicyholderID, CarID, EmployeeID) " +
+                               "VALUES(" +
+                                   "@insuranceType, " +
+                                   "@insurancePremium, " +
+                                   "@insuranceAmount, " +
+                                   "@dateOfConclusion, " +
+                                   "@expirationDate, " +
+                                   "@policyholderID, " +
+                                   "@carID, " +
+                                   "@employeeID" +
+                               "); SET @id=SCOPE_IDENTITY()";
+                SqlCommand command = new SqlCommand(query, con);
+
+                command.Parameters.Add(new SqlParameter("@insuranceType", policy.InsuranceType));
+                command.Parameters.Add(new SqlParameter("@insurancePremium", policy.InsurancePremium));
+                command.Parameters.Add(new SqlParameter("@insuranceAmount", policy.InsuranceAmount));
+                command.Parameters.Add(new SqlParameter("@dateOfConclusion", policy.DateOfConclusion));
+                command.Parameters.Add(new SqlParameter("@expirationDate", policy.ExpirationDate));
+                command.Parameters.Add(new SqlParameter("@policyholderID", policy.PolicyholderID));
+                command.Parameters.Add(new SqlParameter("@carID", policy.CarID));
+                command.Parameters.Add(new SqlParameter("@employeeID", policy.EmployeeID));
+                SqlParameter idParam = new SqlParameter
+                {
+                    ParameterName = "@id",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Output // параметр выходной
+                };
+                command.Parameters.Add(idParam);
+
+                con.Open();
+                SqlDataReader reader = command1.ExecuteReader();
+                if (!reader.HasRows)
+                {
+                    throw new Exception("Данного страхователя нет");
+                }
+                reader.Close();
+
+                reader = command2.ExecuteReader();
+                if (!reader.HasRows)
+                {
+                    throw new Exception("Данного автомобиля нет");
+                }
+                reader.Close();
+
+                reader = command3.ExecuteReader();
+                if (!reader.HasRows)
+                {
+                    throw new Exception("Данного сотрудника нет");
+                }
+                reader.Close();
+
+                command.ExecuteNonQuery();
+
+                var policyID = idParam.Value;
+
+                foreach(var item in listPersonAllowedToDrive)
+                {
+                    string queryP1 = "SELECT ID FROM PersonsAllowedToDrive WHERE ID = @id";
+                    SqlCommand commandP1 = new SqlCommand(queryP1, con);
+                    commandP1.Parameters.Add(new SqlParameter("@id", item.ID));
+
+                    string queryP = "INSERT INTO Connections(PolicyID, PersonAllowedToDriveID) " +
+                               "VALUES(" +
+                                   "@policyID, " +
+                                   "@personAllowedToDriveID" +
+                               ")";
+                    SqlCommand commandP = new SqlCommand(queryP, con);
+
+                    commandP.Parameters.Add(new SqlParameter("@policyID", policyID));
+                    commandP.Parameters.Add(new SqlParameter("@personAllowedToDriveID", item.ID));
+
+                    reader = commandP1.ExecuteReader();
+                    if (!reader.HasRows)
+                    {
+                        throw new Exception("Данного водителя нет");
+                    }
+                    reader.Close();
+
+                    commandP.ExecuteNonQuery();
+                }
+
+                con.Close();
+            }
+        }
 
         public static void AddPolicyholder(Policyholder policyholder)
         {
@@ -665,6 +754,41 @@ namespace InsuranceAgency
             }
         }
 
+        public static Employee SearchEmployeeLogin(string login)
+        {
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                string query = "SELECT * FROM Employees WHERE Login = @login";
+                SqlCommand command = new SqlCommand(query, con);
+                command.Parameters.Add(new SqlParameter("@login", login));
+
+                con.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                Employee employee;
+                if (!reader.HasRows)
+                {
+                    throw new Exception("Данного сотрудника не существует");
+                }
+                while (reader.Read())
+                {
+                    employee = new Employee(reader["ID"].ToString(),
+                                            reader["FullName"].ToString(),
+                                            Convert.ToDateTime(reader["Birthday"].ToString()),
+                                            reader["Telephone"].ToString(),
+                                            reader["Passport"].ToString(),
+                                            reader["Login"].ToString(),
+                                            reader["Password"].ToString(),
+                                            Convert.ToBoolean(reader["Admin"].ToString()),
+                                            Convert.ToBoolean(reader["Works"].ToString()));
+                    reader.Close();
+                    con.Close();
+                    return employee;
+                }
+                return null;
+            }
+        }
+
         //public static void SearchInsuranceEvent(InsuranceEvent insuranceEvent)
         //{
         //    using (SqlConnection con = new SqlConnection(ConnectionString))
@@ -712,38 +836,37 @@ namespace InsuranceAgency
             }
         }
 
-        //public static void SearchPolicy(Policy policy)
-        //{
-        //    using (SqlConnection con = new SqlConnection(ConnectionString))
-        //    {
-        //        string query = "INSERT INTO Policies(InsuranceType, InsuranceAmount, InsurancePremium, DateOfConclusion, ExpirationDate, PolicyholderID, CarID, EmployeeID) " +
-        //                       "VALUES(" +
-        //                           "@insuranceType, " +
-        //                           "@insuranceAmount, " +
-        //                           "@insurancePremium, " +
-        //                           "@dateOfConclusion, " +
-        //                           "@expirationDate, " +
-        //                           "(SELECT ID FROM Policyholders WHERE Passport = @policyholderPassport), " +
-        //                           "(SELECT ID FROM Cars WHERE VIN = @vin), " +
-        //                           "(SELECT ID FROM Employees WHERE Passport = @employeePassport)" +
-        //                       ")";
-        //        SqlCommand command = new SqlCommand(query, con);
+        public static List<Policy> SearchPolicy(string search)
+        {
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                var list = new List<Policy>();
 
-        //        command.Parameters.Add(new SqlParameter("@id", policy.ID));
-        //        command.Parameters.Add(new SqlParameter("@insuranceType", policy.InsuranceType));
-        //        command.Parameters.Add(new SqlParameter("@insuranceAmount", policy.InsuranceAmount));
-        //        command.Parameters.Add(new SqlParameter("@insurancePremium", policy.InsurancePremium));
-        //        command.Parameters.Add(new SqlParameter("@dateOfConclusion", policy.DateOfConclusion));
-        //        command.Parameters.Add(new SqlParameter("@expirationDate", policy.ExpirationDate));
-        //        command.Parameters.Add(new SqlParameter("@policyholderPassport", policy.PolicyholderPassport));
-        //        command.Parameters.Add(new SqlParameter("@vin", policy.VIN));
-        //        command.Parameters.Add(new SqlParameter("@employeePassport", policy.EmployeePassport));
+                string query = "SELECT * FROM Policies WHERE PolicyholderID = @search";
+                SqlCommand command = new SqlCommand(query, con);
+                command.Parameters.Add(new SqlParameter("@search", search));
 
-        //        con.Open();
-        //        command.ExecuteNonQuery();
-        //        con.Close();
-        //    }
-        //}
+                con.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    var policy = new Policy(reader["ID"].ToString(),
+                                            reader["InsuranceType"].ToString(),
+                                            Convert.ToInt32(reader["InsurancePremium"].ToString()),
+                                            Convert.ToInt32(reader["InsuranceAmount"].ToString()),
+                                            Convert.ToDateTime(reader["DateOfConclusion"].ToString()),
+                                            Convert.ToDateTime(reader["ExpirationDate"].ToString()),
+                                            reader["PolicyholderID"].ToString(),
+                                            reader["CarID"].ToString(),
+                                            reader["EmployeeID"].ToString());
+                    list.Add(policy);
+                }
+                reader.Close();
+                con.Close();
+                return list;
+            }
+        }
 
         public static Policyholder SearchPolicyholder(string search)
         {
@@ -752,6 +875,37 @@ namespace InsuranceAgency
                 string query = "SELECT * FROM Policyholders WHERE Telephone = @search OR Passport = @search";
                 SqlCommand command = new SqlCommand(query, con);
                 command.Parameters.Add(new SqlParameter("@search", search));
+
+                con.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                Policyholder policyholder;
+                if (!reader.HasRows)
+                {
+                    throw new Exception("Данного страхователя не существует");
+                }
+                while (reader.Read())
+                {
+                    policyholder = new Policyholder(reader["ID"].ToString(),
+                                            reader["FullName"].ToString(),
+                                            Convert.ToDateTime(reader["Birthday"].ToString()),
+                                            reader["Telephone"].ToString(),
+                                            reader["Passport"].ToString());
+                    reader.Close();
+                    con.Close();
+                    return policyholder;
+                }
+                return null;
+            }
+        }
+
+        public static Policyholder SearchPolicyholderID(string id)
+        {
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                string query = "SELECT * FROM Policyholders WHERE ID = @id";
+                SqlCommand command = new SqlCommand(query, con);
+                command.Parameters.Add(new SqlParameter("@id", id));
 
                 con.Open();
                 SqlDataReader reader = command.ExecuteReader();
@@ -917,36 +1071,36 @@ namespace InsuranceAgency
             }
         }
 
-        //public static List<Policy> AllPolicies()
-        //{
-        //    using (SqlConnection con = new SqlConnection(ConnectionString))
-        //    {
-        //        var list = new List<Policy>();
+        public static List<Policy> AllPolicies()
+        {
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                var list = new List<Policy>();
 
-        //        string query = "SELECT * FROM Policies"; 
-        //        SqlCommand command = new SqlCommand(query, con);
+                string query = "SELECT * FROM Policies";
+                SqlCommand command = new SqlCommand(query, con);
 
-        //        con.Open();
-        //        SqlDataReader reader = command.ExecuteReader();
+                con.Open();
+                SqlDataReader reader = command.ExecuteReader();
 
-        //        while (reader.Read())
-        //        {
-        //            var policy = new Policy(reader["ID"].ToString(),
-        //                                    reader["InsuranceType"].ToString(),
-        //                                    Convert.ToInt32(reader["InsuranceAmount"].ToString()),
-        //                                    Convert.ToInt32(reader["InsurancePremium"].ToString()),
-        //                                    Convert.ToDateTime(reader["DateOfConclusion"].ToString()),
-        //                                    Convert.ToDateTime(reader["ExpirationDate"].ToString()),
-        //                                    reader["PolicyholderPassport"].ToString(),
-        //                                    reader["VIN"].ToString(),
-        //                                    reader["EmployeePassport"].ToString());
-        //            list.Add(policy);
-        //        }
-        //        reader.Close();
-        //        con.Close();
-        //        return list;
-        //    }
-        //}
+                while (reader.Read())
+                {
+                    var policy = new Policy(reader["ID"].ToString(),
+                                            reader["InsuranceType"].ToString(),
+                                            Convert.ToInt32(reader["InsurancePremium"].ToString()),
+                                            Convert.ToInt32(reader["InsuranceAmount"].ToString()),
+                                            Convert.ToDateTime(reader["DateOfConclusion"].ToString()),
+                                            Convert.ToDateTime(reader["ExpirationDate"].ToString()),
+                                            reader["PolicyholderID"].ToString(),
+                                            reader["CarID"].ToString(),
+                                            reader["EmployeeID"].ToString());
+                    list.Add(policy);
+                }
+                reader.Close();
+                con.Close();
+                return list;
+            }
+        }
 
         public static List<Policyholder> AllPolicyholders()
         {

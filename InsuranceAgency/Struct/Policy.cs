@@ -10,36 +10,36 @@ namespace InsuranceAgency.Struct
     {
         public string ID { get; }
         public string InsuranceType { get; }
-        public int InsuranceAmount { get; }
         public int InsurancePremium { get; }
+        public int InsuranceAmount { get; }
         public DateTime DateOfConclusion { get; }
         public DateTime ExpirationDate { get; }
-        public string PolicyholderPassport { get; }
-        public string VIN { get; }
-        public string EmployeePassport { get; }
+        public string PolicyholderID { get; }
+        public string CarID { get; }
+        public string EmployeeID { get; }
 
-        public Policy(string insuranceType, int insuranceAmount, int insurancePremium, DateTime dateOfConclusion, DateTime expirationDate, string policyholderPassport, string vin, string employeePassport)
+        public Policy(string insuranceType, int insurancePremium, int insuranceAmount, DateTime dateOfConclusion, DateTime expirationDate, string policyholderID, string carID, string employeeID)
         {
             InsuranceType = insuranceType;
-            InsuranceAmount = insuranceAmount;
             InsurancePremium = insurancePremium;
+            InsuranceAmount = insuranceAmount;
             DateOfConclusion = dateOfConclusion;
             ExpirationDate = expirationDate;
-            PolicyholderPassport = policyholderPassport;
-            VIN = vin;
-            EmployeePassport = employeePassport;
+            PolicyholderID = policyholderID;
+            CarID = carID;
+            EmployeeID = employeeID;
         }
-        public Policy(string id, string insuranceType, int insuranceAmount, int insurancePremium, DateTime dateOfConclusion, DateTime expirationDate, string policyholderPassport, string vin, string employeePassport)
+        public Policy(string id, string insuranceType, int insurancePremium, int insuranceAmount, DateTime dateOfConclusion, DateTime expirationDate, string policyholderID, string carID, string employeeID)
         {
             ID = id;
             InsuranceType = insuranceType;
-            InsuranceAmount = insuranceAmount;
             InsurancePremium = insurancePremium;
+            InsuranceAmount = insuranceAmount;
             DateOfConclusion = dateOfConclusion;
             ExpirationDate = expirationDate;
-            PolicyholderPassport = policyholderPassport;
-            VIN = vin;
-            EmployeePassport = employeePassport;
+            PolicyholderID = policyholderID;
+            CarID = carID;
+            EmployeeID = employeeID;
         }
     }
 }
