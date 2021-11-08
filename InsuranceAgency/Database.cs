@@ -96,47 +96,6 @@ namespace InsuranceAgency
             }
         }
 
-        public static void AddConnection(Connection connection)
-        {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
-            {
-                string query1 = "SELECT ID FROM Policies WHERE ID = @id";
-                SqlCommand command1 = new SqlCommand(query1, con);
-                command1.Parameters.Add(new SqlParameter("@id", connection.PolicyID));
-
-                string query2 = "SELECT ID FROM PersonsAllowedToDrive WHERE ID = @id";
-                SqlCommand command2 = new SqlCommand(query2, con);
-                command2.Parameters.Add(new SqlParameter("@id", connection.PersonAllowedToDriveID));
-
-                string query = "INSERT INTO Connections(PolicyID, PersonAllowedToDriveID) " +
-                               "VALUES(" +
-                                   "@policyID, " +
-                                   "@personAllowedToDriveID" +
-                               ")";
-                SqlCommand command = new SqlCommand(query, con);
-
-                command.Parameters.Add(new SqlParameter("@policyID", connection.PolicyID));
-                command.Parameters.Add(new SqlParameter("@personAllowedToDriveID", connection.PersonAllowedToDriveID));
-
-                con.Open();
-                SqlDataReader reader = command1.ExecuteReader();
-                if (!reader.HasRows)
-                {
-                    throw new Exception("Данного полиса не существует");
-                }
-                reader.Close();
-
-                reader = command2.ExecuteReader();
-                if (!reader.HasRows)
-                {
-                    throw new Exception("Данного водителя не существует");
-                }
-                reader.Close();
-                command.ExecuteNonQuery();
-                con.Close();
-            }
-        }
-
         public static void AddEmployee(Employee employee)
         {
             using (SqlConnection con = new SqlConnection(ConnectionString))
@@ -668,7 +627,7 @@ namespace InsuranceAgency
                 Car car;
                 if (!reader.HasRows)
                 {
-                    throw new Exception("Данного автомобиля не существует");
+                    throw new Exception("Данный автомобиль не существует");
                 }
                 while (reader.Read())
                 {
@@ -700,7 +659,7 @@ namespace InsuranceAgency
                 Car car;
                 if (!reader.HasRows)
                 {
-                    throw new Exception("Данного автомобиля не существует");
+                    throw new Exception("Данный автомобиль не существует");
                 }
                 while (reader.Read())
                 {
@@ -733,7 +692,7 @@ namespace InsuranceAgency
                 Employee employee;
                 if (!reader.HasRows)
                 {
-                    throw new Exception("Данного сотрудника не существует");
+                    throw new Exception("Данный сотрудник не существует");
                 }
                 while (reader.Read())
                 {
@@ -768,7 +727,7 @@ namespace InsuranceAgency
                 Employee employee;
                 if (!reader.HasRows)
                 {
-                    throw new Exception("Данного сотрудника не существует");
+                    throw new Exception("Данный сотрудник не существует");
                 }
                 while (reader.Read())
                 {
@@ -821,7 +780,7 @@ namespace InsuranceAgency
                 PersonAllowedToDrive personAllowedToDrive;
                 if (!reader.HasRows)
                 {
-                    throw new Exception("Данного водителя не существует");
+                    throw new Exception("Данный водитель не существует");
                 }
                 while (reader.Read())
                 {
@@ -882,7 +841,7 @@ namespace InsuranceAgency
                 Policyholder policyholder;
                 if (!reader.HasRows)
                 {
-                    throw new Exception("Данного страхователя не существует");
+                    throw new Exception("Данный страхователь не существует");
                 }
                 while (reader.Read())
                 {
@@ -913,7 +872,7 @@ namespace InsuranceAgency
                 Policyholder policyholder;
                 if (!reader.HasRows)
                 {
-                    throw new Exception("Данного страхователя не существует");
+                    throw new Exception("Данный страхователь не существует");
                 }
                 while (reader.Read())
                 {

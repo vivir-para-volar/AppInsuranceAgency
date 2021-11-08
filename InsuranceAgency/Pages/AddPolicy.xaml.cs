@@ -96,10 +96,6 @@ namespace InsuranceAgency.Pages
                 
 
                 Database.AddPolicyWithConnections(policy, list);
-                //foreach(var item in list)
-                //{
-                //    Database.AddConnection(new Connection(policyID, item.ID));
-                //}
 
                 MessageBox.Show("Полис успешно добавлен", "", MessageBoxButton.OK, MessageBoxImage.Information);
 
@@ -133,6 +129,45 @@ namespace InsuranceAgency.Pages
                 tbException.Visibility = Visibility.Visible;
                 tbException.Text = exp.Message;
             }
+        }
+
+        private void btnDeletePersonAllowedToDrive_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int index = cbPersonsAllowedToDrive.SelectedIndex;
+                try 
+                { 
+                    if(cbPersonsAllowedToDrive.Text == list[index].FullName)
+                    {
+                        list.RemoveAt(index);
+                    }
+                    else
+                    {
+                        throw new Exception("Данный водитель не существует в списке добавленных водителей");
+                    }
+                }
+                catch { throw new Exception("Данный водитель не существует в списке добавленных водителей"); }
+                cbPersonsAllowedToDrive.Items.Clear();
+                foreach(var item in list)
+                {
+                    cbPersonsAllowedToDrive.Items.Add(item.FullName);
+                }
+
+                MessageBox.Show("Водитель удалён", "", MessageBoxButton.OK, MessageBoxImage.Information);
+                cbPersonsAllowedToDrive.Text = "";
+                tbPersonsAllowedToDriveHint.Visibility = Visibility.Visible;
+            }
+            catch (Exception exp)
+            {
+                tbException.Visibility = Visibility.Visible;
+                tbException.Text = exp.Message;
+            }
+        }
+
+        private void btnBack_Click(object sender, RoutedEventArgs e)
+        {
+            this.NavigationService.Navigate(new Pages.Policy(PolicyhilderID));
         }
     }
 }

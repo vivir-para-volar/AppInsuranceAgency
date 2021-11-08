@@ -3,7 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:InsuranceAgency.Pages"
+      xmlns:local="clr-namespace:InsuranceAgency.Pages" xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
       mc:Ignorable="d" 
       d:DesignHeight="738" d:DesignWidth="1166"
       Title="AddPolicy">
@@ -66,7 +66,8 @@
                         <ColumnDefinition/>
                         <ColumnDefinition Width="330"/>
                         <ColumnDefinition Width="490"/>
-                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width="43"/>
+                        <ColumnDefinition Width="42"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
@@ -302,8 +303,15 @@
                     <Button Width="40" Height="40"
                             Grid.Row="7" Grid.Column="3"
                             VerticalAlignment="Bottom"
+                            HorizontalAlignment="Left"
                             Content="+" 
                             Click="btnAddPersonAllowedToDrive_Click"/>
+                    <Button Width="40" Height="40"
+                            Grid.Row="7" Grid.Column="4"
+                            VerticalAlignment="Bottom"
+                            HorizontalAlignment="Right"
+                            Content="-" 
+                            Click="btnDeletePersonAllowedToDrive_Click"/>
 
                     <!--Ошибка-->
                     <StackPanel Grid.ColumnSpan="5" Grid.Row="8"
@@ -328,6 +336,19 @@
                         Click="btnAddPolicy_Click"/>
             </StackPanel>
 
+        </StackPanel>
+
+
+        <StackPanel Grid.Row="1" Grid.Column="0"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Left">
+            <Button Height="45"
+                    Width="45"
+                    Margin="25,0,0,25"
+                    Click="btnBack_Click">
+                <iconPacks:PackIconMaterial Kind="ArrowLeft" 
+                                            Foreground="White"/>
+            </Button>
         </StackPanel>
 
     </Grid>
