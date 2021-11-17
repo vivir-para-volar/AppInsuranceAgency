@@ -37,12 +37,15 @@ namespace InsuranceAgency.Pages
             foreach(var item in listPhotos)
             {
                 listNewEncodedPhotos.Add(item.EncodedPhoto);
+                listEncodedPhotos.Add(item.EncodedPhoto);
                 listNewPhotos.Add(DBImage.Decode(item.EncodedPhoto));
             }
 
             AddInfoInTb(car);
+            flag = true;
         }
 
+        bool flag = false;
         Car searchCar;
 
         private void tbSearch_TextChanged(object sender, TextChangedEventArgs e)
@@ -59,6 +62,7 @@ namespace InsuranceAgency.Pages
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
+            tbException.Visibility = Visibility.Hidden;
             try
             {
                 string search = tbSearch.Text.Trim();
@@ -69,9 +73,19 @@ namespace InsuranceAgency.Pages
 
                 searchCar = Database.SearchCar(search);
 
+                listPhotos = Database.SearchPhoto(searchCar.ID);
+                foreach (var item in listPhotos)
+                {
+                    listNewEncodedPhotos.Add(item.EncodedPhoto);
+                    listEncodedPhotos.Add(item.EncodedPhoto);
+                    listNewPhotos.Add(DBImage.Decode(item.EncodedPhoto));
+                }
+
                 AddInfoInTb(searchCar);
 
                 tbSearch.Text = "";
+
+                flag = true;
             }
             catch(Exception exp)
             {
@@ -125,7 +139,13 @@ namespace InsuranceAgency.Pages
         private void btnAddImage_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Image Files(*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*";
+            openFileDialog.Filter = "All Embroidery Files | *.bmp; *.gif; *.jpeg; *.jpg; " +
+                                    "*.fif;*.fiff;*.png;*.wmf;*.emf" +
+                                    "|Windows Bitmap (*.bmp)|*.bmp" +
+                                    "|JPEG File Interchange Format (*.jpg)|*.jpg;*.jpeg" +
+                                    "|Graphics Interchange Format (*.gif)|*.gif" +
+                                    "|Portable Network Graphics (*.png)|*.png" +
+                                    "|Tag Embroidery File Format (*.tif)|*.tif;*.tiff";
             if (openFileDialog.ShowDialog() == true)
             {
                 BitmapImage bi = new BitmapImage(new Uri(openFileDialog.FileName));
@@ -148,6 +168,8 @@ namespace InsuranceAgency.Pages
         {
             try
             {
+                if (!flag) throw new Exception("Выберите автомобиль");
+
                 string registrationPlate = tbRegistrationPlate.Text.Trim();
                 if (registrationPlate == "")
                 {
@@ -200,12 +222,23 @@ namespace InsuranceAgency.Pages
                 tbRegistrationPlate.Clear();
                 tbVehiclePassportSeries.Clear();
                 tbVehiclePassportNumber.Clear();
+
+                listPhotos.Clear();
+                listEncodedPhotos.Clear();
+                listNewPhotos.Clear();
+                listNewEncodedPhotos.Clear();
+                listDeletePhotos.Clear();
+                listAddPhotos.Clear();
                 BitmapImage bi = new BitmapImage();
                 bi.BeginInit();
                 bi.UriSource = new Uri("/InsuranceAgency;component/Assets/Car.jpg", UriKind.RelativeOrAbsolute);
                 bi.EndInit();
                 imgCar.Source = bi;
+                btnLeft.Visibility = Visibility.Hidden;
+                btnRight.Visibility = Visibility.Hidden;
+
                 tbException.Visibility = Visibility.Hidden;
+                flag = false;
             }
             catch (Exception exp)
             {
@@ -218,6 +251,8 @@ namespace InsuranceAgency.Pages
         {
             try
             {
+                if (!flag) throw new Exception("Выберите автомобиль");
+
                 Database.DeleteCar(searchCar.ID);
 
                 MessageBox.Show("Автомобиль успешно удалён", "", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -227,12 +262,23 @@ namespace InsuranceAgency.Pages
                 tbRegistrationPlate.Clear();
                 tbVehiclePassportSeries.Clear();
                 tbVehiclePassportNumber.Clear();
+
+                listPhotos.Clear();
+                listEncodedPhotos.Clear();
+                listNewPhotos.Clear();
+                listNewEncodedPhotos.Clear();
+                listDeletePhotos.Clear();
+                listAddPhotos.Clear();
                 BitmapImage bi = new BitmapImage();
                 bi.BeginInit();
                 bi.UriSource = new Uri("/InsuranceAgency;component/Assets/Car.jpg", UriKind.RelativeOrAbsolute);
                 bi.EndInit();
                 imgCar.Source = bi;
+                btnLeft.Visibility = Visibility.Hidden;
+                btnRight.Visibility = Visibility.Hidden;
+
                 tbException.Visibility = Visibility.Hidden;
+                flag = false;
             }
             catch (Exception exp)
             {
@@ -278,17 +324,17 @@ namespace InsuranceAgency.Pages
                     listDeletePhotos.Add(listPhotos[i]);
                 }
             }
+            for (var i = 0; i < listAddPhotos.Count; i++)
+            {
+                if (listNewEncodedPhotos[currentIndex] == listAddPhotos[i])
+                {
+                    listAddPhotos.RemoveAt(i);
+                }
+            }
             listNewPhotos.RemoveAt(currentIndex);
             listNewEncodedPhotos.RemoveAt(currentIndex);
 
-            if (currentIndex == listNewPhotos.Count - 1)
-            {
-                currentIndex = 0;
-            }
-            else
-            {
-                currentIndex++;
-            }
+            currentIndex = 0;
 
             if (listNewPhotos.Count == 1)
             {

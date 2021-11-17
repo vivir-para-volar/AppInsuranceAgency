@@ -46,7 +46,13 @@ namespace InsuranceAgency.Pages
         private void btnAddImage_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Image Files(*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*";
+            openFileDialog.Filter = "All Embroidery Files | *.bmp; *.gif; *.jpeg; *.jpg; " +
+                                    "*.fif;*.fiff;*.png;*.wmf;*.emf" +
+                                    "|Windows Bitmap (*.bmp)|*.bmp" +
+                                    "|JPEG File Interchange Format (*.jpg)|*.jpg;*.jpeg" +
+                                    "|Graphics Interchange Format (*.gif)|*.gif" +
+                                    "|Portable Network Graphics (*.png)|*.png" +
+                                    "|Tag Embroidery File Format (*.tif)|*.tif;*.tiff";
             if (openFileDialog.ShowDialog() == true)
             {
                 BitmapImage bi = new BitmapImage(new Uri(openFileDialog.FileName));
@@ -139,18 +145,23 @@ namespace InsuranceAgency.Pages
                 tbRegistrationPlate.Clear();
                 tbVehiclePassportSeries.Clear();
                 tbVehiclePassportNumber.Clear();
+
+                listPhotos.Clear();
+                listEncodedPhotos.Clear();
                 BitmapImage bi = new BitmapImage();
                 bi.BeginInit();
                 bi.UriSource = new Uri("/InsuranceAgency;component/Assets/Car.jpg", UriKind.RelativeOrAbsolute);
                 bi.EndInit();
                 imgCar.Source = bi;
+                btnLeft.Visibility = Visibility.Hidden;
+                btnRight.Visibility = Visibility.Hidden;
+
                 tbException.Visibility = Visibility.Hidden;
             }
             catch (Exception exp)
             {
                 tbException.Visibility = Visibility.Visible;
                 tbException.Text = exp.Message;
-                MessageBox.Show(exp.Message);
             }
         }
 
@@ -187,16 +198,9 @@ namespace InsuranceAgency.Pages
             listPhotos.RemoveAt(currentIndex);
             listEncodedPhotos.RemoveAt(currentIndex);
 
-            if (currentIndex == listPhotos.Count - 1)
-            {
-                currentIndex = 0;
-            }
-            else
-            {
-                currentIndex++;
-            }
+            currentIndex = 0;
 
-            if(listPhotos.Count == 1)
+            if (listPhotos.Count == 1)
             {
                 currentIndex = 0;
                 btnLeft.Visibility = Visibility.Hidden;

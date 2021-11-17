@@ -1,10 +1,10 @@
 ﻿using InsuranceAgency.Struct;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.Security.Cryptography;
 using System.Text;
+using System.Windows;
 
 namespace InsuranceAgency
 {
@@ -30,35 +30,42 @@ namespace InsuranceAgency
 
         public static void Authorization(string login, string password)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                string query = "SELECT Login, Admin, Works FROM Employees WHERE Login = @login AND Password = @password";
-                SqlCommand command = new SqlCommand(query, con);
-
-                command.Parameters.Add(new SqlParameter("@login", login));
-                command.Parameters.Add(new SqlParameter("@Password", GetHash(password)));
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (!reader.HasRows)
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    throw new Exception("Неправильно указан логин и/или пароль");
-                }
-                while (reader.Read())
-                {
-                    if (Convert.ToBoolean(reader["Works"]))
+                    string query = "SELECT Login, Admin, Works FROM Employees WHERE Login = @login AND Password = @password";
+                    SqlCommand command = new SqlCommand(query, con);
+
+                    command.Parameters.Add(new SqlParameter("@login", login));
+                    command.Parameters.Add(new SqlParameter("@Password", GetHash(password)));
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    if (!reader.HasRows)
                     {
-                        _login = reader["Login"].ToString();
-                        _admin = Convert.ToBoolean(reader["Admin"]);
+                        throw new Exception("Неправильно указан логин и/или пароль");
                     }
-                    else
+                    while (reader.Read())
                     {
-                        throw new Exception("Данный сотрудник больше не работает");
+                        if (Convert.ToBoolean(reader["Works"]))
+                        {
+                            _login = reader["Login"].ToString();
+                            _admin = Convert.ToBoolean(reader["Admin"]);
+                        }
+                        else
+                        {
+                            throw new Exception("Данный сотрудник больше не работает");
+                        }
                     }
+                    reader.Close();
+                    con.Close();
                 }
-                reader.Close();
-                con.Close();
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
@@ -377,60 +384,100 @@ namespace InsuranceAgency
         //Функции изменения
         public static void ChangeCarWithPhotos(Car car, List<Photo> listDeletePhotos, List<string> listAddPhotos)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                string query = "UPDATE Cars " +
-                               "SET Model = @model, " +
-                                   "VIN = @vin, " +
-                                   "RegistrationPlate = @registrationPlate, " +
-                                   "VehiclePassport = @vehiclePassport, " +
-                                   "Image = @image " +
-                               "WHERE ID = @id";
-                SqlCommand command = new SqlCommand(query, con);
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                {
+                    string query = "BEGIN TRANSACTION " +
+                                   "UPDATE Cars " +
+                                   "SET Model = @model, " +
+                                       "VIN = @vin, " +
+                                       "RegistrationPlate = @registrationPlate, " +
+                                       "VehiclePassport = @vehiclePassport " +
+                                   "WHERE ID = @id ";
+                    if (listAddPhotos.Count != 0)
+                    {
+                        query += "INSERT INTO Photos(EncodedPhoto, CarID) VALUES ";
+                        for (int i = 0; i < listAddPhotos.Count - 1; i++)
+                        {
+                            query += "(@photo" + i + ", @id), ";
+                        }
+                        query += "(@photo" + (listAddPhotos.Count - 1) + ", @id); ";
+                    }
+                    if (listDeletePhotos.Count != 0)
+                    {
+                        for (int i = 0; i < listDeletePhotos.Count - 1; i++)
+                        {
+                            query += "DELETE FROM Photos WHERE ID = @photoID" + i + ";";
+                        }
+                        query += "DELETE FROM Photos WHERE ID = @photoID" + (listDeletePhotos.Count - 1) + ";";
+                    }
+                    query += "COMMIT TRANSACTION";
 
-                command.Parameters.Add(new SqlParameter("@id", car.ID));
-                command.Parameters.Add(new SqlParameter("@model", car.Model));
-                command.Parameters.Add(new SqlParameter("@vin", car.VIN));
-                command.Parameters.Add(new SqlParameter("@registrationPlate", car.RegistrationPlate));
-                command.Parameters.Add(new SqlParameter("@vehiclePassport", car.VehiclePassport));
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@id", car.ID));
+                    command.Parameters.Add(new SqlParameter("@model", car.Model));
+                    command.Parameters.Add(new SqlParameter("@vin", car.VIN));
+                    command.Parameters.Add(new SqlParameter("@registrationPlate", car.RegistrationPlate));
+                    command.Parameters.Add(new SqlParameter("@vehiclePassport", car.VehiclePassport));
+                    for (int i = 0; i < listAddPhotos.Count; i++)
+                    {
+                        command.Parameters.Add(new SqlParameter("@photo" + i, listAddPhotos[i]));
+                    }
+                    for (int i = 0; i < listDeletePhotos.Count; i++)
+                    {
+                        command.Parameters.Add(new SqlParameter("@photoID" + i, listDeletePhotos[i].ID));
+                    }
 
-                con.Open();
-                command.ExecuteNonQuery();
-                con.Close();
+                    con.Open();
+                    command.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
         public static void ChangeEmployee(Employee employee, bool changePassword)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                string query = "UPDATE Employees " +
-                               "SET FullName = @fullName, " +
-                                   "Birthday = @birthday, " +
-                                   "Telephone = @telephone, " +
-                                   "Passport = @passport, " +
-                                   "Login = @login, " +
-                                   "Password = @password, " +
-                                   "Admin = @admin,  " +
-                                   "Works = @works " +
-                               "WHERE ID = @id";
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                {
+                    string query = "UPDATE Employees " +
+                                   "SET FullName = @fullName, " +
+                                       "Birthday = @birthday, " +
+                                       "Telephone = @telephone, " +
+                                       "Passport = @passport, " +
+                                       "Login = @login, " +
+                                       "Password = @password, " +
+                                       "Admin = @admin,  " +
+                                       "Works = @works " +
+                                   "WHERE ID = @id";
 
-                SqlCommand command = new SqlCommand(query, con);
+                    SqlCommand command = new SqlCommand(query, con);
 
-                command.Parameters.Add(new SqlParameter("@id", employee.ID));
-                command.Parameters.Add(new SqlParameter("@fullName", employee.FullName));
-                command.Parameters.Add(new SqlParameter("@birthday", employee.Birthday));
-                command.Parameters.Add(new SqlParameter("@telephone", employee.Telephone));
-                command.Parameters.Add(new SqlParameter("@passport", employee.Passport));
-                command.Parameters.Add(new SqlParameter("@login", employee.Login));
-                if (changePassword) command.Parameters.Add(new SqlParameter("@password", GetHash(employee.Password)));
-                else command.Parameters.Add(new SqlParameter("@password", employee.Password));
-                command.Parameters.Add(new SqlParameter("@admin", employee.Admin));
-                command.Parameters.Add(new SqlParameter("@works", employee.Works));
+                    command.Parameters.Add(new SqlParameter("@id", employee.ID));
+                    command.Parameters.Add(new SqlParameter("@fullName", employee.FullName));
+                    command.Parameters.Add(new SqlParameter("@birthday", employee.Birthday));
+                    command.Parameters.Add(new SqlParameter("@telephone", employee.Telephone));
+                    command.Parameters.Add(new SqlParameter("@passport", employee.Passport));
+                    command.Parameters.Add(new SqlParameter("@login", employee.Login));
+                    if (changePassword) command.Parameters.Add(new SqlParameter("@password", GetHash(employee.Password)));
+                    else command.Parameters.Add(new SqlParameter("@password", employee.Password));
+                    command.Parameters.Add(new SqlParameter("@admin", employee.Admin));
+                    command.Parameters.Add(new SqlParameter("@works", employee.Works));
 
-                con.Open();
-                command.ExecuteNonQuery();
-                con.Close();
+                    con.Open();
+                    command.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
@@ -458,21 +505,28 @@ namespace InsuranceAgency
 
         public static void ChangePersonAllowedToDrive(PersonAllowedToDrive personAllowedToDrive)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                string query = "UPDATE PersonsAllowedToDrive " +
-                               "SET FullName = @fullName, " +
-                                   "DrivingLicence = @drivingLicence " +
-                               "WHERE ID = @id";
-                SqlCommand command = new SqlCommand(query, con);
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                {
+                    string query = "UPDATE PersonsAllowedToDrive " +
+                                   "SET FullName = @fullName, " +
+                                       "DrivingLicence = @drivingLicence " +
+                                   "WHERE ID = @id";
+                    SqlCommand command = new SqlCommand(query, con);
 
-                command.Parameters.Add(new SqlParameter("@id", personAllowedToDrive.ID));
-                command.Parameters.Add(new SqlParameter("@fullName", personAllowedToDrive.FullName));
-                command.Parameters.Add(new SqlParameter("@drivingLicence", personAllowedToDrive.DrivingLicence));
+                    command.Parameters.Add(new SqlParameter("@id", personAllowedToDrive.ID));
+                    command.Parameters.Add(new SqlParameter("@fullName", personAllowedToDrive.FullName));
+                    command.Parameters.Add(new SqlParameter("@drivingLicence", personAllowedToDrive.DrivingLicence));
 
-                con.Open();
-                command.ExecuteNonQuery();
-                con.Close();
+                    con.Open();
+                    command.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
@@ -510,25 +564,32 @@ namespace InsuranceAgency
 
         public static void ChangePolicyholder(Policyholder policyholder)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                string query = "UPDATE Policyholders " +
-                               "SET FullName = @fullName, " +
-                                   "Birthday = @birthday, " +
-                                   "Telephone = @telephone, " +
-                                   "Passport = @passport " +
-                               "WHERE ID = @id";
-                SqlCommand command = new SqlCommand(query, con);
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                {
+                    string query = "UPDATE Policyholders " +
+                                   "SET FullName = @fullName, " +
+                                       "Birthday = @birthday, " +
+                                       "Telephone = @telephone, " +
+                                       "Passport = @passport " +
+                                   "WHERE ID = @id";
+                    SqlCommand command = new SqlCommand(query, con);
 
-                command.Parameters.Add(new SqlParameter("@id", policyholder.ID));
-                command.Parameters.Add(new SqlParameter("@fullName", policyholder.FullName));
-                command.Parameters.Add(new SqlParameter("@birthday", policyholder.Birthday));
-                command.Parameters.Add(new SqlParameter("@telephone", policyholder.Telephone));
-                command.Parameters.Add(new SqlParameter("@passport", policyholder.Passport));
+                    command.Parameters.Add(new SqlParameter("@id", policyholder.ID));
+                    command.Parameters.Add(new SqlParameter("@fullName", policyholder.FullName));
+                    command.Parameters.Add(new SqlParameter("@birthday", policyholder.Birthday));
+                    command.Parameters.Add(new SqlParameter("@telephone", policyholder.Telephone));
+                    command.Parameters.Add(new SqlParameter("@passport", policyholder.Passport));
 
-                con.Open();
-                command.ExecuteNonQuery();
-                con.Close();
+                    con.Open();
+                    command.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
@@ -537,16 +598,24 @@ namespace InsuranceAgency
         //Функции удаления
         public static void DeleteCar(int id)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                string query = "DELETE FROM Cars WHERE ID = @id";
-                SqlCommand command = new SqlCommand(query, con);
-                command.Parameters.Add(new SqlParameter("@id", id));
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                {
+                    string query = "DELETE FROM Cars WHERE ID = @id";
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@id", id));
 
-                con.Open();
-                command.ExecuteNonQuery();
-                con.Close();
+                    con.Open();
+                    command.ExecuteNonQuery();
+                    con.Close();
+                }
             }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
+            }
+
         }
 
         //public static void DeleteConnection(Connection connection)
@@ -570,15 +639,22 @@ namespace InsuranceAgency
 
         public static void DeleteEmployee(int id)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                string query = "DELETE FROM Employees WHERE ID = @id";
-                SqlCommand command = new SqlCommand(query, con);
-                command.Parameters.Add(new SqlParameter("@id", id));
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                {
+                    string query = "DELETE FROM Employees WHERE ID = @id";
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@id", id));
 
-                con.Open();
-                command.ExecuteNonQuery();
-                con.Close();
+                    con.Open();
+                    command.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
@@ -599,15 +675,22 @@ namespace InsuranceAgency
 
         public static void DeletePersonAllowedToDrive(int id)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                string query = "DELETE FROM PersonsAllowedToDrive WHERE ID = @id";
-                SqlCommand command = new SqlCommand(query, con);
-                command.Parameters.Add(new SqlParameter("@id", id));
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                {
+                    string query = "DELETE FROM PersonsAllowedToDrive WHERE ID = @id";
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@id", id));
 
-                con.Open();
-                command.ExecuteNonQuery();
-                con.Close();
+                    con.Open();
+                    command.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
@@ -628,16 +711,23 @@ namespace InsuranceAgency
 
         public static void DeletePolicyholder(int id)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                string query = "DELETE FROM Policyholders WHERE ID = @id";
-                SqlCommand command = new SqlCommand(query, con);
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                {
+                    string query = "DELETE FROM Policyholders WHERE ID = @id";
+                    SqlCommand command = new SqlCommand(query, con);
 
-                command.Parameters.Add(new SqlParameter("@id", id));
+                    command.Parameters.Add(new SqlParameter("@id", id));
 
-                con.Open();
-                command.ExecuteNonQuery();
-                con.Close();
+                    con.Open();
+                    command.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
@@ -646,193 +736,235 @@ namespace InsuranceAgency
         //Функции поиска
         public static Car SearchCar(string vin)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                string query = "SELECT * FROM Cars WHERE VIN = @vin";
-                SqlCommand command = new SqlCommand(query, con);
-                command.Parameters.Add(new SqlParameter("@vin", vin));
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                Car car;
-                if (!reader.HasRows)
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    throw new Exception("Данный автомобиль не существует");
+                    string query = "SELECT * FROM Cars WHERE VIN = @vin";
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@vin", vin));
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    Car car;
+                    if (!reader.HasRows)
+                    {
+                        throw new Exception("Данный автомобиль не существует");
+                    }
+                    while (reader.Read())
+                    {
+                        car = new Car(Convert.ToInt32(reader["ID"].ToString()),
+                                      reader["Model"].ToString(),
+                                      reader["VIN"].ToString(),
+                                      reader["RegistrationPlate"].ToString(),
+                                      reader["VehiclePassport"].ToString());
+                        reader.Close();
+                        con.Close();
+                        return car;
+                    }
+                    return null;
                 }
-                while (reader.Read())
-                {
-                    car = new Car(Convert.ToInt32(reader["ID"].ToString()),
-                                  reader["Model"].ToString(),
-                                  reader["VIN"].ToString(),
-                                  reader["RegistrationPlate"].ToString(),
-                                  reader["VehiclePassport"].ToString());
-                    reader.Close();
-                    con.Close();
-                    return car;
-                }
-                return null;
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
         public static Car SearchCarID(int id)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                string query = "SELECT * FROM Cars WHERE ID = @id";
-                SqlCommand command = new SqlCommand(query, con);
-                command.Parameters.Add(new SqlParameter("@id", id));
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                Car car;
-                if (!reader.HasRows)
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    throw new Exception("Данный автомобиль не существует");
+                    string query = "SELECT * FROM Cars WHERE ID = @id";
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@id", id));
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    Car car;
+                    if (!reader.HasRows)
+                    {
+                        throw new Exception("Данный автомобиль не существует");
+                    }
+                    while (reader.Read())
+                    {
+                        car = new Car(Convert.ToInt32(reader["ID"].ToString()),
+                                      reader["Model"].ToString(),
+                                      reader["VIN"].ToString(),
+                                      reader["RegistrationPlate"].ToString(),
+                                      reader["VehiclePassport"].ToString());
+                        reader.Close();
+                        con.Close();
+                        return car;
+                    }
+                    return null;
                 }
-                while (reader.Read())
-                {
-                    car = new Car(Convert.ToInt32(reader["ID"].ToString()),
-                                  reader["Model"].ToString(),
-                                  reader["VIN"].ToString(),
-                                  reader["RegistrationPlate"].ToString(),
-                                  reader["VehiclePassport"].ToString());
-                    reader.Close();
-                    con.Close();
-                    return car;
-                }
-                return null;
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
         public static List<Connection> SearchConnection(int policyID)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                var list = new List<Connection>();
-
-                string query = "SELECT * FROM Connections WHERE PolicyID = @policyID";
-                SqlCommand command = new SqlCommand(query, con);
-                command.Parameters.Add(new SqlParameter("@policyID", policyID));
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    var connection = new Connection(Convert.ToInt32(reader["PolicyID"].ToString()),
-                                                    Convert.ToInt32(reader["PersonAllowedToDriveID"].ToString()));
-                    list.Add(connection);
+                    var list = new List<Connection>();
+
+                    string query = "SELECT * FROM Connections WHERE PolicyID = @policyID";
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@policyID", policyID));
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        var connection = new Connection(Convert.ToInt32(reader["PolicyID"].ToString()),
+                                                        Convert.ToInt32(reader["PersonAllowedToDriveID"].ToString()));
+                        list.Add(connection);
+                    }
+                    reader.Close();
+                    con.Close();
+                    return list;
                 }
-                reader.Close();
-                con.Close();
-                return list;
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
         public static Employee SearchEmployee(string telephoneOrPassport)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                string query = "SELECT * FROM Employees WHERE Telephone = @telephoneOrPassport OR Passport = @telephoneOrPassport";
-                SqlCommand command = new SqlCommand(query, con);
-                command.Parameters.Add(new SqlParameter("@telephoneOrPassport", telephoneOrPassport));
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                Employee employee;
-                if (!reader.HasRows)
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    throw new Exception("Данный сотрудник не существует");
+                    string query = "SELECT * FROM Employees WHERE Telephone = @telephoneOrPassport OR Passport = @telephoneOrPassport";
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@telephoneOrPassport", telephoneOrPassport));
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    Employee employee;
+                    if (!reader.HasRows)
+                    {
+                        throw new Exception("Данный сотрудник не существует");
+                    }
+                    while (reader.Read())
+                    {
+                        employee = new Employee(Convert.ToInt32(reader["ID"].ToString()),
+                                                reader["FullName"].ToString(),
+                                                Convert.ToDateTime(reader["Birthday"].ToString()),
+                                                reader["Telephone"].ToString(),
+                                                reader["Passport"].ToString(),
+                                                reader["Login"].ToString(),
+                                                reader["Password"].ToString(),
+                                                Convert.ToBoolean(reader["Admin"].ToString()),
+                                                Convert.ToBoolean(reader["Works"].ToString()));
+                        reader.Close();
+                        con.Close();
+                        return employee;
+                    }
+                    return null;
                 }
-                while (reader.Read())
-                {
-                    employee = new Employee(Convert.ToInt32(reader["ID"].ToString()),
-                                            reader["FullName"].ToString(),
-                                            Convert.ToDateTime(reader["Birthday"].ToString()),
-                                            reader["Telephone"].ToString(),
-                                            reader["Passport"].ToString(),
-                                            reader["Login"].ToString(),
-                                            reader["Password"].ToString(),
-                                            Convert.ToBoolean(reader["Admin"].ToString()),
-                                            Convert.ToBoolean(reader["Works"].ToString()));
-                    reader.Close();
-                    con.Close();
-                    return employee;
-                }
-                return null;
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
         public static Employee SearchEmployeeID(int id)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                string query = "SELECT * FROM Employees WHERE ID = @id";
-                SqlCommand command = new SqlCommand(query, con);
-                command.Parameters.Add(new SqlParameter("@id", id));
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                Employee employee;
-                if (!reader.HasRows)
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    throw new Exception("Данный сотрудник не существует");
+                    string query = "SELECT * FROM Employees WHERE ID = @id";
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@id", id));
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    Employee employee;
+                    if (!reader.HasRows)
+                    {
+                        throw new Exception("Данный сотрудник не существует");
+                    }
+                    while (reader.Read())
+                    {
+                        employee = new Employee(Convert.ToInt32(reader["ID"].ToString()),
+                                                reader["FullName"].ToString(),
+                                                Convert.ToDateTime(reader["Birthday"].ToString()),
+                                                reader["Telephone"].ToString(),
+                                                reader["Passport"].ToString(),
+                                                reader["Login"].ToString(),
+                                                reader["Password"].ToString(),
+                                                Convert.ToBoolean(reader["Admin"].ToString()),
+                                                Convert.ToBoolean(reader["Works"].ToString()));
+                        reader.Close();
+                        con.Close();
+                        return employee;
+                    }
+                    return null;
                 }
-                while (reader.Read())
-                {
-                    employee = new Employee(Convert.ToInt32(reader["ID"].ToString()),
-                                            reader["FullName"].ToString(),
-                                            Convert.ToDateTime(reader["Birthday"].ToString()),
-                                            reader["Telephone"].ToString(),
-                                            reader["Passport"].ToString(),
-                                            reader["Login"].ToString(),
-                                            reader["Password"].ToString(),
-                                            Convert.ToBoolean(reader["Admin"].ToString()),
-                                            Convert.ToBoolean(reader["Works"].ToString()));
-                    reader.Close();
-                    con.Close();
-                    return employee;
-                }
-                return null;
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
         public static Employee SearchEmployeeLogin(string login)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                string query = "SELECT * FROM Employees WHERE Login = @login";
-                SqlCommand command = new SqlCommand(query, con);
-                command.Parameters.Add(new SqlParameter("@login", login));
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                Employee employee;
-                if (!reader.HasRows)
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    throw new Exception("Данный сотрудник не существует");
+                    string query = "SELECT * FROM Employees WHERE Login = @login";
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@login", login));
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    Employee employee;
+                    if (!reader.HasRows)
+                    {
+                        throw new Exception("Данный сотрудник не существует");
+                    }
+                    while (reader.Read())
+                    {
+                        employee = new Employee(Convert.ToInt32(reader["ID"].ToString()),
+                                                reader["FullName"].ToString(),
+                                                Convert.ToDateTime(reader["Birthday"].ToString()),
+                                                reader["Telephone"].ToString(),
+                                                reader["Passport"].ToString(),
+                                                reader["Login"].ToString(),
+                                                reader["Password"].ToString(),
+                                                Convert.ToBoolean(reader["Admin"].ToString()),
+                                                Convert.ToBoolean(reader["Works"].ToString()));
+                        reader.Close();
+                        con.Close();
+                        return employee;
+                    }
+                    return null;
                 }
-                while (reader.Read())
-                {
-                    employee = new Employee(Convert.ToInt32(reader["ID"].ToString()),
-                                            reader["FullName"].ToString(),
-                                            Convert.ToDateTime(reader["Birthday"].ToString()),
-                                            reader["Telephone"].ToString(),
-                                            reader["Passport"].ToString(),
-                                            reader["Login"].ToString(),
-                                            reader["Password"].ToString(),
-                                            Convert.ToBoolean(reader["Admin"].ToString()),
-                                            Convert.ToBoolean(reader["Works"].ToString()));
-                    reader.Close();
-                    con.Close();
-                    return employee;
-                }
-                return null;
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
@@ -856,211 +988,260 @@ namespace InsuranceAgency
 
         public static PersonAllowedToDrive SearchPersonAllowedToDrive(string drivingLicence)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                string query = "SELECT * FROM PersonsAllowedToDrive WHERE DrivingLicence = @drivingLicence";
-                SqlCommand command = new SqlCommand(query, con);
-                command.Parameters.Add(new SqlParameter("@drivingLicence", drivingLicence));
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                PersonAllowedToDrive personAllowedToDrive;
-                if (!reader.HasRows)
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    throw new Exception("Данный водитель не существует");
+                    string query = "SELECT * FROM PersonsAllowedToDrive WHERE DrivingLicence = @drivingLicence";
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@drivingLicence", drivingLicence));
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    PersonAllowedToDrive personAllowedToDrive;
+                    if (!reader.HasRows)
+                    {
+                        throw new Exception("Данный водитель не существует");
+                    }
+                    while (reader.Read())
+                    {
+                        personAllowedToDrive = new PersonAllowedToDrive(Convert.ToInt32(reader["ID"].ToString()),
+                                                                        reader["FullName"].ToString(),
+                                                                        reader["DrivingLicence"].ToString());
+                        reader.Close();
+                        con.Close();
+                        return personAllowedToDrive;
+                    }
+                    return null;
                 }
-                while (reader.Read())
-                {
-                    personAllowedToDrive = new PersonAllowedToDrive(Convert.ToInt32(reader["ID"].ToString()),
-                                                                    reader["FullName"].ToString(),
-                                                                    reader["DrivingLicence"].ToString());
-                    reader.Close();
-                    con.Close();
-                    return personAllowedToDrive;
-                }
-                return null;
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
         public static PersonAllowedToDrive SearchPersonAllowedToDriveID(int id)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                string query = "SELECT * FROM PersonsAllowedToDrive WHERE ID = @id";
-                SqlCommand command = new SqlCommand(query, con);
-                command.Parameters.Add(new SqlParameter("@id", id));
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                PersonAllowedToDrive personAllowedToDrive;
-                if (!reader.HasRows)
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    throw new Exception("Данный водитель не существует");
+                    string query = "SELECT * FROM PersonsAllowedToDrive WHERE ID = @id";
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@id", id));
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    PersonAllowedToDrive personAllowedToDrive;
+                    if (!reader.HasRows)
+                    {
+                        throw new Exception("Данный водитель не существует");
+                    }
+                    while (reader.Read())
+                    {
+                        personAllowedToDrive = new PersonAllowedToDrive(Convert.ToInt32(reader["ID"].ToString()),
+                                                                        reader["FullName"].ToString(),
+                                                                        reader["DrivingLicence"].ToString());
+                        reader.Close();
+                        con.Close();
+                        return personAllowedToDrive;
+                    }
+                    return null;
                 }
-                while (reader.Read())
-                {
-                    personAllowedToDrive = new PersonAllowedToDrive(Convert.ToInt32(reader["ID"].ToString()),
-                                                                    reader["FullName"].ToString(),
-                                                                    reader["DrivingLicence"].ToString());
-                    reader.Close();
-                    con.Close();
-                    return personAllowedToDrive;
-                }
-                return null;
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
         public static List<Photo> SearchPhoto(int carID)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                var list = new List<Photo>();
-
-                string query = "SELECT * FROM Photos WHERE CarID = @carID";
-                SqlCommand command = new SqlCommand(query, con);
-                command.Parameters.Add(new SqlParameter("@carID", carID));
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    var policy = new Photo(Convert.ToInt32(reader["ID"].ToString()),
-                                           reader["EncodedPhoto"].ToString(),
-                                           Convert.ToInt32(reader["CarID"].ToString()));
-                    list.Add(policy);
+                    var list = new List<Photo>();
+
+                    string query = "SELECT * FROM Photos WHERE CarID = @carID";
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@carID", carID));
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        var policy = new Photo(Convert.ToInt32(reader["ID"].ToString()),
+                                               reader["EncodedPhoto"].ToString(),
+                                               Convert.ToInt32(reader["CarID"].ToString()));
+                        list.Add(policy);
+                    }
+                    reader.Close();
+                    con.Close();
+                    return list;
                 }
-                reader.Close();
-                con.Close();
-                return list;
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
         public static List<Policy> SearchPolicy(int policyholderID)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                var list = new List<Policy>();
-
-                string query = "SELECT * FROM Policies WHERE PolicyholderID = @policyholderID";
-                SqlCommand command = new SqlCommand(query, con);
-                command.Parameters.Add(new SqlParameter("@policyholderID", policyholderID));
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    var policy = new Policy(Convert.ToInt32(reader["ID"].ToString()),
-                                            reader["InsuranceType"].ToString(),
-                                            Convert.ToInt32(reader["InsurancePremium"].ToString()),
-                                            Convert.ToInt32(reader["InsuranceAmount"].ToString()),
-                                            Convert.ToDateTime(reader["DateOfConclusion"].ToString()),
-                                            Convert.ToDateTime(reader["ExpirationDate"].ToString()),
-                                            Convert.ToInt32(reader["PolicyholderID"].ToString()),
-                                            Convert.ToInt32(reader["CarID"].ToString()),
-                                            Convert.ToInt32(reader["EmployeeID"].ToString()));
-                    list.Add(policy);
+                    var list = new List<Policy>();
+
+                    string query = "SELECT * FROM Policies WHERE PolicyholderID = @policyholderID";
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@policyholderID", policyholderID));
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        var policy = new Policy(Convert.ToInt32(reader["ID"].ToString()),
+                                                reader["InsuranceType"].ToString(),
+                                                Convert.ToInt32(reader["InsurancePremium"].ToString()),
+                                                Convert.ToInt32(reader["InsuranceAmount"].ToString()),
+                                                Convert.ToDateTime(reader["DateOfConclusion"].ToString()),
+                                                Convert.ToDateTime(reader["ExpirationDate"].ToString()),
+                                                Convert.ToInt32(reader["PolicyholderID"].ToString()),
+                                                Convert.ToInt32(reader["CarID"].ToString()),
+                                                Convert.ToInt32(reader["EmployeeID"].ToString()));
+                        list.Add(policy);
+                    }
+                    reader.Close();
+                    con.Close();
+                    return list;
                 }
-                reader.Close();
-                con.Close();
-                return list;
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
         public static Policy SearchPolicyID(int id)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                var list = new List<Policy>();
-
-                string query = "SELECT * FROM Policies WHERE ID = @id";
-                SqlCommand command = new SqlCommand(query, con);
-                command.Parameters.Add(new SqlParameter("@id", id));
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    var policy = new Policy(Convert.ToInt32(reader["ID"].ToString()),
-                                            reader["InsuranceType"].ToString(),
-                                            Convert.ToInt32(reader["InsurancePremium"].ToString()),
-                                            Convert.ToInt32(reader["InsuranceAmount"].ToString()),
-                                            Convert.ToDateTime(reader["DateOfConclusion"].ToString()),
-                                            Convert.ToDateTime(reader["ExpirationDate"].ToString()),
-                                            Convert.ToInt32(reader["PolicyholderID"].ToString()),
-                                            Convert.ToInt32(reader["CarID"].ToString()),
-                                            Convert.ToInt32(reader["EmployeeID"].ToString()));
-                    reader.Close();
-                    con.Close();
-                    return policy;
+                    var list = new List<Policy>();
+
+                    string query = "SELECT * FROM Policies WHERE ID = @id";
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@id", id));
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        var policy = new Policy(Convert.ToInt32(reader["ID"].ToString()),
+                                                reader["InsuranceType"].ToString(),
+                                                Convert.ToInt32(reader["InsurancePremium"].ToString()),
+                                                Convert.ToInt32(reader["InsuranceAmount"].ToString()),
+                                                Convert.ToDateTime(reader["DateOfConclusion"].ToString()),
+                                                Convert.ToDateTime(reader["ExpirationDate"].ToString()),
+                                                Convert.ToInt32(reader["PolicyholderID"].ToString()),
+                                                Convert.ToInt32(reader["CarID"].ToString()),
+                                                Convert.ToInt32(reader["EmployeeID"].ToString()));
+                        reader.Close();
+                        con.Close();
+                        return policy;
+                    }
+                    return null;
                 }
-                return null;
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
         public static Policyholder SearchPolicyholder(string telephoneOrPassport)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                string query = "SELECT * FROM Policyholders WHERE Telephone = @telephoneOrPassport OR Passport = @telephoneOrPassport";
-                SqlCommand command = new SqlCommand(query, con);
-                command.Parameters.Add(new SqlParameter("@telephoneOrPassport", telephoneOrPassport));
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                Policyholder policyholder;
-                if (!reader.HasRows)
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    throw new Exception("Данный страхователь не существует");
+                    string query = "SELECT * FROM Policyholders WHERE Telephone = @telephoneOrPassport OR Passport = @telephoneOrPassport";
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@telephoneOrPassport", telephoneOrPassport));
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    Policyholder policyholder;
+                    if (!reader.HasRows)
+                    {
+                        throw new Exception("Данный страхователь не существует");
+                    }
+                    while (reader.Read())
+                    {
+                        policyholder = new Policyholder(Convert.ToInt32(reader["ID"].ToString()),
+                                                        reader["FullName"].ToString(),
+                                                        Convert.ToDateTime(reader["Birthday"].ToString()),
+                                                        reader["Telephone"].ToString(),
+                                                        reader["Passport"].ToString());
+                        reader.Close();
+                        con.Close();
+                        return policyholder;
+                    }
+                    return null;
                 }
-                while (reader.Read())
-                {
-                    policyholder = new Policyholder(Convert.ToInt32(reader["ID"].ToString()),
-                                                    reader["FullName"].ToString(),
-                                                    Convert.ToDateTime(reader["Birthday"].ToString()),
-                                                    reader["Telephone"].ToString(),
-                                                    reader["Passport"].ToString());
-                    reader.Close();
-                    con.Close();
-                    return policyholder;
-                }
-                return null;
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
         public static Policyholder SearchPolicyholderID(int id)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                string query = "SELECT * FROM Policyholders WHERE ID = @id";
-                SqlCommand command = new SqlCommand(query, con);
-                command.Parameters.Add(new SqlParameter("@id", id));
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                Policyholder policyholder;
-                if (!reader.HasRows)
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    throw new Exception("Данный страхователь не существует");
+                    string query = "SELECT * FROM Policyholders WHERE ID = @id";
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@id", id));
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    Policyholder policyholder;
+                    if (!reader.HasRows)
+                    {
+                        throw new Exception("Данный страхователь не существует");
+                    }
+                    while (reader.Read())
+                    {
+                        policyholder = new Policyholder(Convert.ToInt32(reader["ID"].ToString()),
+                                                        reader["FullName"].ToString(),
+                                                        Convert.ToDateTime(reader["Birthday"].ToString()),
+                                                        reader["Telephone"].ToString(),
+                                                        reader["Passport"].ToString());
+                        reader.Close();
+                        con.Close();
+                        return policyholder;
+                    }
+                    return null;
                 }
-                while (reader.Read())
-                {
-                    policyholder = new Policyholder(Convert.ToInt32(reader["ID"].ToString()),
-                                                    reader["FullName"].ToString(),
-                                                    Convert.ToDateTime(reader["Birthday"].ToString()),
-                                                    reader["Telephone"].ToString(),
-                                                    reader["Passport"].ToString());
-                    reader.Close();
-                    con.Close();
-                    return policyholder;
-                }
-                return null;
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
@@ -1069,86 +1250,107 @@ namespace InsuranceAgency
         //Функции получения всего списка
         public static List<Car> AllCars()
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                var list = new List<Car>();
-
-                string query = "SELECT * FROM Cars";
-                SqlCommand command = new SqlCommand(query, con);
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    var car = new Car(Convert.ToInt32(reader["ID"].ToString()),
-                                      reader["Model"].ToString(),
-                                      reader["VIN"].ToString(),
-                                      reader["RegistrationPlate"].ToString(),
-                                      reader["VehiclePassport"].ToString());
-                    list.Add(car);
+                    var list = new List<Car>();
+
+                    string query = "SELECT * FROM Cars";
+                    SqlCommand command = new SqlCommand(query, con);
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        var car = new Car(Convert.ToInt32(reader["ID"].ToString()),
+                                          reader["Model"].ToString(),
+                                          reader["VIN"].ToString(),
+                                          reader["RegistrationPlate"].ToString(),
+                                          reader["VehiclePassport"].ToString());
+                        list.Add(car);
+                    }
+                    reader.Close();
+                    con.Close();
+                    return list;
                 }
-                reader.Close();
-                con.Close();
-                return list;
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
         public static List<Car> AllCarsDG()
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                var list = new List<Car>();
-
-                string query = "SELECT ID, Model, VIN, RegistrationPlate, VehiclePassport FROM Cars";
-                SqlCommand command = new SqlCommand(query, con);
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    var car = new Car(Convert.ToInt32(reader["ID"].ToString()),
-                                      reader["Model"].ToString(),
-                                      reader["VIN"].ToString(),
-                                      reader["RegistrationPlate"].ToString(),
-                                      reader["VehiclePassport"].ToString());
-                    list.Add(car);
+                    var list = new List<Car>();
+
+                    string query = "SELECT ID, Model, VIN, RegistrationPlate, VehiclePassport FROM Cars";
+                    SqlCommand command = new SqlCommand(query, con);
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        var car = new Car(Convert.ToInt32(reader["ID"].ToString()),
+                                          reader["Model"].ToString(),
+                                          reader["VIN"].ToString(),
+                                          reader["RegistrationPlate"].ToString(),
+                                          reader["VehiclePassport"].ToString());
+                        list.Add(car);
+                    }
+                    reader.Close();
+                    con.Close();
+                    return list;
                 }
-                reader.Close();
-                con.Close();
-                return list;
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
         public static List<Employee> AllEmployees()
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                var list = new List<Employee>();
-
-                string query = "SELECT * FROM Employees ORDER BY Works DESC, FullName";
-                SqlCommand command = new SqlCommand(query, con);
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    var employee = new Employee(Convert.ToInt32(reader["ID"].ToString()),
-                                                reader["FullName"].ToString(),
-                                                Convert.ToDateTime(reader["Birthday"].ToString()),
-                                                reader["Telephone"].ToString(),
-                                                reader["Passport"].ToString(),
-                                                reader["Login"].ToString(),
-                                                reader["Password"].ToString(),
-                                                Convert.ToBoolean(reader["Admin"].ToString()),
-                                                Convert.ToBoolean(reader["Works"].ToString()));
-                    list.Add(employee);
+                    var list = new List<Employee>();
+
+                    string query = "SELECT * FROM Employees ORDER BY Works DESC, FullName";
+                    SqlCommand command = new SqlCommand(query, con);
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        var employee = new Employee(Convert.ToInt32(reader["ID"].ToString()),
+                                                    reader["FullName"].ToString(),
+                                                    Convert.ToDateTime(reader["Birthday"].ToString()),
+                                                    reader["Telephone"].ToString(),
+                                                    reader["Passport"].ToString(),
+                                                    reader["Login"].ToString(),
+                                                    reader["Password"].ToString(),
+                                                    Convert.ToBoolean(reader["Admin"].ToString()),
+                                                    Convert.ToBoolean(reader["Works"].ToString()));
+                        list.Add(employee);
+                    }
+                    reader.Close();
+                    con.Close();
+                    return list;
                 }
-                reader.Close();
-                con.Close();
-                return list;
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
@@ -1180,84 +1382,105 @@ namespace InsuranceAgency
 
         public static List<PersonAllowedToDrive> AllPersonsAllowedToDrive()
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                var list = new List<PersonAllowedToDrive>();
-
-                string query = "SELECT * FROM PersonsAllowedToDrive ORDER BY FullName";
-                SqlCommand command = new SqlCommand(query, con);
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    var personAllowedToDrive = new PersonAllowedToDrive(Convert.ToInt32(reader["ID"].ToString()),
-                                                                        reader["FullName"].ToString(),
-                                                                        reader["DrivingLicence"].ToString());
-                    list.Add(personAllowedToDrive);
+                    var list = new List<PersonAllowedToDrive>();
+
+                    string query = "SELECT * FROM PersonsAllowedToDrive ORDER BY FullName";
+                    SqlCommand command = new SqlCommand(query, con);
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        var personAllowedToDrive = new PersonAllowedToDrive(Convert.ToInt32(reader["ID"].ToString()),
+                                                                            reader["FullName"].ToString(),
+                                                                            reader["DrivingLicence"].ToString());
+                        list.Add(personAllowedToDrive);
+                    }
+                    reader.Close();
+                    con.Close();
+                    return list;
                 }
-                reader.Close();
-                con.Close();
-                return list;
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
         public static List<Policy> AllPolicies()
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                var list = new List<Policy>();
-
-                string query = "SELECT * FROM Policies";
-                SqlCommand command = new SqlCommand(query, con);
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    var policy = new Policy(Convert.ToInt32(reader["ID"].ToString()),
-                                            reader["InsuranceType"].ToString(),
-                                            Convert.ToInt32(reader["InsurancePremium"].ToString()),
-                                            Convert.ToInt32(reader["InsuranceAmount"].ToString()),
-                                            Convert.ToDateTime(reader["DateOfConclusion"].ToString()),
-                                            Convert.ToDateTime(reader["ExpirationDate"].ToString()),
-                                            Convert.ToInt32(reader["PolicyholderID"].ToString()),
-                                            Convert.ToInt32(reader["CarID"].ToString()),
-                                            Convert.ToInt32(reader["EmployeeID"].ToString()));
-                    list.Add(policy);
+                    var list = new List<Policy>();
+
+                    string query = "SELECT * FROM Policies";
+                    SqlCommand command = new SqlCommand(query, con);
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        var policy = new Policy(Convert.ToInt32(reader["ID"].ToString()),
+                                                reader["InsuranceType"].ToString(),
+                                                Convert.ToInt32(reader["InsurancePremium"].ToString()),
+                                                Convert.ToInt32(reader["InsuranceAmount"].ToString()),
+                                                Convert.ToDateTime(reader["DateOfConclusion"].ToString()),
+                                                Convert.ToDateTime(reader["ExpirationDate"].ToString()),
+                                                Convert.ToInt32(reader["PolicyholderID"].ToString()),
+                                                Convert.ToInt32(reader["CarID"].ToString()),
+                                                Convert.ToInt32(reader["EmployeeID"].ToString()));
+                        list.Add(policy);
+                    }
+                    reader.Close();
+                    con.Close();
+                    return list;
                 }
-                reader.Close();
-                con.Close();
-                return list;
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
 
         public static List<Policyholder> AllPolicyholders()
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            try
             {
-                var list = new List<Policyholder>();
-
-                string query = "SELECT * FROM Policyholders ORDER BY FullName";
-                SqlCommand command = new SqlCommand(query, con);
-
-                con.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    var policyholder = new Policyholder(Convert.ToInt32(reader["ID"].ToString()),
-                                                        reader["FullName"].ToString(),
-                                                        Convert.ToDateTime(reader["Birthday"].ToString()),
-                                                        reader["Telephone"].ToString(),
-                                                        reader["Passport"].ToString());
-                    list.Add(policyholder);
+                    var list = new List<Policyholder>();
+
+                    string query = "SELECT * FROM Policyholders ORDER BY FullName";
+                    SqlCommand command = new SqlCommand(query, con);
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        var policyholder = new Policyholder(Convert.ToInt32(reader["ID"].ToString()),
+                                                            reader["FullName"].ToString(),
+                                                            Convert.ToDateTime(reader["Birthday"].ToString()),
+                                                            reader["Telephone"].ToString(),
+                                                            reader["Passport"].ToString());
+                        list.Add(policyholder);
+                    }
+                    reader.Close();
+                    con.Close();
+                    return list;
                 }
-                reader.Close();
-                con.Close();
-                return list;
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
             }
         }
     }
