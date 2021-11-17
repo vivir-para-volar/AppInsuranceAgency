@@ -6,18 +6,42 @@ using System.Windows.Controls;
 
 namespace InsuranceAgency.Pages
 {
-    public partial class AddPolicy : Page
+    public partial class ChangePolicy : Page
     {
         int PolicyhilderID;
-        List<PersonAllowedToDrive> list = new List<PersonAllowedToDrive>();
+        List<PersonAllowedToDrive> listPerson = new List<PersonAllowedToDrive>();
 
-        public AddPolicy(int policyhilderID)
+        public ChangePolicy(int policyhilderID, int policyID)
         {
             InitializeComponent();
 
             PolicyhilderID = policyhilderID;
-            dpDateOfConclusion.SelectedDate = DateTime.Now;
+
+            Struct.Policy policy = Database.SearchPolicyID(policyID);
+            AddInfoInTb(policy);
         }
+
+        private void AddInfoInTb(Struct.Policy policy)
+        {
+            tbInsuranceType.Text = policy.InsuranceType;
+            tbInsurancePremium.Text = policy.InsurancePremium.ToString();
+            tbInsuranceAmount.Text = policy.InsuranceAmount.ToString();
+            dpDateOfConclusion.SelectedDate = policy.DateOfConclusion;
+            dpExpirationDate.SelectedDate = policy.ExpirationDate;
+            tbVIN.Text = Database.SearchCarID(policy.CarID).VIN;
+            tbEmployee.Text = Database.SearchEmployeeID(policy.EmployeeID).FullName;
+
+            List<Connection> connections = Database.SearchConnection(policy.ID);
+            foreach (var item in connections)
+            {
+                PersonAllowedToDrive personAllowedToDrive = Database.SearchPersonAllowedToDriveID(item.PersonAllowedToDriveID);
+                listPerson.Add(personAllowedToDrive);
+                cbPersonsAllowedToDrive.Items.Add(personAllowedToDrive.FullName);
+            }
+            cbPersonsAllowedToDrive.Text = "";
+            tbPersonsAllowedToDriveHint.Visibility = Visibility.Visible;
+        }
+
         private void cbPersonsAllowedToDrive_GotFocus(object sender, RoutedEventArgs e)
         {
             tbPersonsAllowedToDriveHint.Visibility = Visibility.Hidden;
@@ -31,15 +55,11 @@ namespace InsuranceAgency.Pages
             }
         }
 
-        private void btnAddPolicy_Click(object sender, RoutedEventArgs e)
+        private void btnChangePolicy_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                string insuranceType = cbInsuranceType.Text;
-                if (insuranceType == "")
-                {
-                    throw new Exception("Заполните поле Вид страхования");
-                }
+                string insuranceType = tbInsuranceType.Text;
 
                 string insuranceAmount_temp = tbInsuranceAmount.Text.Trim();
                 if (insuranceAmount_temp == "")
@@ -61,19 +81,7 @@ namespace InsuranceAgency.Pages
 
                 DateTime dateOfConclusion = Convert.ToDateTime(dpDateOfConclusion.Text);
 
-                DateTime expirationDate = dateOfConclusion;
-                if (cbExpirationDate.Text == "")
-                {
-                    throw new Exception("Заполните поле Срок действия");
-                }
-                else if (cbExpirationDate.Text == "6 месяцев")
-                {
-                    expirationDate = expirationDate.AddMonths(6);
-                }
-                else
-                {
-                    expirationDate = expirationDate.AddYears(1);
-                }
+                DateTime expirationDate = Convert.ToDateTime(dpExpirationDate.Text); 
 
                 string vin = tbVIN.Text.Trim();
                 if (vin.Length != 17)
@@ -93,11 +101,11 @@ namespace InsuranceAgency.Pages
                 int employeeID = Database.SearchEmployeeLogin(Database.Login).ID;
 
                 Struct.Policy policy = new Struct.Policy(insuranceType, insurancePremium, insuranceAmount, dateOfConclusion, expirationDate, PolicyhilderID, carID, employeeID);
-                
 
-                Database.AddPolicyWithConnections(policy, list);
 
-                MessageBox.Show("Полис успешно добавлен", "", MessageBoxButton.OK, MessageBoxImage.Information);
+                //Database.AddPolicyWithConnections(policy, listPerson);
+
+                MessageBox.Show("Полис успешно изменён", "", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 this.NavigationService.Navigate(new Pages.Policy(PolicyhilderID));
             }
@@ -113,11 +121,11 @@ namespace InsuranceAgency.Pages
             try
             {
                 PersonAllowedToDrive personAllowedToDrive = Database.SearchPersonAllowedToDrive(cbPersonsAllowedToDrive.Text);
-                if (list.Contains(personAllowedToDrive))
+                if (listPerson.Contains(personAllowedToDrive))
                 {
                     throw new Exception("Данный водитель уже добавлен");
                 }
-                list.Add(personAllowedToDrive);
+                listPerson.Add(personAllowedToDrive);
                 cbPersonsAllowedToDrive.Items.Add(personAllowedToDrive.FullName);
 
                 MessageBox.Show("Водитель добавлен", "", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -136,11 +144,11 @@ namespace InsuranceAgency.Pages
             try
             {
                 int index = cbPersonsAllowedToDrive.SelectedIndex;
-                try 
-                { 
-                    if(cbPersonsAllowedToDrive.Text == list[index].FullName)
+                try
+                {
+                    if (cbPersonsAllowedToDrive.Text == listPerson[index].FullName)
                     {
-                        list.RemoveAt(index);
+                        listPerson.RemoveAt(index);
                     }
                     else
                     {
@@ -149,7 +157,7 @@ namespace InsuranceAgency.Pages
                 }
                 catch { throw new Exception("Данный водитель не существует в списке добавленных водителей"); }
                 cbPersonsAllowedToDrive.Items.Clear();
-                foreach(var item in list)
+                foreach (var item in listPerson)
                 {
                     cbPersonsAllowedToDrive.Items.Add(item.FullName);
                 }

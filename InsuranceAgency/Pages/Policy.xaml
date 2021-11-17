@@ -142,7 +142,7 @@
         </StackPanel>
 
         <StackPanel Grid.Row="2" Grid.Column="1"
-                    VerticalAlignment="Bottom">
+                    VerticalAlignment="Center">
             <Border Padding="5"
                     CornerRadius="10"
                     SnapsToDevicePixels="True" 

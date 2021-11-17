@@ -8,17 +8,17 @@ namespace InsuranceAgency.Struct
 {
     public class Policy
     {
-        public string ID { get; }
+        public int ID { get; }
         public string InsuranceType { get; }
         public int InsurancePremium { get; }
         public int InsuranceAmount { get; }
         public DateTime DateOfConclusion { get; }
         public DateTime ExpirationDate { get; }
-        public string PolicyholderID { get; }
-        public string CarID { get; }
-        public string EmployeeID { get; }
+        public int PolicyholderID { get; }
+        public int CarID { get; }
+        public int EmployeeID { get; }
 
-        public Policy(string insuranceType, int insurancePremium, int insuranceAmount, DateTime dateOfConclusion, DateTime expirationDate, string policyholderID, string carID, string employeeID)
+        public Policy(string insuranceType, int insurancePremium, int insuranceAmount, DateTime dateOfConclusion, DateTime expirationDate, int policyholderID, int carID, int employeeID)
         {
             InsuranceType = insuranceType;
             InsurancePremium = insurancePremium;
@@ -29,7 +29,7 @@ namespace InsuranceAgency.Struct
             CarID = carID;
             EmployeeID = employeeID;
         }
-        public Policy(string id, string insuranceType, int insurancePremium, int insuranceAmount, DateTime dateOfConclusion, DateTime expirationDate, string policyholderID, string carID, string employeeID)
+        public Policy(int id, string insuranceType, int insurancePremium, int insuranceAmount, DateTime dateOfConclusion, DateTime expirationDate, int policyholderID, int carID, int employeeID)
         {
             ID = id;
             InsuranceType = insuranceType;

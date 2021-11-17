@@ -134,7 +134,7 @@ namespace InsuranceAgency.Pages
             dg.SelectedIndex = row;
             var selectedRow = (DataRowView)dg.SelectedItem;
 
-            string ID = selectedRow["ID"].ToString();
+            int ID = Convert.ToInt32(selectedRow["ID"].ToString());
             foreach (var item in list)
             {
                 if (item.ID == ID)

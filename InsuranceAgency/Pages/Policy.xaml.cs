@@ -14,7 +14,7 @@ namespace InsuranceAgency.Pages
             InitializeComponent();
         }
 
-        public Policy(string policyhilderID)
+        public Policy(int policyhilderID)
         {
             InitializeComponent();
 
@@ -195,20 +195,14 @@ namespace InsuranceAgency.Pages
 
         private void dgPolicies_CurrentCellChanged(object sender, EventArgs e)
         {
-            //DataGrid dg = (sender as DataGrid);
-            //int row = dg.Items.IndexOf(dg.CurrentCell.Item);
+            DataGrid dg = (sender as DataGrid);
+            int row = dg.Items.IndexOf(dg.CurrentCell.Item);
 
-            //dg.SelectedIndex = row;
-            //var selectedRow = (DataRowView)dg.SelectedItem;
+            dg.SelectedIndex = row;
+            var selectedRow = (DataRowView)dg.SelectedItem;
 
-            //string ID = selectedRow["ID"].ToString();
-            //foreach (var item in list)
-            //{
-            //    if (item.ID == ID)
-            //    {
-            //        this.NavigationService.Navigate(new Pages.СhangePolicyholder(item));
-            //    }
-            //}
+            int ID = Convert.ToInt32(selectedRow["ID"].ToString());
+            this.NavigationService.Navigate(new Pages.ChangePolicy(searchPolicyholder.ID, ID));
         }
 
         private void btnAddPolicy_Click(object sender, RoutedEventArgs e)
@@ -224,7 +218,6 @@ namespace InsuranceAgency.Pages
             dg.SelectedIndex = row;
             var selectedRow = (DataRowView)dg.SelectedItem;
 
-            string ID = selectedRow["ID"].ToString();
             this.NavigationService.Navigate(new Pages.СhangePolicyholder(searchPolicyholder));
         }
     }

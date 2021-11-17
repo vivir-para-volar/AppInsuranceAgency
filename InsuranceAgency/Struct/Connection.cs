@@ -2,10 +2,10 @@
 {
     public class Connection
     {
-        public string PolicyID { get; }
-        public string PersonAllowedToDriveID { get; }
+        public int PolicyID { get; }
+        public int PersonAllowedToDriveID { get; }
 
-        public Connection(string policyID, string personAllowedToDriveID)
+        public Connection(int policyID, int personAllowedToDriveID)
         {
             PolicyID = policyID;
             PersonAllowedToDriveID = personAllowedToDriveID;

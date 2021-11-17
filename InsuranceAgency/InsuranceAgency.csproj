@@ -92,6 +92,9 @@
     <Compile Include="Pages\AllPolicyholders.xaml.cs">
       <DependentUpon>AllPolicyholders.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\ChangePolicy.xaml.cs">
+      <DependentUpon>ChangePolicy.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Policy.xaml.cs">
       <DependentUpon>Policy.xaml</DependentUpon>
     </Compile>
@@ -112,6 +115,7 @@
     <Compile Include="Struct\Employee.cs" />
     <Compile Include="Struct\InsuranceEvent.cs" />
     <Compile Include="Struct\PersonAllowedToDrive.cs" />
+    <Compile Include="Struct\Photo.cs" />
     <Compile Include="Struct\Policy.cs" />
     <Compile Include="Struct\Policyholder.cs" />
     <Compile Include="ViewModel\CommandViewModel.cs" />
@@ -184,6 +188,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\AllPolicyholders.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ChangePolicy.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

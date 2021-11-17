@@ -1,6 +1,7 @@
 ﻿using InsuranceAgency.Struct;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -9,15 +10,36 @@ namespace InsuranceAgency.Pages
 {
     public partial class СhangeCar : Page
     {
+        List<Photo> listPhotos = new List<Photo>();
+        List<string> listEncodedPhotos = new List<string>();
+
+        List<BitmapImage> listNewPhotos = new List<BitmapImage>();
+        List<string> listNewEncodedPhotos = new List<string>();
+
+        List<Photo> listDeletePhotos = new List<Photo>();
+        List<string> listAddPhotos = new List<string>();
+        
+        int currentIndex = 0;
+
         public СhangeCar()
         {
             InitializeComponent();
         }
 
-        public СhangeCar(string id)
+        public СhangeCar(int id)
         {
             InitializeComponent();
+
             Car car = Database.SearchCarID(id);
+            searchCar = car;
+
+            listPhotos = Database.SearchPhoto(car.ID);
+            foreach(var item in listPhotos)
+            {
+                listNewEncodedPhotos.Add(item.EncodedPhoto);
+                listNewPhotos.Add(DBImage.Decode(item.EncodedPhoto));
+            }
+
             AddInfoInTb(car);
         }
 
@@ -66,7 +88,14 @@ namespace InsuranceAgency.Pages
             tbVehiclePassportNumber.Text = "";
             for (var i = 0; i < 4; i++) tbVehiclePassportSeries.Text += car.VehiclePassport[i];
             for (var i = 4; i < 10; i++) tbVehiclePassportNumber.Text += car.VehiclePassport[i];
-            imgCar.Source = DBImage.Decode(car.Image);
+
+            imgCar.Source = listNewPhotos[0];
+            currentIndex = 0;
+            if (listNewPhotos.Count - 1 > 0)
+            {
+                btnLeft.Visibility = Visibility.Visible;
+                btnRight.Visibility = Visibility.Visible;
+            }
         }
 
         private void tbVehiclePassportSeries_TextChanged(object sender, TextChangedEventArgs e)
@@ -101,6 +130,17 @@ namespace InsuranceAgency.Pages
             {
                 BitmapImage bi = new BitmapImage(new Uri(openFileDialog.FileName));
                 imgCar.Source = bi;
+                listNewPhotos.Add(bi);
+                currentIndex = listNewPhotos.Count - 1;
+                if (currentIndex == 1)
+                {
+                    btnLeft.Visibility = Visibility.Visible;
+                    btnRight.Visibility = Visibility.Visible;
+                }
+
+                string image = DBImage.Encode(bi);
+                listNewEncodedPhotos.Add(image);
+                listAddPhotos.Add(image);
             }
         }
 
@@ -144,12 +184,14 @@ namespace InsuranceAgency.Pages
                 }
                 string vehiclePassport = vehiclePassportSeries + vehiclePassportNumber;
 
-                BitmapImage bi_image = imgCar.Source as BitmapImage;
-                string image = DBImage.Encode(bi_image);
+                if (listNewPhotos.Count == 0)
+                {
+                    throw new Exception("Добавьте фотографию автомобиля");
+                }
 
-                Car car = new Car(searchCar.ID, searchCar.Model, searchCar.VIN, registrationPlate, vehiclePassport, image);
+                Car car = new Car(searchCar.ID, searchCar.Model, searchCar.VIN, registrationPlate, vehiclePassport);
 
-                Database.ChangeCar(car);
+                Database.ChangeCarWithPhotos(car, listDeletePhotos, listAddPhotos);
 
                 MessageBox.Show("Автомобиль успешно изменён", "", MessageBoxButton.OK, MessageBoxImage.Information);
 
@@ -199,5 +241,75 @@ namespace InsuranceAgency.Pages
             }
         }
 
+        private void btnLeft_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentIndex == 0)
+            {
+                currentIndex = listNewPhotos.Count - 1;
+            }
+            else
+            {
+                currentIndex--;
+            }
+
+            imgCar.Source = listNewPhotos[currentIndex];
+        }
+
+        private void btnRight_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentIndex == listNewPhotos.Count - 1)
+            {
+                currentIndex = 0;
+            }
+            else
+            {
+                currentIndex++;
+            }
+
+            imgCar.Source = listNewPhotos[currentIndex];
+        }
+
+        private void btnDeleteImage_Click(object sender, RoutedEventArgs e)
+        {
+            for(var i = 0; i < listEncodedPhotos.Count; i++)
+            {
+                if(listNewEncodedPhotos[currentIndex] == listEncodedPhotos[i])
+                {
+                    listDeletePhotos.Add(listPhotos[i]);
+                }
+            }
+            listNewPhotos.RemoveAt(currentIndex);
+            listNewEncodedPhotos.RemoveAt(currentIndex);
+
+            if (currentIndex == listNewPhotos.Count - 1)
+            {
+                currentIndex = 0;
+            }
+            else
+            {
+                currentIndex++;
+            }
+
+            if (listNewPhotos.Count == 1)
+            {
+                currentIndex = 0;
+                btnLeft.Visibility = Visibility.Hidden;
+                btnRight.Visibility = Visibility.Hidden;
+            }
+
+            if (listNewPhotos.Count == 0)
+            {
+                currentIndex = 0;
+                BitmapImage bi = new BitmapImage();
+                bi.BeginInit();
+                bi.UriSource = new Uri("/InsuranceAgency;component/Assets/Car.jpg", UriKind.RelativeOrAbsolute);
+                bi.EndInit();
+                imgCar.Source = bi;
+            }
+            else
+            {
+                imgCar.Source = listNewPhotos[currentIndex];
+            }
+        }
     }
 }

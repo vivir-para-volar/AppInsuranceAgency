@@ -2,7 +2,7 @@
 {
     public class PersonAllowedToDrive
     {
-        public string ID { get; }
+        public int ID { get; }
         public string FullName { get; }
         public string DrivingLicence { get; }
 
@@ -11,7 +11,7 @@
             FullName = fullName;
             DrivingLicence = drivingLicence;
         }
-        public PersonAllowedToDrive(string id, string fullName, string drivingLicence)
+        public PersonAllowedToDrive(int id, string fullName, string drivingLicence)
         {
             ID = id;
             FullName = fullName;

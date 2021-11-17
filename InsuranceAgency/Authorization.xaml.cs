@@ -11,7 +11,7 @@ namespace InsuranceAgency
         {
             InitializeComponent();
 
-            Database.Authorization("vlad56ooe", "vlad56ooe");
+            Database.Authorization("subLar", "subLar");
 
             this.Hide();
             MainWindow mainWindow = new MainWindow();

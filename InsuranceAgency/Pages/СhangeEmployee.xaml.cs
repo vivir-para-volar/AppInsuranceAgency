@@ -16,6 +16,7 @@ namespace InsuranceAgency.Pages
         {
             InitializeComponent();
 
+            searchEmployee = employee;
             AddInfoInTb(employee);
         }
 

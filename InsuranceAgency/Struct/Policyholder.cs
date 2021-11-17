@@ -4,7 +4,7 @@ namespace InsuranceAgency.Struct
 {
     public class Policyholder
     {
-        public string ID { get; }
+        public int ID { get; }
         public string FullName { get; }
         public DateTime Birthday { get; }
         public string Telephone { get; }
@@ -18,7 +18,7 @@ namespace InsuranceAgency.Struct
             Telephone = telephone;
             Passport = passport;
         }
-        public Policyholder(string id, string fullName, DateTime birthday, string telephone, string passport)
+        public Policyholder(int id, string fullName, DateTime birthday, string telephone, string passport)
         {
             ID = id;
             FullName = fullName;

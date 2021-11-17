@@ -16,6 +16,7 @@ namespace InsuranceAgency.Pages
         {
             InitializeComponent();
 
+            searchPolicyholder = policyholder;
             AddInfoInTb(policyholder);
         }
 

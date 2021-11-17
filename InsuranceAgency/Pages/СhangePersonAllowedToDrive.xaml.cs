@@ -15,6 +15,8 @@ namespace InsuranceAgency.Pages
         public СhangePersonAllowedToDrive(PersonAllowedToDrive personAllowedToDrive)
         {
             InitializeComponent();
+
+            searchPersonAllowedToDrive = personAllowedToDrive;
             AddInfoInTb(personAllowedToDrive);
         }
 

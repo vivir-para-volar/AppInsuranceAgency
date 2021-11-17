@@ -128,7 +128,7 @@ namespace InsuranceAgency.Pages
             dg.SelectedIndex = row;
             var selectedRow = (DataRowView)dg.SelectedItem;
 
-            string ID = selectedRow["ID"].ToString();
+            int ID = Convert.ToInt32(selectedRow["ID"].ToString());
             this.NavigationService.Navigate(new Pages.СhangeCar(ID));
         }
     }

@@ -1,6 +1,7 @@
 ﻿using InsuranceAgency.Struct;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -9,6 +10,10 @@ namespace InsuranceAgency.Pages
 {
     public partial class AddCar : Page
     {
+        List<BitmapImage> listPhotos = new List<BitmapImage>();
+        List<string> listEncodedPhotos = new List<string>();
+        int currentIndex = 0;
+
         public AddCar()
         {
             InitializeComponent();
@@ -46,6 +51,16 @@ namespace InsuranceAgency.Pages
             {
                 BitmapImage bi = new BitmapImage(new Uri(openFileDialog.FileName));
                 imgCar.Source = bi;
+                listPhotos.Add(bi);
+                currentIndex = listPhotos.Count - 1;
+                if(currentIndex == 1)
+                {
+                    btnLeft.Visibility = Visibility.Visible;
+                    btnRight.Visibility = Visibility.Visible;
+                }
+
+                string image = DBImage.Encode(bi);
+                listEncodedPhotos.Add(image);
             }
         }
 
@@ -108,12 +123,14 @@ namespace InsuranceAgency.Pages
                 }
                 string vehiclePassport = vehiclePassportSeries + vehiclePassportNumber;
 
-                BitmapImage bi_image = imgCar.Source as BitmapImage;
-                string image = DBImage.Encode(bi_image);
+                if (listEncodedPhotos.Count == 0)
+                {
+                    throw new Exception("Добавьте фотографию автомобиля");
+                }
 
-                Car car = new Car(model, vin, registrationPlate, vehiclePassport, image);
+                Car car = new Car(model, vin, registrationPlate, vehiclePassport);
 
-                Database.AddCar(car);
+                Database.AddCarWithPhotos(car, listEncodedPhotos);
 
                 MessageBox.Show("Автомобиль успешно добавлен", "", MessageBoxButton.OK, MessageBoxImage.Information);
 
@@ -133,6 +150,71 @@ namespace InsuranceAgency.Pages
             {
                 tbException.Visibility = Visibility.Visible;
                 tbException.Text = exp.Message;
+                MessageBox.Show(exp.Message);
+            }
+        }
+
+        private void btnLeft_Click(object sender, RoutedEventArgs e)
+        {
+            if(currentIndex == 0)
+            {
+                currentIndex = listPhotos.Count - 1;
+            }
+            else
+            {
+                currentIndex--;
+            }
+
+            imgCar.Source = listPhotos[currentIndex];
+        }
+
+        private void btnRight_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentIndex == listPhotos.Count - 1)
+            {
+                currentIndex = 0;
+            }
+            else
+            {
+                currentIndex++;
+            }
+
+            imgCar.Source = listPhotos[currentIndex];
+        }
+
+        private void btnDeleteImage_Click(object sender, RoutedEventArgs e)
+        {
+            listPhotos.RemoveAt(currentIndex);
+            listEncodedPhotos.RemoveAt(currentIndex);
+
+            if (currentIndex == listPhotos.Count - 1)
+            {
+                currentIndex = 0;
+            }
+            else
+            {
+                currentIndex++;
+            }
+
+            if(listPhotos.Count == 1)
+            {
+                currentIndex = 0;
+                btnLeft.Visibility = Visibility.Hidden;
+                btnRight.Visibility = Visibility.Hidden;
+            }
+
+            if (listPhotos.Count == 0)
+            {
+                currentIndex = 0;
+                BitmapImage bi = new BitmapImage();
+                bi.BeginInit();
+                bi.UriSource = new Uri("/InsuranceAgency;component/Assets/Car.jpg", UriKind.RelativeOrAbsolute);
+                bi.EndInit();
+                imgCar.Source = bi;
+            }
+            else
+            {
+                imgCar.Source = listPhotos[currentIndex];
             }
         }
     }

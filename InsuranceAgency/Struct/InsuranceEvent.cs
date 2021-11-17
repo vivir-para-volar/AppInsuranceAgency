@@ -4,18 +4,18 @@ namespace InsuranceAgency.Struct
 {
     public class InsuranceEvent
     {
-        public string ID { get; }
+        public int ID { get; }
         public DateTime Date { get; }
         public int InsurancePayment { get; }
-        public string PolicyID { get; }
+        public int PolicyID { get; }
 
-        public InsuranceEvent(DateTime date, int insurancePayment, string policyID)
+        public InsuranceEvent(DateTime date, int insurancePayment, int policyID)
         {
             Date = date;
             InsurancePayment = insurancePayment;
             PolicyID = policyID;
         }
-        public InsuranceEvent(string id, DateTime date, int insurancePayment, string policyID)
+        public InsuranceEvent(int id, DateTime date, int insurancePayment, int policyID)
         {
             ID = id;
             Date = date;
