@@ -22,12 +22,7 @@ namespace InsuranceAgency.ViewModel
                     return new List<MenuItemsData>
                     {
                         //MainMenu without SubMenu Button 
-                        new MenuItemsData(){ PathData= (PathGeometry)dict["icon_policy"], MenuText="Policy", MenuName = "Полис"
-                        //SubMenu Button
-                        , SubMenuList=new List<SubMenuItemsData>{
-                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_add"], SubMenuText="New", SubMenuName = "Добавить" },
-                        new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_all"], SubMenuText="All", SubMenuName = "Добавить" }}
-                        },
+                        new MenuItemsData(){ PathData= (PathGeometry)dict["icon_policy"], MenuText="Policy", MenuName = "Полис", SubMenuList=null },
 
                         //MainMenu Button
                         new MenuItemsData(){ PathData= (PathGeometry)dict["icon_policyholder"], MenuText="AddPolicyholder", MenuName = "Страхователи"
@@ -64,8 +59,6 @@ namespace InsuranceAgency.ViewModel
                         new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_change"], SubMenuText="СhangeEmployee", SubMenuName = "Изменить" },
                         new SubMenuItemsData(){ PathData=(PathGeometry)dict["icon_all"], SubMenuText="AllEmployees", SubMenuName = "Все" }}
                         },
-
-                        //MainMenu without SubMenu Button
                     };
                 }
                 else

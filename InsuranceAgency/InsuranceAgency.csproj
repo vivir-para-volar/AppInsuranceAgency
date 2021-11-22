@@ -46,6 +46,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -94,6 +95,9 @@
     </Compile>
     <Compile Include="Pages\ChangePolicy.xaml.cs">
       <DependentUpon>ChangePolicy.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\InsuranceEvents.xaml.cs">
+      <DependentUpon>InsuranceEvents.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Policy.xaml.cs">
       <DependentUpon>Policy.xaml</DependentUpon>
@@ -192,6 +196,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\ChangePolicy.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\InsuranceEvents.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

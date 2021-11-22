@@ -112,10 +112,13 @@ namespace InsuranceAgency.Pages
         {
             try
             {
-                PersonAllowedToDrive personAllowedToDrive = Database.SearchPersonAllowedToDrive(cbPersonsAllowedToDrive.Text);
-                if (list.Contains(personAllowedToDrive))
+                PersonAllowedToDrive personAllowedToDrive = Database.SearchPersonAllowedToDrive(cbPersonsAllowedToDrive.Text.Trim());
+                foreach(var item in list)
                 {
-                    throw new Exception("Данный водитель уже добавлен");
+                    if(item.ID == personAllowedToDrive.ID)
+                    {
+                        throw new Exception("Данный водитель уже добавлен");
+                    }
                 }
                 list.Add(personAllowedToDrive);
                 cbPersonsAllowedToDrive.Items.Add(personAllowedToDrive.FullName);
@@ -135,28 +138,36 @@ namespace InsuranceAgency.Pages
         {
             try
             {
-                int index = cbPersonsAllowedToDrive.SelectedIndex;
-                try 
-                { 
-                    if(cbPersonsAllowedToDrive.Text == list[index].FullName)
-                    {
-                        list.RemoveAt(index);
-                    }
-                    else
-                    {
-                        throw new Exception("Данный водитель не существует в списке добавленных водителей");
-                    }
-                }
-                catch { throw new Exception("Данный водитель не существует в списке добавленных водителей"); }
-                cbPersonsAllowedToDrive.Items.Clear();
-                foreach(var item in list)
+                System.Windows.Forms.DialogResult result = System.Windows.Forms.MessageBox.Show("Вы уверены, что хотите удалить удалить данного водителя", "Удаление",
+                                                                                               System.Windows.Forms.MessageBoxButtons.YesNo,
+                                                                                               System.Windows.Forms.MessageBoxIcon.Information,
+                                                                                               System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                                                                                               System.Windows.Forms.MessageBoxOptions.DefaultDesktopOnly);
+                if (result == System.Windows.Forms.DialogResult.Yes)
                 {
-                    cbPersonsAllowedToDrive.Items.Add(item.FullName);
-                }
+                    int index = cbPersonsAllowedToDrive.SelectedIndex;
+                    try
+                    {
+                        if (cbPersonsAllowedToDrive.Text == list[index].FullName)
+                        {
+                            list.RemoveAt(index);
+                        }
+                        else
+                        {
+                            throw new Exception("Данный водитель не существует в списке добавленных водителей");
+                        }
+                    }
+                    catch { throw new Exception("Данный водитель не существует в списке добавленных водителей"); }
+                    cbPersonsAllowedToDrive.Items.Clear();
+                    foreach (var item in list)
+                    {
+                        cbPersonsAllowedToDrive.Items.Add(item.FullName);
+                    }
 
-                MessageBox.Show("Водитель удалён", "", MessageBoxButton.OK, MessageBoxImage.Information);
-                cbPersonsAllowedToDrive.Text = "";
-                tbPersonsAllowedToDriveHint.Visibility = Visibility.Visible;
+                    MessageBox.Show("Водитель удалён", "", MessageBoxButton.OK, MessageBoxImage.Information);
+                    cbPersonsAllowedToDrive.Text = "";
+                    tbPersonsAllowedToDriveHint.Visibility = Visibility.Visible;
+                }
             }
             catch (Exception exp)
             {

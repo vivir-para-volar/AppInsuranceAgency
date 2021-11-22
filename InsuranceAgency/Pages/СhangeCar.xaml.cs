@@ -42,10 +42,10 @@ namespace InsuranceAgency.Pages
             }
 
             AddInfoInTb(car);
-            flag = true;
+            flagSearchCar = true;
         }
 
-        bool flag = false;
+        bool flagSearchCar = false;
         Car searchCar;
 
         private void tbSearch_TextChanged(object sender, TextChangedEventArgs e)
@@ -85,7 +85,7 @@ namespace InsuranceAgency.Pages
 
                 tbSearch.Text = "";
 
-                flag = true;
+                flagSearchCar = true;
             }
             catch(Exception exp)
             {
@@ -168,7 +168,7 @@ namespace InsuranceAgency.Pages
         {
             try
             {
-                if (!flag) throw new Exception("Выберите автомобиль");
+                if (!flagSearchCar) throw new Exception("Выберите автомобиль");
 
                 string registrationPlate = tbRegistrationPlate.Text.Trim();
                 if (registrationPlate == "")
@@ -238,7 +238,7 @@ namespace InsuranceAgency.Pages
                 btnRight.Visibility = Visibility.Hidden;
 
                 tbException.Visibility = Visibility.Hidden;
-                flag = false;
+                flagSearchCar = false;
             }
             catch (Exception exp)
             {
@@ -251,34 +251,42 @@ namespace InsuranceAgency.Pages
         {
             try
             {
-                if (!flag) throw new Exception("Выберите автомобиль");
+                if (!flagSearchCar) throw new Exception("Выберите автомобиль");
 
-                Database.DeleteCar(searchCar.ID);
+                System.Windows.Forms.DialogResult result = System.Windows.Forms.MessageBox.Show("Вы уверены, что хотите удалить данный автомобиль", "Удаление",
+                                                                                                System.Windows.Forms.MessageBoxButtons.YesNo,
+                                                                                                System.Windows.Forms.MessageBoxIcon.Information,
+                                                                                                System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                                                                                                System.Windows.Forms.MessageBoxOptions.DefaultDesktopOnly);
+                if (result == System.Windows.Forms.DialogResult.Yes)
+                {
+                    Database.DeleteCar(searchCar.ID);
 
-                MessageBox.Show("Автомобиль успешно удалён", "", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Автомобиль успешно удалён", "", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                tbModel.Clear();
-                tbVIN.Clear();
-                tbRegistrationPlate.Clear();
-                tbVehiclePassportSeries.Clear();
-                tbVehiclePassportNumber.Clear();
+                    tbModel.Clear();
+                    tbVIN.Clear();
+                    tbRegistrationPlate.Clear();
+                    tbVehiclePassportSeries.Clear();
+                    tbVehiclePassportNumber.Clear();
 
-                listPhotos.Clear();
-                listEncodedPhotos.Clear();
-                listNewPhotos.Clear();
-                listNewEncodedPhotos.Clear();
-                listDeletePhotos.Clear();
-                listAddPhotos.Clear();
-                BitmapImage bi = new BitmapImage();
-                bi.BeginInit();
-                bi.UriSource = new Uri("/InsuranceAgency;component/Assets/Car.jpg", UriKind.RelativeOrAbsolute);
-                bi.EndInit();
-                imgCar.Source = bi;
-                btnLeft.Visibility = Visibility.Hidden;
-                btnRight.Visibility = Visibility.Hidden;
+                    listPhotos.Clear();
+                    listEncodedPhotos.Clear();
+                    listNewPhotos.Clear();
+                    listNewEncodedPhotos.Clear();
+                    listDeletePhotos.Clear();
+                    listAddPhotos.Clear();
+                    BitmapImage bi = new BitmapImage();
+                    bi.BeginInit();
+                    bi.UriSource = new Uri("/InsuranceAgency;component/Assets/Car.jpg", UriKind.RelativeOrAbsolute);
+                    bi.EndInit();
+                    imgCar.Source = bi;
+                    btnLeft.Visibility = Visibility.Hidden;
+                    btnRight.Visibility = Visibility.Hidden;
 
-                tbException.Visibility = Visibility.Hidden;
-                flag = false;
+                    tbException.Visibility = Visibility.Hidden;
+                    flagSearchCar = false;
+                }
             }
             catch (Exception exp)
             {
@@ -317,44 +325,65 @@ namespace InsuranceAgency.Pages
 
         private void btnDeleteImage_Click(object sender, RoutedEventArgs e)
         {
-            for(var i = 0; i < listEncodedPhotos.Count; i++)
+            try
             {
-                if(listNewEncodedPhotos[currentIndex] == listEncodedPhotos[i])
+                if (listNewPhotos.Count == 0)
                 {
-                    listDeletePhotos.Add(listPhotos[i]);
+                    throw new Exception("Добавьте фотографию автомобиля");
+                }
+
+                System.Windows.Forms.DialogResult result = System.Windows.Forms.MessageBox.Show("Вы уверены, что хотите удалить данную фотографию", "Удаление",
+                                                                                                System.Windows.Forms.MessageBoxButtons.YesNo,
+                                                                                                System.Windows.Forms.MessageBoxIcon.Information,
+                                                                                                System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                                                                                                System.Windows.Forms.MessageBoxOptions.DefaultDesktopOnly);
+                if (result == System.Windows.Forms.DialogResult.Yes)
+                {
+                    for (var i = 0; i < listEncodedPhotos.Count; i++)
+                    {
+                        if (listNewEncodedPhotos[currentIndex] == listEncodedPhotos[i])
+                        {
+                            listDeletePhotos.Add(listPhotos[i]);
+                        }
+                    }
+                    for (var i = 0; i < listAddPhotos.Count; i++)
+                    {
+                        if (listNewEncodedPhotos[currentIndex] == listAddPhotos[i])
+                        {
+                            listAddPhotos.RemoveAt(i);
+                        }
+                    }
+                    listNewPhotos.RemoveAt(currentIndex);
+                    listNewEncodedPhotos.RemoveAt(currentIndex);
+
+                    currentIndex = 0;
+
+                    if (listNewPhotos.Count == 1)
+                    {
+                        currentIndex = 0;
+                        btnLeft.Visibility = Visibility.Hidden;
+                        btnRight.Visibility = Visibility.Hidden;
+                    }
+
+                    if (listNewPhotos.Count == 0)
+                    {
+                        currentIndex = 0;
+                        BitmapImage bi = new BitmapImage();
+                        bi.BeginInit();
+                        bi.UriSource = new Uri("/InsuranceAgency;component/Assets/Car.jpg", UriKind.RelativeOrAbsolute);
+                        bi.EndInit();
+                        imgCar.Source = bi;
+                    }
+                    else
+                    {
+                        imgCar.Source = listNewPhotos[currentIndex];
+                    }
                 }
             }
-            for (var i = 0; i < listAddPhotos.Count; i++)
+            catch (Exception exp)
             {
-                if (listNewEncodedPhotos[currentIndex] == listAddPhotos[i])
-                {
-                    listAddPhotos.RemoveAt(i);
-                }
-            }
-            listNewPhotos.RemoveAt(currentIndex);
-            listNewEncodedPhotos.RemoveAt(currentIndex);
-
-            currentIndex = 0;
-
-            if (listNewPhotos.Count == 1)
-            {
-                currentIndex = 0;
-                btnLeft.Visibility = Visibility.Hidden;
-                btnRight.Visibility = Visibility.Hidden;
-            }
-
-            if (listNewPhotos.Count == 0)
-            {
-                currentIndex = 0;
-                BitmapImage bi = new BitmapImage();
-                bi.BeginInit();
-                bi.UriSource = new Uri("/InsuranceAgency;component/Assets/Car.jpg", UriKind.RelativeOrAbsolute);
-                bi.EndInit();
-                imgCar.Source = bi;
-            }
-            else
-            {
-                imgCar.Source = listNewPhotos[currentIndex];
+                tbException.Visibility = Visibility.Visible;
+                tbException.Text = exp.Message;
             }
         }
     }

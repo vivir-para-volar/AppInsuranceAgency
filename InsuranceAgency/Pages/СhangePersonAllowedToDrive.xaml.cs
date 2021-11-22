@@ -18,6 +18,8 @@ namespace InsuranceAgency.Pages
 
             searchPersonAllowedToDrive = personAllowedToDrive;
             AddInfoInTb(personAllowedToDrive);
+
+            flagSearchPersonAllowedToDrive = true;
         }
 
         private void tbSearch_TextChanged(object sender, TextChangedEventArgs e)
@@ -32,6 +34,7 @@ namespace InsuranceAgency.Pages
             }
         }
 
+        bool flagSearchPersonAllowedToDrive = false;
         PersonAllowedToDrive searchPersonAllowedToDrive;
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
@@ -57,6 +60,7 @@ namespace InsuranceAgency.Pages
                 AddInfoInTb(searchPersonAllowedToDrive);
 
                 tbSearch.Text = "";
+                flagSearchPersonAllowedToDrive = true;
             }
             catch (Exception exp)
             {
@@ -102,6 +106,8 @@ namespace InsuranceAgency.Pages
         {
             try
             {
+                if (!flagSearchPersonAllowedToDrive) throw new Exception("Выберите водителя");
+
                 string fullName = tbFullName.Text.Trim();
                 if (fullName == "")
                 {
@@ -137,7 +143,9 @@ namespace InsuranceAgency.Pages
                 tbFullName.Clear();
                 tbDrivingLicenceSeries.Clear();
                 tbDrivingLicenceNumber.Clear();
+
                 tbException.Visibility = Visibility.Hidden;
+                flagSearchPersonAllowedToDrive = false;
             }
             catch (Exception exp)
             {
@@ -150,14 +158,26 @@ namespace InsuranceAgency.Pages
         {
             try
             {
-                Database.DeletePersonAllowedToDrive(searchPersonAllowedToDrive.ID);
+                if (!flagSearchPersonAllowedToDrive) throw new Exception("Выберите водителя");
 
-                MessageBox.Show("Водитель успешно удалён", "", MessageBoxButton.OK, MessageBoxImage.Information);
+                System.Windows.Forms.DialogResult result = System.Windows.Forms.MessageBox.Show("Вы уверены, что хотите удалить данного водителя", "Удаление",
+                                                                                                System.Windows.Forms.MessageBoxButtons.YesNo,
+                                                                                                System.Windows.Forms.MessageBoxIcon.Information,
+                                                                                                System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                                                                                                System.Windows.Forms.MessageBoxOptions.DefaultDesktopOnly);
+                if (result == System.Windows.Forms.DialogResult.Yes)
+                {
+                    Database.DeletePersonAllowedToDrive(searchPersonAllowedToDrive.ID);
 
-                tbFullName.Clear();
-                tbDrivingLicenceSeries.Clear();
-                tbDrivingLicenceNumber.Clear();
-                tbException.Visibility = Visibility.Hidden;
+                    MessageBox.Show("Водитель успешно удалён", "", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    tbFullName.Clear();
+                    tbDrivingLicenceSeries.Clear();
+                    tbDrivingLicenceNumber.Clear();
+
+                    tbException.Visibility = Visibility.Hidden;
+                    flagSearchPersonAllowedToDrive = false;
+                }
             }
             catch (Exception exp)
             {

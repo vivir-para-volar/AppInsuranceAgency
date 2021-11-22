@@ -133,7 +133,7 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Path=ID}"        Header="ID"            Visibility="Hidden"/>
                         <DataGridTextColumn Binding="{Binding Path=FullName}"  Header="ФИО"           Width="Auto"/>
-                        <DataGridTextColumn Binding="{Binding Path=Birthday}"  Header="День рождения" Width="*"/>
+                        <DataGridTextColumn Binding="{Binding Path=Birthday}"  Header="Дата рождения" Width="*"/>
                         <DataGridTextColumn Binding="{Binding Path=Telephone}" Header="Телефон"       Width="*"/>
                         <DataGridTextColumn Binding="{Binding Path=Passport}"  Header="Паспорт"       Width="*"/>
                     </DataGrid.Columns>

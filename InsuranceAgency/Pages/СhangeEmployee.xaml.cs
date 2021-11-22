@@ -18,6 +18,8 @@ namespace InsuranceAgency.Pages
 
             searchEmployee = employee;
             AddInfoInTb(employee);
+
+            flagSearchEmployee = true;
         }
 
         private void tbPassportSeries_TextChanged(object sender, TextChangedEventArgs e)
@@ -68,6 +70,7 @@ namespace InsuranceAgency.Pages
             }
         }
 
+        bool flagSearchEmployee = false;
         Employee searchEmployee;
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
@@ -93,6 +96,8 @@ namespace InsuranceAgency.Pages
                 AddInfoInTb(searchEmployee);
 
                 tbSearch.Text = "";
+
+                flagSearchEmployee = true;
             }
             catch (Exception exp)
             {
@@ -133,6 +138,8 @@ namespace InsuranceAgency.Pages
         {
             try
             {
+                if (!flagSearchEmployee) throw new Exception("Выберите сотрудника");
+
                 string fullName = tbFullName.Text.Trim();
                 if (fullName.Trim() == "")
                 {
@@ -253,7 +260,15 @@ namespace InsuranceAgency.Pages
                 tbPassword.Clear();
                 cbAdmin.Text = "";
                 cbWorks.Text = "";
+
                 tbException.Visibility = Visibility.Hidden;
+                flagSearchEmployee = false;
+
+                if(searchEmployee.Login == Database.Login)
+                {
+                    MessageBox.Show("Перезагрузите программу", "", MessageBoxButton.OK, MessageBoxImage.Information);
+                    System.Diagnostics.Process.GetCurrentProcess().Kill();
+                }
             }
             catch (Exception exp)
             {
@@ -266,20 +281,38 @@ namespace InsuranceAgency.Pages
         {
             try
             {
-                Database.DeleteEmployee(searchEmployee.ID);
+                if (!flagSearchEmployee) throw new Exception("Выберите сотрудника");
 
-                MessageBox.Show("Сотрудник успешно удалён", "", MessageBoxButton.OK, MessageBoxImage.Information);
+                System.Windows.Forms.DialogResult result = System.Windows.Forms.MessageBox.Show("Вы уверены, что хотите удалить данного сотрудника", "Удаление",
+                                                                                                System.Windows.Forms.MessageBoxButtons.YesNo,
+                                                                                                System.Windows.Forms.MessageBoxIcon.Information,
+                                                                                                System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                                                                                                System.Windows.Forms.MessageBoxOptions.DefaultDesktopOnly);
+                if (result == System.Windows.Forms.DialogResult.Yes)
+                {
+                    Database.DeleteEmployee(searchEmployee.ID);
 
-                tbFullName.Clear();
-                tbBirthday.Clear();
-                tbTelephone.Clear();
-                tbPassportSeries.Clear();
-                tbPassportNumber.Clear();
-                tbLogin.Clear();
-                tbPassword.Clear();
-                cbAdmin.Text = "";
-                cbWorks.Text = "";
-                tbException.Visibility = Visibility.Hidden;
+                    MessageBox.Show("Сотрудник успешно удалён", "", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    tbFullName.Clear();
+                    tbBirthday.Clear();
+                    tbTelephone.Clear();
+                    tbPassportSeries.Clear();
+                    tbPassportNumber.Clear();
+                    tbLogin.Clear();
+                    tbPassword.Clear();
+                    cbAdmin.Text = "";
+                    cbWorks.Text = "";
+
+                    tbException.Visibility = Visibility.Hidden;
+                    flagSearchEmployee = false;
+
+                    if (searchEmployee.Login == Database.Login)
+                    {
+                        MessageBox.Show("Перезагрузите программу", "", MessageBoxButton.OK, MessageBoxImage.Information);
+                        System.Diagnostics.Process.GetCurrentProcess().Kill();
+                    }
+                }
             }
             catch (Exception exp)
             {

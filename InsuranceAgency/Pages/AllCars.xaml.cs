@@ -9,8 +9,6 @@ namespace InsuranceAgency.Pages
 {
     public partial class AllCars : Page
     {
-        List<Car> list = Database.AllCarsDG();
-
         public AllCars()
         {
             InitializeComponent();
@@ -47,8 +45,6 @@ namespace InsuranceAgency.Pages
                 DataView view = new DataView(dt);
                 dgCars.ItemsSource = view;
 
-                dgCars.ItemsSource = view;
-
                 tbSearch.Text = "";
             }
             catch (Exception exp)
@@ -59,6 +55,8 @@ namespace InsuranceAgency.Pages
 
         private void AddDataInDG()
         {
+            List<Car> list = Database.AllCars();
+
             DataTable dt = DTColumn();
             foreach (var item in list)
             {

@@ -18,6 +18,8 @@ namespace InsuranceAgency.Pages
 
             searchPolicyholder = policyholder;
             AddInfoInTb(policyholder);
+
+            flagSearchPolicyholder = true;
         }
 
         private void tbPassportSeries_TextChanged(object sender, TextChangedEventArgs e)
@@ -56,6 +58,7 @@ namespace InsuranceAgency.Pages
             }
         }
 
+        bool flagSearchPolicyholder = false;
         Policyholder searchPolicyholder;
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
@@ -81,6 +84,7 @@ namespace InsuranceAgency.Pages
                 AddInfoInTb(searchPolicyholder);
 
                 tbSearch.Text = "";
+                flagSearchPolicyholder = true;
             }
             catch (Exception exp)
             {
@@ -103,6 +107,8 @@ namespace InsuranceAgency.Pages
         {
             try
             {
+                if (!flagSearchPolicyholder) throw new Exception("Выберите страхователя");
+
                 string fullName = tbFullName.Text.Trim();
                 if (fullName == "")
                 {
@@ -159,6 +165,7 @@ namespace InsuranceAgency.Pages
                 tbPassportNumber.Clear();
                 
                 tbException.Visibility = Visibility.Hidden;
+                flagSearchPolicyholder = false;
             }
             catch (Exception exp)
             {
@@ -171,17 +178,28 @@ namespace InsuranceAgency.Pages
         {
             try
             {
-                Database.DeletePolicyholder(searchPolicyholder.ID);
+                if (!flagSearchPolicyholder) throw new Exception("Выберите страхователя");
 
-                MessageBox.Show("Страхователь успешно удалён", "", MessageBoxButton.OK, MessageBoxImage.Information);
+                System.Windows.Forms.DialogResult result = System.Windows.Forms.MessageBox.Show("Вы уверены, что хотите удалить данного страхователя", "Удаление", 
+                                                                                                System.Windows.Forms.MessageBoxButtons.YesNo,
+                                                                                                System.Windows.Forms.MessageBoxIcon.Information,
+                                                                                                System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                                                                                                System.Windows.Forms.MessageBoxOptions.DefaultDesktopOnly);
+                if (result == System.Windows.Forms.DialogResult.Yes)
+                {
+                    Database.DeletePolicyholder(searchPolicyholder.ID);
 
-                tbFullName.Clear();
-                tbBirthday.Clear();
-                tbTelephone.Clear();
-                tbPassportSeries.Clear();
-                tbPassportNumber.Clear();
-                
-                tbException.Visibility = Visibility.Hidden;
+                    MessageBox.Show("Страхователь успешно удалён", "", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    tbFullName.Clear();
+                    tbBirthday.Clear();
+                    tbTelephone.Clear();
+                    tbPassportSeries.Clear();
+                    tbPassportNumber.Clear();
+
+                    tbException.Visibility = Visibility.Hidden;
+                    flagSearchPolicyholder = false;
+                }
             }
             catch (Exception exp)
             {

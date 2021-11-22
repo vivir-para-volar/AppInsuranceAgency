@@ -202,7 +202,7 @@ namespace InsuranceAgency.Pages
             var selectedRow = (DataRowView)dg.SelectedItem;
 
             int ID = Convert.ToInt32(selectedRow["ID"].ToString());
-            this.NavigationService.Navigate(new Pages.ChangePolicy(searchPolicyholder.ID, ID));
+            this.NavigationService.Navigate(new Pages.ChangePolicy(ID));
         }
 
         private void btnAddPolicy_Click(object sender, RoutedEventArgs e)

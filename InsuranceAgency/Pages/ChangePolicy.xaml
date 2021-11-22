@@ -81,7 +81,6 @@
                         <RowDefinition Height="60"/>
                         <RowDefinition Height="60"/>
                         <RowDefinition Height="60"/>
-                        <RowDefinition Height="60"/>
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="50"/>
                         <RowDefinition Height="25"/>
@@ -141,7 +140,7 @@
 
                     <!--Страховая сумма -->
                     <TextBlock Margin="5"
-                               Text="Страховая сумма "
+                               Text="Страховая сумма"
                                Grid.Row="3" Grid.Column="1"
                                VerticalAlignment="Bottom"
                                FontFamily="Helvetica"
@@ -150,6 +149,7 @@
                                Foreground="White"/>
                     <TextBox Name="tbInsuranceAmount"
                              Grid.Row="3" Grid.Column="2"
+                             IsReadOnly="True"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Bottom"
                              Height="40"
@@ -165,7 +165,7 @@
                              HorizontalContentAlignment="Left"
                              VerticalContentAlignment="Center"/>
 
-                    <!--Дата заключения -->
+                    <!--Дата заключения-->
                     <TextBlock Margin="5"
                                Text="Дата заключения "
                                Grid.Row="4" Grid.Column="1"
@@ -174,27 +174,23 @@
                                FontWeight="Normal"
                                FontSize="20"
                                Foreground="White"/>
-                    <DatePicker Name="dpDateOfConclusion" 
-                                Grid.Row="4" Grid.Column="2"
-                                SelectedDate="01.01.2021"
-                                IsDropDownOpen="False" 
-                                Focusable = "False"
-                                SelectedDateFormat="Short" 
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom"
-                                Height="40"
-                                Width="480"
-                                Padding="5,0"
-                                Background="White"
-                                FontFamily="Helvetica"
-                                FontWeight="Normal"
-                                FontSize="20"
-                                Foreground="Black"
-                                BorderThickness="2"
-                                BorderBrush="White"
-                                VerticalContentAlignment="Center"/>
+                    <TextBox Name="tbDateOfConclusion"
+                             Grid.Row="4" Grid.Column="2"
+                             IsReadOnly="True"
+                             Height="40"
+                             Width="480"
+                             Padding="5,0"
+                             Background="White"
+                             FontFamily="Helvetica"
+                             FontWeight="Normal"
+                             FontSize="20"
+                             Foreground="Black"
+                             VerticalAlignment="Bottom"
+                             HorizontalAlignment="Left"
+                             VerticalContentAlignment="Center"
+                             HorizontalContentAlignment="Left"/>
 
-                    <!--Срок действия-->
+                    <!--Дата окончания действия-->
                     <TextBlock Margin="5"
                                Text="Дата окончания действия"
                                Grid.Row="5" Grid.Column="1"
@@ -326,45 +322,8 @@
                             Content="-" 
                             Click="btnDeletePersonAllowedToDrive_Click"/>
 
-                    <!--Страховые случаи-->
-                    <TextBlock Margin="5"
-                               Text="Страховые случаи"
-                               Grid.Row="9" Grid.Column="1"
-                               VerticalAlignment="Bottom"
-                               FontFamily="Helvetica"
-                               FontWeight="Normal"
-                               FontSize="20"
-                               Foreground="White"/>
-                    <ComboBox Name="cbInsuranceEvents"
-                              IsReadOnly="True" IsEditable="False"
-                              Grid.Row="9" Grid.Column="2"
-                              Height="40"
-                              Width="480"
-                              Padding="5,0"
-                              Background="White"
-                              FontFamily="Helvetica"
-                              FontWeight="Normal"
-                              FontSize="20"
-                              Foreground="Black"
-                              VerticalAlignment="Bottom"
-                              HorizontalAlignment="Left"
-                              VerticalContentAlignment="Center"
-                              HorizontalContentAlignment="Left"/>
-                    <Button Width="40" Height="40"
-                            Grid.Row="9" Grid.Column="3"
-                            VerticalAlignment="Bottom"
-                            HorizontalAlignment="Left"
-                            Content="+"/>
-                            <!--Click="btnAddInsuranceEvents_Click"/>-->
-                    <Button Width="40" Height="40"
-                            Grid.Row="9" Grid.Column="4"
-                            VerticalAlignment="Bottom"
-                            HorizontalAlignment="Right"
-                            Content="-"/>
-                            <!--Click="btnDeleteInsuranceEvents_Click"/>-->
-
                     <!--Ошибка-->
-                    <StackPanel Grid.ColumnSpan="6" Grid.Row="1110"
+                    <StackPanel Grid.ColumnSpan="6" Grid.Row="9"
                                 VerticalAlignment="Center">
                         <TextBlock Name="tbException"
                                    Visibility="Hidden"
@@ -379,7 +338,13 @@
                 </Grid>
             </Border>
 
-            <StackPanel Margin="0,-160,0,0"
+            <StackPanel Margin="0,-160,300,0"
+                        VerticalAlignment="Center">
+                <Button Width="200" Height="50"
+                        Content="Страховые случаи" 
+                        Click="btnInsuranceEvents_Click"/>
+            </StackPanel>
+            <StackPanel Margin="300,-160,0,0"
                         VerticalAlignment="Center">
                 <Button Width="120" Height="50"
                         Content="Изменить" 

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Security.Cryptography;
 using System.Text;
-using System.Windows;
 
 namespace InsuranceAgency
 {
@@ -30,6 +29,7 @@ namespace InsuranceAgency
 
         public static void Authorization(string login, string password)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
@@ -45,6 +45,7 @@ namespace InsuranceAgency
 
                     if (!reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Неправильно указан логин и/или пароль");
                     }
                     while (reader.Read())
@@ -56,6 +57,7 @@ namespace InsuranceAgency
                         }
                         else
                         {
+                            flag = true;
                             throw new Exception("Данный сотрудник больше не работает");
                         }
                     }
@@ -63,9 +65,16 @@ namespace InsuranceAgency
                     con.Close();
                 }
             }
-            catch
+            catch (Exception exp)
             {
-                throw new Exception("Ошибка в работе БД");
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
             }
         }
 
@@ -74,6 +83,7 @@ namespace InsuranceAgency
         //Функции добавления
         public static void AddCarWithPhotos(Car car, List<string> photos)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
@@ -112,6 +122,7 @@ namespace InsuranceAgency
                     SqlDataReader reader = command1.ExecuteReader();
                     if (reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Данный VIN номер уже используется");
                     }
                     reader.Close();
@@ -120,14 +131,22 @@ namespace InsuranceAgency
                     con.Close();
                 }
             }
-            catch
+            catch (Exception exp)
             {
-                throw new Exception("Ошибка в работе БД");
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
             }
         }
 
         public static void AddEmployee(Employee employee)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
@@ -161,6 +180,7 @@ namespace InsuranceAgency
                     SqlDataReader reader = command1.ExecuteReader();
                     if (reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Данный телефон уже используется");
                     }
                     reader.Close();
@@ -168,6 +188,7 @@ namespace InsuranceAgency
                     reader = command2.ExecuteReader();
                     if (reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Данный паспорт уже используется");
                     }
                     reader.Close();
@@ -175,6 +196,7 @@ namespace InsuranceAgency
                     reader = command3.ExecuteReader();
                     if (reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Данный логин уже занят");
                     }
                     reader.Close();
@@ -183,32 +205,47 @@ namespace InsuranceAgency
                     con.Close();
                 }
             }
-            catch
+            catch (Exception exp)
+            {
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
+            }
+        }
+
+        public static void AddInsuranceEvent(InsuranceEvent insuranceEvent)
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                {
+                    string query = "INSERT INTO InsuranceEvents(Date, InsurancePayment, PolicyID) " +
+                                   "VALUES(@date, @insurancePayment, @policyID)";
+                    SqlCommand command = new SqlCommand(query, con);
+
+                    command.Parameters.Add(new SqlParameter("@date", insuranceEvent.Date));
+                    command.Parameters.Add(new SqlParameter("@insurancePayment", insuranceEvent.InsurancePayment));
+                    command.Parameters.Add(new SqlParameter("@policyID", insuranceEvent.PolicyID));
+
+                    con.Open();
+                    command.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+            catch 
             {
                 throw new Exception("Ошибка в работе БД");
             }
         }
 
-        //public static void AddInsuranceEvent(InsuranceEvent insuranceEvent)
-        //{
-        //    using (SqlConnection con = new SqlConnection(ConnectionString))
-        //    {
-        //        string query = "INSERT INTO InsuranceEvents(Date, InsurancePayment, PolicyID) " +
-        //                       "VALUES(@date, @insurancePayment, @policyID)";
-        //        SqlCommand command = new SqlCommand(query, con);
-
-        //        command.Parameters.Add(new SqlParameter("@date", insuranceEvent.Date));
-        //        command.Parameters.Add(new SqlParameter("@insurancePayment", insuranceEvent.InsurancePayment));
-        //        command.Parameters.Add(new SqlParameter("@policyID", insuranceEvent.PolicyID));
-
-        //        con.Open();
-        //        command.ExecuteNonQuery();
-        //        con.Close();
-        //    }
-        //}
-
         public static void AddPersonAllowedToDrive(PersonAllowedToDrive personAllowedToDrive)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
@@ -228,6 +265,7 @@ namespace InsuranceAgency
                     SqlDataReader reader = command1.ExecuteReader();
                     if (reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Данное водительское удостоверение уже используется");
                     }
                     reader.Close();
@@ -236,14 +274,22 @@ namespace InsuranceAgency
                     con.Close();
                 }
             }
-            catch
+            catch (Exception exp)
             {
-                throw new Exception("Ошибка в работе БД");
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
             }
         }
 
         public static void AddPolicyWithConnections(Policy policy, List<PersonAllowedToDrive> listPersonAllowedToDrive)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
@@ -262,15 +308,14 @@ namespace InsuranceAgency
 
                     string query = "BEGIN TRANSACTION " +
                                    "INSERT INTO Policies(InsuranceType, InsurancePremium, InsuranceAmount, DateOfConclusion, ExpirationDate, PolicyholderID, CarID, EmployeeID) " +
-                                   "VALUES(" +
-                                       "@insuranceType, " +
-                                       "@insurancePremium, " +
-                                       "@insuranceAmount, " +
-                                       "@dateOfConclusion, " +
-                                       "@expirationDate, " +
-                                       "@policyholderID, " +
-                                       "@carID, " +
-                                       "@employeeID" +
+                                   "VALUES(@insuranceType, " +
+                                          "@insurancePremium, " +
+                                          "@insuranceAmount, " +
+                                          "@dateOfConclusion, " +
+                                          "@expirationDate, " +
+                                          "@policyholderID, " +
+                                          "@carID, " +
+                                          "@employeeID" +
                                    "); " +
 
                                    "DECLARE @id INT; " +
@@ -279,13 +324,12 @@ namespace InsuranceAgency
                                    "INSERT INTO Connections(PolicyID, PersonAllowedToDriveID) VALUES ";
                     for (var i = 0; i < listPersonAllowedToDrive.Count - 1; i++)
                     {
-                        query += "(@personAllowedToDriveID" + i + ", @id), ";
+                        query += "(@id, @personAllowedToDriveID" + i + "), ";
                     }
-                    query += "(@personAllowedToDriveID" + (listPersonAllowedToDrive.Count - 1) + ", @id); " +
+                    query += "(@id, @personAllowedToDriveID" + (listPersonAllowedToDrive.Count - 1) + "); " +
                              "COMMIT TRANSACTION";
 
                     SqlCommand command = new SqlCommand(query, con);
-
                     command.Parameters.Add(new SqlParameter("@insuranceType", policy.InsuranceType));
                     command.Parameters.Add(new SqlParameter("@insurancePremium", policy.InsurancePremium));
                     command.Parameters.Add(new SqlParameter("@insuranceAmount", policy.InsuranceAmount));
@@ -303,6 +347,7 @@ namespace InsuranceAgency
                     SqlDataReader reader = command1.ExecuteReader();
                     if (!reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Данного страхователя нет");
                     }
                     reader.Close();
@@ -310,6 +355,7 @@ namespace InsuranceAgency
                     reader = command2.ExecuteReader();
                     if (!reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Данного автомобиля нет");
                     }
                     reader.Close();
@@ -317,6 +363,7 @@ namespace InsuranceAgency
                     reader = command3.ExecuteReader();
                     if (!reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Данного сотрудника нет");
                     }
                     reader.Close();
@@ -325,14 +372,22 @@ namespace InsuranceAgency
                     con.Close();
                 }
             }
-            catch
+            catch (Exception exp)
             {
-                throw new Exception("Ошибка в работе БД");
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
             }
         }
 
         public static void AddPolicyholder(Policyholder policyholder)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
@@ -358,6 +413,7 @@ namespace InsuranceAgency
                     SqlDataReader reader = command1.ExecuteReader();
                     if (reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Данный телефон уже используется");
                     }
                     reader.Close();
@@ -365,6 +421,7 @@ namespace InsuranceAgency
                     reader = command2.ExecuteReader();
                     if (reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Данный паспорт уже используется");
                     }
                     reader.Close();
@@ -373,9 +430,16 @@ namespace InsuranceAgency
                     con.Close();
                 }
             }
-            catch
+            catch (Exception exp)
             {
-                throw new Exception("Ошибка в работе БД");
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
             }
         }
 
@@ -390,9 +454,7 @@ namespace InsuranceAgency
                 {
                     string query = "BEGIN TRANSACTION " +
                                    "UPDATE Cars " +
-                                   "SET Model = @model, " +
-                                       "VIN = @vin, " +
-                                       "RegistrationPlate = @registrationPlate, " +
+                                   "SET RegistrationPlate = @registrationPlate, " +
                                        "VehiclePassport = @vehiclePassport " +
                                    "WHERE ID = @id ";
                     if (listAddPhotos.Count != 0)
@@ -406,18 +468,15 @@ namespace InsuranceAgency
                     }
                     if (listDeletePhotos.Count != 0)
                     {
-                        for (int i = 0; i < listDeletePhotos.Count - 1; i++)
+                        for (int i = 0; i < listDeletePhotos.Count; i++)
                         {
                             query += "DELETE FROM Photos WHERE ID = @photoID" + i + ";";
                         }
-                        query += "DELETE FROM Photos WHERE ID = @photoID" + (listDeletePhotos.Count - 1) + ";";
                     }
                     query += "COMMIT TRANSACTION";
 
                     SqlCommand command = new SqlCommand(query, con);
                     command.Parameters.Add(new SqlParameter("@id", car.ID));
-                    command.Parameters.Add(new SqlParameter("@model", car.Model));
-                    command.Parameters.Add(new SqlParameter("@vin", car.VIN));
                     command.Parameters.Add(new SqlParameter("@registrationPlate", car.RegistrationPlate));
                     command.Parameters.Add(new SqlParameter("@vehiclePassport", car.VehiclePassport));
                     for (int i = 0; i < listAddPhotos.Count; i++)
@@ -442,10 +501,26 @@ namespace InsuranceAgency
 
         public static void ChangeEmployee(Employee employee, bool changePassword)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
+                    string query1 = "SELECT ID FROM Employees WHERE Telephone = @telephone AND ID <> @id";
+                    SqlCommand command1 = new SqlCommand(query1, con);
+                    command1.Parameters.Add(new SqlParameter("@telephone", employee.Telephone));
+                    command1.Parameters.Add(new SqlParameter("@id", employee.ID));
+
+                    string query2 = "SELECT ID FROM Employees WHERE Passport = @passport AND ID <> @id";
+                    SqlCommand command2 = new SqlCommand(query2, con);
+                    command2.Parameters.Add(new SqlParameter("@passport", employee.Passport));
+                    command2.Parameters.Add(new SqlParameter("@id", employee.ID));
+
+                    string query3 = "SELECT ID FROM Employees WHERE Login = @login AND ID <> @id";
+                    SqlCommand command3 = new SqlCommand(query3, con);
+                    command3.Parameters.Add(new SqlParameter("@login", employee.Login));
+                    command3.Parameters.Add(new SqlParameter("@id", employee.ID));
+
                     string query = "UPDATE Employees " +
                                    "SET FullName = @fullName, " +
                                        "Birthday = @birthday, " +
@@ -471,44 +546,59 @@ namespace InsuranceAgency
                     command.Parameters.Add(new SqlParameter("@works", employee.Works));
 
                     con.Open();
+                    SqlDataReader reader = command1.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        flag = true;
+                        throw new Exception("Данный телефон уже используется");
+                    }
+                    reader.Close();
+
+                    reader = command2.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        flag = true;
+                        throw new Exception("Данный паспорт уже используется");
+                    }
+                    reader.Close();
+
+                    reader = command3.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        flag = true;
+                        throw new Exception("Данный логин уже занят");
+                    }
+                    reader.Close();
+
                     command.ExecuteNonQuery();
                     con.Close();
                 }
             }
-            catch
+            catch (Exception exp)
             {
-                throw new Exception("Ошибка в работе БД");
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
             }
         }
 
-        //public static void ChangeInsuranceEvent(InsuranceEvent insuranceEvent)
-        //{
-        //    using (SqlConnection con = new SqlConnection(ConnectionString))
-        //    {
-        //        string query = "UPDATE InsuranceEvents " + 
-        //                       "SET Date = @date, " + 
-        //                           "InsurancePayment = @insurancePayment, " +
-        //                           "PolicyID = @policyID " +
-        //                       "WHERE ID = @id";
-        //        SqlCommand command = new SqlCommand(query, con);
-
-        //        command.Parameters.Add(new SqlParameter("@id", insuranceEvent.ID));
-        //        command.Parameters.Add(new SqlParameter("@date", insuranceEvent.Date));
-        //        command.Parameters.Add(new SqlParameter("@insurancePayment", insuranceEvent.InsurancePayment));
-        //        command.Parameters.Add(new SqlParameter("@policyID", insuranceEvent.PolicyID));
-
-        //        con.Open();
-        //        command.ExecuteNonQuery();
-        //        con.Close();
-        //    }
-        //}
-
         public static void ChangePersonAllowedToDrive(PersonAllowedToDrive personAllowedToDrive)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
+                    string query1 = "SELECT ID FROM PersonsAllowedToDrive WHERE DrivingLicence = @drivingLicence AND ID <> @id";
+                    SqlCommand command1 = new SqlCommand(query1, con);
+                    command1.Parameters.Add(new SqlParameter("@drivingLicence", personAllowedToDrive.DrivingLicence));
+                    command1.Parameters.Add(new SqlParameter("@id", personAllowedToDrive.ID));
+
                     string query = "UPDATE PersonsAllowedToDrive " +
                                    "SET FullName = @fullName, " +
                                        "DrivingLicence = @drivingLicence " +
@@ -518,6 +608,74 @@ namespace InsuranceAgency
                     command.Parameters.Add(new SqlParameter("@id", personAllowedToDrive.ID));
                     command.Parameters.Add(new SqlParameter("@fullName", personAllowedToDrive.FullName));
                     command.Parameters.Add(new SqlParameter("@drivingLicence", personAllowedToDrive.DrivingLicence));
+
+                    con.Open();
+                    SqlDataReader reader = command1.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        flag = true;
+                        throw new Exception("Данное водительское удостоверение уже используется");
+                    }
+                    reader.Close();
+
+                    command.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+            catch (Exception exp)
+            {
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
+            }
+        }
+
+        public static void ChangePolicyWithConnections(Policy policy, List<PersonAllowedToDrive> listDeletePersons, List<PersonAllowedToDrive> listAddPersons)
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                {
+                    string query = "BEGIN TRANSACTION " +
+                                   "UPDATE Policies " +
+                                   "SET InsurancePremium = @insurancePremium, " +
+                                       "ExpirationDate = @expirationDate " +
+                                   "WHERE ID = @id; ";
+                    if (listAddPersons.Count != 0)
+                    {
+                        query += "INSERT INTO Connections(PolicyID, PersonAllowedToDriveID) VALUES ";
+                        for (int i = 0; i < listAddPersons.Count - 1; i++)
+                        {
+                            query += "(@id, @addPersonID" + i + "), ";
+                        }
+                        query += "(@id, @addPersonID" + (listAddPersons.Count - 1) + "); ";
+                    }
+                    if (listDeletePersons.Count != 0)
+                    {
+                        for (int i = 0; i < listDeletePersons.Count; i++)
+                        {
+                            query += "DELETE FROM Connections WHERE PolicyID = @id AND PersonAllowedToDriveID = @deletePersonID" + i + ";";
+                        }
+                    }
+                    query += "COMMIT TRANSACTION";
+
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@id", policy.ID));
+                    command.Parameters.Add(new SqlParameter("@insurancePremium", policy.InsurancePremium));
+                    command.Parameters.Add(new SqlParameter("@expirationDate", policy.ExpirationDate));
+                    for (int i = 0; i < listAddPersons.Count; i++)
+                    {
+                        command.Parameters.Add(new SqlParameter("@addPersonID" + i, listAddPersons[i].ID));
+                    }
+                    for (int i = 0; i < listDeletePersons.Count; i++)
+                    {
+                        command.Parameters.Add(new SqlParameter("@deletePersonID" + i, listDeletePersons[i].ID));
+                    }
 
                     con.Open();
                     command.ExecuteNonQuery();
@@ -530,44 +688,23 @@ namespace InsuranceAgency
             }
         }
 
-        //public static void ChangePolicy(Policy policy)
-        //{
-        //    using (SqlConnection con = new SqlConnection(ConnectionString))
-        //    {
-        //        string query = "UPDATE Policies " +
-        //                       "SET InsuranceType = @insuranceType, " +
-        //                           "InsuranceAmount = @insuranceAmount, " +
-        //                           "InsurancePremium = @insurancePremium, " +
-        //                           "DateOfConclusion = @dateOfConclusion, " +
-        //                           "ExpirationDate = @expirationDate, " +
-        //                           "PolicyholderID = (SELECT ID FROM Policyholders WHERE Passport = @policyholderPassport), " +
-        //                           "CarID = (SELECT ID FROM Cars WHERE VIN = @vin), " +
-        //                           "EmployeeID = (SELECT ID FROM Employees WHERE Passport = @employeePassport) " +
-        //                       "WHERE ID = @id";
-        //        SqlCommand command = new SqlCommand(query, con);
-
-        //        command.Parameters.Add(new SqlParameter("@id", policy.ID));
-        //        command.Parameters.Add(new SqlParameter("@insuranceType", policy.InsuranceType));
-        //        command.Parameters.Add(new SqlParameter("@insuranceAmount", policy.InsuranceAmount));
-        //        command.Parameters.Add(new SqlParameter("@insurancePremium", policy.InsurancePremium));
-        //        command.Parameters.Add(new SqlParameter("@dateOfConclusion", policy.DateOfConclusion));
-        //        command.Parameters.Add(new SqlParameter("@expirationDate", policy.ExpirationDate));
-        //        command.Parameters.Add(new SqlParameter("@policyholderPassport", policy.PolicyholderPassport));
-        //        command.Parameters.Add(new SqlParameter("@vin", policy.VIN));
-        //        command.Parameters.Add(new SqlParameter("@employeePassport", policy.EmployeePassport));
-
-        //        con.Open();
-        //        command.ExecuteNonQuery();
-        //        con.Close();
-        //    }
-        //}
-
         public static void ChangePolicyholder(Policyholder policyholder)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
+                    string query1 = "SELECT ID FROM Policyholders WHERE Telephone = @telephone AND ID <> @id";
+                    SqlCommand command1 = new SqlCommand(query1, con);
+                    command1.Parameters.Add(new SqlParameter("@telephone", policyholder.Telephone));
+                    command1.Parameters.Add(new SqlParameter("@id", policyholder.ID));
+
+                    string query2 = "SELECT ID FROM Policyholders WHERE Passport = @passport AND ID <> @id";
+                    SqlCommand command2 = new SqlCommand(query2, con);
+                    command2.Parameters.Add(new SqlParameter("@passport", policyholder.Passport));
+                    command2.Parameters.Add(new SqlParameter("@id", policyholder.ID));
+
                     string query = "UPDATE Policyholders " +
                                    "SET FullName = @fullName, " +
                                        "Birthday = @birthday, " +
@@ -583,13 +720,36 @@ namespace InsuranceAgency
                     command.Parameters.Add(new SqlParameter("@passport", policyholder.Passport));
 
                     con.Open();
+                    SqlDataReader reader = command1.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        flag = true;
+                        throw new Exception("Данный телефон уже используется");
+                    }
+                    reader.Close();
+
+                    reader = command2.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        flag = true;
+                        throw new Exception("Данный паспорт уже используется");
+                    }
+                    reader.Close();
+
                     command.ExecuteNonQuery();
                     con.Close();
                 }
             }
-            catch
+            catch (Exception exp)
             {
-                throw new Exception("Ошибка в работе БД");
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
             }
         }
 
@@ -598,136 +758,167 @@ namespace InsuranceAgency
         //Функции удаления
         public static void DeleteCar(int id)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
+                    string query1 = "SELECT ID FROM Policies WHERE CarID = @carID";
+                    SqlCommand command1 = new SqlCommand(query1, con);
+                    command1.Parameters.Add(new SqlParameter("@carID", id));
+
                     string query = "DELETE FROM Cars WHERE ID = @id";
                     SqlCommand command = new SqlCommand(query, con);
                     command.Parameters.Add(new SqlParameter("@id", id));
 
                     con.Open();
+                    SqlDataReader reader = command1.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        flag = true;
+                        throw new Exception("Вы не можете удалить данный автомобили, так как на него оформлен полис");
+                    }
+                    reader.Close();
+
                     command.ExecuteNonQuery();
                     con.Close();
                 }
             }
-            catch
+            catch (Exception exp)
             {
-                throw new Exception("Ошибка в работе БД");
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
             }
 
         }
 
-        //public static void DeleteConnection(Connection connection)
-        //{
-        //    using (SqlConnection con = new SqlConnection(ConnectionString))
-        //    {
-        //        string query = "DELETE FROM Connections " +
-        //                       "WHERE " +
-        //                           "PolicyID = @policyID AND " +
-        //                           "PersonAllowedToDriveID = (SELECT ID FROM PersonsAllowedToDrive WHERE DrivingLicence = @drivingLicence)";
-        //        SqlCommand command = new SqlCommand(query, con);
-
-        //        command.Parameters.Add(new SqlParameter("@policyID", connection.PolicyholderPassport));
-        //        command.Parameters.Add(new SqlParameter("@drivingLicence", connection.DrivingLicence));
-
-        //        con.Open();
-        //        command.ExecuteNonQuery();
-        //        con.Close();
-        //    }
-        //}
-
         public static void DeleteEmployee(int id)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
+                    string query1 = "SELECT ID FROM Policies WHERE EmployeeID = @employeeID";
+                    SqlCommand command1 = new SqlCommand(query1, con);
+                    command1.Parameters.Add(new SqlParameter("@employeeID", id));
+
                     string query = "DELETE FROM Employees WHERE ID = @id";
                     SqlCommand command = new SqlCommand(query, con);
                     command.Parameters.Add(new SqlParameter("@id", id));
 
                     con.Open();
+                    SqlDataReader reader = command1.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        flag = true;
+                        throw new Exception("Вы не можете удалить данного сотрудника, так как он оформил полис");
+                    }
+                    reader.Close();
+
                     command.ExecuteNonQuery();
                     con.Close();
                 }
             }
-            catch
+            catch (Exception exp)
             {
-                throw new Exception("Ошибка в работе БД");
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
             }
         }
 
-        //public static void DeleteInsuranceEvent(InsuranceEvent insuranceEvent)
-        //{
-        //    using (SqlConnection con = new SqlConnection(ConnectionString))
-        //    {
-        //        string query = "DELETE FROM InsuranceEvents WHERE ID = @id";
-        //        SqlCommand command = new SqlCommand(query, con);
-
-        //        command.Parameters.Add(new SqlParameter("@id", insuranceEvent.ID));
-
-        //        con.Open();
-        //        command.ExecuteNonQuery();
-        //        con.Close();
-        //    }
-        //}
-
         public static void DeletePersonAllowedToDrive(int id)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
+                    string query1 = "SELECT * FROM Connections WHERE PersonAllowedToDriveID = @personAllowedToDriveID";
+                    SqlCommand command1 = new SqlCommand(query1, con);
+                    command1.Parameters.Add(new SqlParameter("@personAllowedToDriveID", id));
+
                     string query = "DELETE FROM PersonsAllowedToDrive WHERE ID = @id";
                     SqlCommand command = new SqlCommand(query, con);
                     command.Parameters.Add(new SqlParameter("@id", id));
 
                     con.Open();
+                    SqlDataReader reader = command1.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        flag = true;
+                        throw new Exception("Вы не можете удалить данного водителя, так как на него оформлен полис");
+                    }
+                    reader.Close();
+
                     command.ExecuteNonQuery();
                     con.Close();
                 }
             }
-            catch
+            catch (Exception exp)
             {
-                throw new Exception("Ошибка в работе БД");
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
             }
         }
 
-        //public static void DeletePolicy(Policy policy)
-        //{
-        //    using (SqlConnection con = new SqlConnection(ConnectionString))
-        //    {
-        //        string query = "DELETE FROM Policies WHERE ID = @id";
-        //        SqlCommand command = new SqlCommand(query, con);
-
-        //        command.Parameters.Add(new SqlParameter("@id", policy.ID));
-
-        //        con.Open();
-        //        command.ExecuteNonQuery();
-        //        con.Close();
-        //    }
-        //}
-
         public static void DeletePolicyholder(int id)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
+                    string query1 = "SELECT ID FROM Policies WHERE PolicyholderID = @policyholderID";
+                    SqlCommand command1 = new SqlCommand(query1, con);
+                    command1.Parameters.Add(new SqlParameter("@policyholderID", id));
+
                     string query = "DELETE FROM Policyholders WHERE ID = @id";
                     SqlCommand command = new SqlCommand(query, con);
 
                     command.Parameters.Add(new SqlParameter("@id", id));
 
                     con.Open();
+                    SqlDataReader reader = command1.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        flag = true;
+                        throw new Exception("Вы не можете удалить данного страхователя, так как он оформил полис");
+                    }
+                    reader.Close();
+
                     command.ExecuteNonQuery();
                     con.Close();
                 }
             }
-            catch
+            catch (Exception exp)
             {
-                throw new Exception("Ошибка в работе БД");
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
             }
         }
 
@@ -736,6 +927,7 @@ namespace InsuranceAgency
         //Функции поиска
         public static Car SearchCar(string vin)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
@@ -750,6 +942,7 @@ namespace InsuranceAgency
                     Car car;
                     if (!reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Данный автомобиль не существует");
                     }
                     while (reader.Read())
@@ -766,14 +959,22 @@ namespace InsuranceAgency
                     return null;
                 }
             }
-            catch
+            catch (Exception exp)
             {
-                throw new Exception("Ошибка в работе БД");
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
             }
         }
 
         public static Car SearchCarID(int id)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
@@ -788,6 +989,7 @@ namespace InsuranceAgency
                     Car car;
                     if (!reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Данный автомобиль не существует");
                     }
                     while (reader.Read())
@@ -804,9 +1006,16 @@ namespace InsuranceAgency
                     return null;
                 }
             }
-            catch
+            catch (Exception exp)
             {
-                throw new Exception("Ошибка в работе БД");
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
             }
         }
 
@@ -844,6 +1053,7 @@ namespace InsuranceAgency
 
         public static Employee SearchEmployee(string telephoneOrPassport)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
@@ -858,6 +1068,7 @@ namespace InsuranceAgency
                     Employee employee;
                     if (!reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Данный сотрудник не существует");
                     }
                     while (reader.Read())
@@ -878,14 +1089,22 @@ namespace InsuranceAgency
                     return null;
                 }
             }
-            catch
+            catch (Exception exp)
             {
-                throw new Exception("Ошибка в работе БД");
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
             }
         }
 
         public static Employee SearchEmployeeID(int id)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
@@ -900,6 +1119,7 @@ namespace InsuranceAgency
                     Employee employee;
                     if (!reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Данный сотрудник не существует");
                     }
                     while (reader.Read())
@@ -920,14 +1140,22 @@ namespace InsuranceAgency
                     return null;
                 }
             }
-            catch
+            catch (Exception exp)
             {
-                throw new Exception("Ошибка в работе БД");
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
             }
         }
 
         public static Employee SearchEmployeeLogin(string login)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
@@ -942,6 +1170,7 @@ namespace InsuranceAgency
                     Employee employee;
                     if (!reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Данный сотрудник не существует");
                     }
                     while (reader.Read())
@@ -962,32 +1191,83 @@ namespace InsuranceAgency
                     return null;
                 }
             }
+            catch (Exception exp)
+            {
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
+            }
+        }
+
+        public static List<InsuranceEvent> SearchInsuranceEvent(int policyID)
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                {
+                    var list = new List<InsuranceEvent>();
+
+                    string query = "SELECT * FROM InsuranceEvents WHERE PolicyID = @policyID ORDER BY Date";
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@policyID", policyID));
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        var insuranceEvent = new InsuranceEvent(Convert.ToInt32(reader["ID"].ToString()),
+                                                                Convert.ToDateTime(reader["Date"].ToString()),
+                                                                Convert.ToInt32(reader["InsurancePayment"].ToString()),
+                                                                Convert.ToInt32(reader["PolicyID"].ToString()));
+                        list.Add(insuranceEvent);
+                    }
+                    reader.Close();
+                    con.Close();
+                    return list;
+                }
+            }
             catch
             {
                 throw new Exception("Ошибка в работе БД");
             }
         }
 
-        //public static void SearchInsuranceEvent(InsuranceEvent insuranceEvent)
-        //{
-        //    using (SqlConnection con = new SqlConnection(ConnectionString))
-        //    {
-        //        string query = "INSERT INTO InsuranceEvents(Date, InsurancePayment, PolicyID) " +
-        //                       "VALUES(@date, @insurancePayment, @policyID)";
-        //        SqlCommand command = new SqlCommand(query, con);
+        public static DateTime SearchInsuranceEventMaxDate(int policyID)
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                {
+                    string query = "SELECT MAX(Date) FROM InsuranceEvents WHERE PolicyID = @policyID";
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.Add(new SqlParameter("@policyID", policyID));
 
-        //        command.Parameters.Add(new SqlParameter("@date", insuranceEvent.Date));
-        //        command.Parameters.Add(new SqlParameter("@insurancePayment", insuranceEvent.InsurancePayment));
-        //        command.Parameters.Add(new SqlParameter("@policyID", insuranceEvent.PolicyID));
-
-        //        con.Open();
-        //        command.ExecuteNonQuery();
-        //        con.Close();
-        //    }
-        //}
+                    con.Open();
+                    var temp = command.ExecuteScalar().ToString();
+                    if (temp == String.Empty)
+                    {
+                        return default;
+                    }
+                    DateTime dateMax = Convert.ToDateTime(temp);
+                    con.Close();
+                    return dateMax;
+                }
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
+            }
+        }
 
         public static PersonAllowedToDrive SearchPersonAllowedToDrive(string drivingLicence)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
@@ -1002,6 +1282,7 @@ namespace InsuranceAgency
                     PersonAllowedToDrive personAllowedToDrive;
                     if (!reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Данный водитель не существует");
                     }
                     while (reader.Read())
@@ -1016,14 +1297,22 @@ namespace InsuranceAgency
                     return null;
                 }
             }
-            catch
+            catch (Exception exp)
             {
-                throw new Exception("Ошибка в работе БД");
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
             }
         }
 
         public static PersonAllowedToDrive SearchPersonAllowedToDriveID(int id)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
@@ -1038,6 +1327,7 @@ namespace InsuranceAgency
                     PersonAllowedToDrive personAllowedToDrive;
                     if (!reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Данный водитель не существует");
                     }
                     while (reader.Read())
@@ -1052,9 +1342,16 @@ namespace InsuranceAgency
                     return null;
                 }
             }
-            catch
+            catch (Exception exp)
             {
-                throw new Exception("Ошибка в работе БД");
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
             }
         }
 
@@ -1171,6 +1468,7 @@ namespace InsuranceAgency
 
         public static Policyholder SearchPolicyholder(string telephoneOrPassport)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
@@ -1185,6 +1483,7 @@ namespace InsuranceAgency
                     Policyholder policyholder;
                     if (!reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Данный страхователь не существует");
                     }
                     while (reader.Read())
@@ -1201,14 +1500,22 @@ namespace InsuranceAgency
                     return null;
                 }
             }
-            catch
+            catch (Exception exp)
             {
-                throw new Exception("Ошибка в работе БД");
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
             }
         }
 
         public static Policyholder SearchPolicyholderID(int id)
         {
+            bool flag = false;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
@@ -1223,6 +1530,7 @@ namespace InsuranceAgency
                     Policyholder policyholder;
                     if (!reader.HasRows)
                     {
+                        flag = true;
                         throw new Exception("Данный страхователь не существует");
                     }
                     while (reader.Read())
@@ -1239,9 +1547,16 @@ namespace InsuranceAgency
                     return null;
                 }
             }
-            catch
+            catch (Exception exp)
             {
-                throw new Exception("Ошибка в работе БД");
+                if (flag)
+                {
+                    throw exp;
+                }
+                else
+                {
+                    throw new Exception("Ошибка в работе БД");
+                }
             }
         }
 
@@ -1249,40 +1564,6 @@ namespace InsuranceAgency
 
         //Функции получения всего списка
         public static List<Car> AllCars()
-        {
-            try
-            {
-                using (SqlConnection con = new SqlConnection(ConnectionString))
-                {
-                    var list = new List<Car>();
-
-                    string query = "SELECT * FROM Cars";
-                    SqlCommand command = new SqlCommand(query, con);
-
-                    con.Open();
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        var car = new Car(Convert.ToInt32(reader["ID"].ToString()),
-                                          reader["Model"].ToString(),
-                                          reader["VIN"].ToString(),
-                                          reader["RegistrationPlate"].ToString(),
-                                          reader["VehiclePassport"].ToString());
-                        list.Add(car);
-                    }
-                    reader.Close();
-                    con.Close();
-                    return list;
-                }
-            }
-            catch
-            {
-                throw new Exception("Ошибка в работе БД");
-            }
-        }
-
-        public static List<Car> AllCarsDG()
         {
             try
             {

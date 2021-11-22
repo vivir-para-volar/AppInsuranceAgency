@@ -195,30 +195,51 @@ namespace InsuranceAgency.Pages
 
         private void btnDeleteImage_Click(object sender, RoutedEventArgs e)
         {
-            listPhotos.RemoveAt(currentIndex);
-            listEncodedPhotos.RemoveAt(currentIndex);
-
-            currentIndex = 0;
-
-            if (listPhotos.Count == 1)
+            try
             {
-                currentIndex = 0;
-                btnLeft.Visibility = Visibility.Hidden;
-                btnRight.Visibility = Visibility.Hidden;
+                if (listEncodedPhotos.Count == 0)
+                {
+                    throw new Exception("Добавьте фотографию автомобиля");
+                }
+
+                System.Windows.Forms.DialogResult result = System.Windows.Forms.MessageBox.Show("Вы уверены, что хотите удалить данную фотографию", "Удаление",
+                                                                                                System.Windows.Forms.MessageBoxButtons.YesNo,
+                                                                                                System.Windows.Forms.MessageBoxIcon.Information,
+                                                                                                System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                                                                                                System.Windows.Forms.MessageBoxOptions.DefaultDesktopOnly);
+                if (result == System.Windows.Forms.DialogResult.Yes)
+                {
+                    listPhotos.RemoveAt(currentIndex);
+                    listEncodedPhotos.RemoveAt(currentIndex);
+
+                    currentIndex = 0;
+
+                    if (listPhotos.Count == 1)
+                    {
+                        currentIndex = 0;
+                        btnLeft.Visibility = Visibility.Hidden;
+                        btnRight.Visibility = Visibility.Hidden;
+                    }
+
+                    if (listPhotos.Count == 0)
+                    {
+                        currentIndex = 0;
+                        BitmapImage bi = new BitmapImage();
+                        bi.BeginInit();
+                        bi.UriSource = new Uri("/InsuranceAgency;component/Assets/Car.jpg", UriKind.RelativeOrAbsolute);
+                        bi.EndInit();
+                        imgCar.Source = bi;
+                    }
+                    else
+                    {
+                        imgCar.Source = listPhotos[currentIndex];
+                    }
+                }
             }
-
-            if (listPhotos.Count == 0)
+            catch (Exception exp)
             {
-                currentIndex = 0;
-                BitmapImage bi = new BitmapImage();
-                bi.BeginInit();
-                bi.UriSource = new Uri("/InsuranceAgency;component/Assets/Car.jpg", UriKind.RelativeOrAbsolute);
-                bi.EndInit();
-                imgCar.Source = bi;
-            }
-            else
-            {
-                imgCar.Source = listPhotos[currentIndex];
+                tbException.Visibility = Visibility.Visible;
+                tbException.Text = exp.Message;
             }
         }
     }

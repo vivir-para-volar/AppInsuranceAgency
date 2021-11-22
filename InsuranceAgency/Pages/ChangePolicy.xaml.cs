@@ -8,17 +8,19 @@ namespace InsuranceAgency.Pages
 {
     public partial class ChangePolicy : Page
     {
-        int PolicyhilderID;
-        List<PersonAllowedToDrive> listPerson = new List<PersonAllowedToDrive>();
+        Struct.Policy Policy;
 
-        public ChangePolicy(int policyhilderID, int policyID)
+        List<PersonAllowedToDrive> listPersons = new List<PersonAllowedToDrive>();
+        List<PersonAllowedToDrive> listNewPersons = new List<PersonAllowedToDrive>();
+        List<PersonAllowedToDrive> listDeletePersons = new List<PersonAllowedToDrive>();
+        List<PersonAllowedToDrive> listAddPersons = new List<PersonAllowedToDrive>();
+
+        public ChangePolicy(int policyID)
         {
             InitializeComponent();
 
-            PolicyhilderID = policyhilderID;
-
-            Struct.Policy policy = Database.SearchPolicyID(policyID);
-            AddInfoInTb(policy);
+            Policy = Database.SearchPolicyID(policyID);
+            AddInfoInTb(Policy);
         }
 
         private void AddInfoInTb(Struct.Policy policy)
@@ -26,7 +28,7 @@ namespace InsuranceAgency.Pages
             tbInsuranceType.Text = policy.InsuranceType;
             tbInsurancePremium.Text = policy.InsurancePremium.ToString();
             tbInsuranceAmount.Text = policy.InsuranceAmount.ToString();
-            dpDateOfConclusion.SelectedDate = policy.DateOfConclusion;
+            tbDateOfConclusion.Text = policy.DateOfConclusion.ToString("d");
             dpExpirationDate.SelectedDate = policy.ExpirationDate;
             tbVIN.Text = Database.SearchCarID(policy.CarID).VIN;
             tbEmployee.Text = Database.SearchEmployeeID(policy.EmployeeID).FullName;
@@ -35,7 +37,8 @@ namespace InsuranceAgency.Pages
             foreach (var item in connections)
             {
                 PersonAllowedToDrive personAllowedToDrive = Database.SearchPersonAllowedToDriveID(item.PersonAllowedToDriveID);
-                listPerson.Add(personAllowedToDrive);
+                listPersons.Add(personAllowedToDrive);
+                listNewPersons.Add(personAllowedToDrive);
                 cbPersonsAllowedToDrive.Items.Add(personAllowedToDrive.FullName);
             }
             cbPersonsAllowedToDrive.Text = "";
@@ -59,17 +62,6 @@ namespace InsuranceAgency.Pages
         {
             try
             {
-                string insuranceType = tbInsuranceType.Text;
-
-                string insuranceAmount_temp = tbInsuranceAmount.Text.Trim();
-                if (insuranceAmount_temp == "")
-                {
-                    throw new Exception("Заполните поле Страховая сумма");
-                }
-                int insuranceAmount = 0;
-                try { insuranceAmount = Convert.ToInt32(insuranceAmount_temp); }
-                catch { throw new Exception("Страховая сумма должна быть целым числом"); }
-
                 string insurancePremium_temp = tbInsurancePremium.Text.Trim();
                 if (insurancePremium_temp == "")
                 {
@@ -79,35 +71,25 @@ namespace InsuranceAgency.Pages
                 try { insurancePremium = Convert.ToInt32(insurancePremium_temp); }
                 catch { throw new Exception("Страховая премия должна быть целым числом"); }
 
-                DateTime dateOfConclusion = Convert.ToDateTime(dpDateOfConclusion.Text);
-
                 DateTime expirationDate = Convert.ToDateTime(dpExpirationDate.Text); 
-
-                string vin = tbVIN.Text.Trim();
-                if (vin.Length != 17)
+                if(expirationDate < Policy.DateOfConclusion)
                 {
-                    throw new Exception("VIN номер должен содержать 17 знаков");
+                    throw new Exception("Дата окончания действия не может быть меньше даты заключения");
                 }
-                foreach (var item in vin)
+                DateTime maxDate = Database.SearchInsuranceEventMaxDate(Policy.ID);
+                if (maxDate != DateTime.MinValue)
                 {
-                    if (!char.IsDigit(item) && !(Convert.ToInt32(item) >= 65 && Convert.ToInt32(item) <= 90))
+                    if(expirationDate < maxDate)
                     {
-                        throw new Exception("VIN номер должен состоять из цифр и заглавных латинских букв");
+                        throw new Exception("Дата окончания действия не может быть меньше даты последнего страхового случая");
                     }
                 }
-                Car car = Database.SearchCar(vin);
-                int carID = car.ID;
 
-                int employeeID = Database.SearchEmployeeLogin(Database.Login).ID;
-
-                Struct.Policy policy = new Struct.Policy(insuranceType, insurancePremium, insuranceAmount, dateOfConclusion, expirationDate, PolicyhilderID, carID, employeeID);
-
-
-                //Database.AddPolicyWithConnections(policy, listPerson);
-
+                Struct.Policy policyChange = new Struct.Policy(Policy.ID, Policy.InsuranceType, insurancePremium, Policy.InsuranceAmount, Policy.DateOfConclusion, expirationDate, Policy.PolicyholderID, Policy.CarID, Policy.EmployeeID);
+                Database.ChangePolicyWithConnections(policyChange, listDeletePersons, listAddPersons);
                 MessageBox.Show("Полис успешно изменён", "", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                this.NavigationService.Navigate(new Pages.Policy(PolicyhilderID));
+                this.NavigationService.Navigate(new Pages.Policy(Policy.PolicyholderID));
             }
             catch (Exception exp)
             {
@@ -120,12 +102,16 @@ namespace InsuranceAgency.Pages
         {
             try
             {
-                PersonAllowedToDrive personAllowedToDrive = Database.SearchPersonAllowedToDrive(cbPersonsAllowedToDrive.Text);
-                if (listPerson.Contains(personAllowedToDrive))
+                PersonAllowedToDrive personAllowedToDrive = Database.SearchPersonAllowedToDrive(cbPersonsAllowedToDrive.Text.Trim());
+                foreach (var item in listNewPersons)
                 {
-                    throw new Exception("Данный водитель уже добавлен");
+                    if (item.ID == personAllowedToDrive.ID)
+                    {
+                        throw new Exception("Данный водитель уже добавлен");
+                    }
                 }
-                listPerson.Add(personAllowedToDrive);
+                listNewPersons.Add(personAllowedToDrive);
+                listAddPersons.Add(personAllowedToDrive);
                 cbPersonsAllowedToDrive.Items.Add(personAllowedToDrive.FullName);
 
                 MessageBox.Show("Водитель добавлен", "", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -143,28 +129,53 @@ namespace InsuranceAgency.Pages
         {
             try
             {
-                int index = cbPersonsAllowedToDrive.SelectedIndex;
-                try
+                System.Windows.Forms.DialogResult result = System.Windows.Forms.MessageBox.Show("Вы уверены, что хотите удалить данного водителя", "Удаление",
+                                                                                                System.Windows.Forms.MessageBoxButtons.YesNo,
+                                                                                                System.Windows.Forms.MessageBoxIcon.Information,
+                                                                                                System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                                                                                                System.Windows.Forms.MessageBoxOptions.DefaultDesktopOnly);
+                if (result == System.Windows.Forms.DialogResult.Yes)
                 {
-                    if (cbPersonsAllowedToDrive.Text == listPerson[index].FullName)
-                    {
-                        listPerson.RemoveAt(index);
-                    }
-                    else
-                    {
-                        throw new Exception("Данный водитель не существует в списке добавленных водителей");
-                    }
-                }
-                catch { throw new Exception("Данный водитель не существует в списке добавленных водителей"); }
-                cbPersonsAllowedToDrive.Items.Clear();
-                foreach (var item in listPerson)
-                {
-                    cbPersonsAllowedToDrive.Items.Add(item.FullName);
-                }
+                    int index = cbPersonsAllowedToDrive.SelectedIndex;
 
-                MessageBox.Show("Водитель удалён", "", MessageBoxButton.OK, MessageBoxImage.Information);
-                cbPersonsAllowedToDrive.Text = "";
-                tbPersonsAllowedToDriveHint.Visibility = Visibility.Visible;
+                    try
+                    {
+                        if (cbPersonsAllowedToDrive.Text == listNewPersons[index].FullName)
+                        {
+                            for (var i = 0; i < listPersons.Count; i++)
+                            {
+                                if (listNewPersons[index] == listPersons[i])
+                                {
+                                    listDeletePersons.Add(listPersons[i]);
+                                }
+                            }
+                            for (var i = 0; i < listAddPersons.Count; i++)
+                            {
+                                if (listNewPersons[index] == listAddPersons[i])
+                                {
+                                    listAddPersons.RemoveAt(i);
+                                }
+                            }
+
+                            listNewPersons.RemoveAt(index);
+                        }
+                        else
+                        {
+                            throw new Exception("Данный водитель не существует в списке добавленных водителей");
+                        }
+                    }
+                    catch { throw new Exception("Данный водитель не существует в списке добавленных водителей"); }
+
+                    cbPersonsAllowedToDrive.Items.Clear();
+                    foreach (var item in listNewPersons)
+                    {
+                        cbPersonsAllowedToDrive.Items.Add(item.FullName);
+                    }
+
+                    MessageBox.Show("Водитель удалён", "", MessageBoxButton.OK, MessageBoxImage.Information);
+                    cbPersonsAllowedToDrive.Text = "";
+                    tbPersonsAllowedToDriveHint.Visibility = Visibility.Visible;
+                }
             }
             catch (Exception exp)
             {
@@ -175,7 +186,12 @@ namespace InsuranceAgency.Pages
 
         private void btnBack_Click(object sender, RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(new Pages.Policy(PolicyhilderID));
+            this.NavigationService.Navigate(new Pages.Policy(Policy.PolicyholderID));
+        }
+
+        private void btnInsuranceEvents_Click(object sender, RoutedEventArgs e)
+        {
+            this.NavigationService.Navigate(new Pages.InsuranceEvents(Policy));
         }
     }
 }
