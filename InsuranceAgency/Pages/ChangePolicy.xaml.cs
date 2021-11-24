@@ -86,6 +86,12 @@ namespace InsuranceAgency.Pages
                 }
 
                 Struct.Policy policyChange = new Struct.Policy(Policy.ID, Policy.InsuranceType, insurancePremium, Policy.InsuranceAmount, Policy.DateOfConclusion, expirationDate, Policy.PolicyholderID, Policy.CarID, Policy.EmployeeID);
+
+                if (listNewPersons.Count == 0)
+                {
+                    throw new Exception("Список лиц допущенных к управлению пуст");
+                }
+
                 Database.ChangePolicyWithConnections(policyChange, listDeletePersons, listAddPersons);
                 MessageBox.Show("Полис успешно изменён", "", MessageBoxButton.OK, MessageBoxImage.Information);
 

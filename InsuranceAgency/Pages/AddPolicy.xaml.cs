@@ -121,6 +121,10 @@ namespace InsuranceAgency.Pages
 
                 Struct.Policy policy = new Struct.Policy(insuranceType, insurancePremium, insuranceAmount, dateOfConclusion, expirationDate, PolicyhilderID, carID, employeeID);
                 
+                if(list.Count == 0)
+                {
+                    throw new Exception("Список лиц допущенных к управлению пуст");
+                }
 
                 Database.AddPolicyWithConnections(policy, list);
 
