@@ -193,5 +193,10 @@ namespace InsuranceAgency.Pages
         {
             this.NavigationService.Navigate(new Pages.InsuranceEvents(Policy));
         }
+
+        private void btnExtendPolicy_Click(object sender, RoutedEventArgs e)
+        {
+            this.NavigationService.Navigate(new Pages.AddPolicy(Policy));
+        }
     }
 }

@@ -21,7 +21,14 @@ namespace InsuranceAgency
 
         private void BtnMaximized_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            this.WindowState = WindowState.Maximized;
+            if(this.WindowState == WindowState.Maximized)
+            {
+                this.WindowState = WindowState.Normal;
+            }
+            else
+            {
+                this.WindowState = WindowState.Maximized;
+            }
         }
 
         private void BtnClose_MouseDown(object sender, MouseButtonEventArgs e)

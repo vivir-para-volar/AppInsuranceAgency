@@ -1,6 +1,7 @@
 ﻿using InsuranceAgency.Struct;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Security.Cryptography;
 using System.Text;
@@ -1396,7 +1397,7 @@ namespace InsuranceAgency
                 {
                     var list = new List<Policy>();
 
-                    string query = "SELECT * FROM Policies WHERE PolicyholderID = @policyholderID";
+                    string query = "SELECT * FROM Policies WHERE PolicyholderID = @policyholderID ORDER BY DateOfConclusion DESC";
                     SqlCommand command = new SqlCommand(query, con);
                     command.Parameters.Add(new SqlParameter("@policyholderID", policyholderID));
 
@@ -1757,6 +1758,74 @@ namespace InsuranceAgency
                     reader.Close();
                     con.Close();
                     return list;
+                }
+            }
+            catch
+            {
+                throw new Exception("Ошибка в работе БД");
+            }
+        }
+
+
+
+        //Отчёты
+        public static (int, int, int) Reports(string insuranceType, DateTime dateStart, DateTime dateEnd)
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                {
+                    string query;
+                    SqlCommand command;
+                    if (insuranceType == "ОСАГО и КАСКО")
+                    {
+                        query = "SELECT (SELECT SUM(InsurancePayment) " +
+                                "FROM InsuranceEvents " +
+                                "WHERE Date >= @dateStart AND Date <= @dateEnd), " +
+
+                                "COUNT(ID), SUM(InsurancePremium) " +
+                                "FROM Policies " +
+                                "WHERE DateOfConclusion >= @dateStart AND DateOfConclusion <= @dateEnd";
+                        command = new SqlCommand(query, con);
+                        command.Parameters.Add(new SqlParameter("@dateStart", dateStart));
+                        command.Parameters.Add(new SqlParameter("@dateEnd", dateEnd));
+                    }
+                    else
+                    {
+                        query = "SELECT (SELECT SUM(InsurancePayment) " +
+                                "FROM Policies as p LEFT JOIN InsuranceEvents as ie ON p.ID = ie.PolicyID " +
+                                "WHERE p.InsuranceType = @insuranceType AND Date >= @dateStart AND Date <= @dateEnd), " +
+
+                                "COUNT(ID), SUM(InsurancePremium) " +
+                                "FROM Policies " +
+                                "WHERE InsuranceType = @insuranceType AND DateOfConclusion >= @dateStart AND DateOfConclusion <= @dateEnd";
+                        command = new SqlCommand(query, con);
+                        command.Parameters.Add(new SqlParameter("@insuranceType", insuranceType));
+                        command.Parameters.Add(new SqlParameter("@dateStart", dateStart));
+                        command.Parameters.Add(new SqlParameter("@dateEnd", dateEnd));
+                    }
+
+                    con.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    int countContracts = 0, sumContracts = 0, sumInsuranceEvents = 0;
+                    while (reader.Read())
+                    {
+                        string tempSumInsuranceEvents = reader.GetValue(0).ToString();
+                        if (tempSumInsuranceEvents == String.Empty) tempSumInsuranceEvents = "0";
+                        string tempCountContracts = reader.GetValue(1).ToString();
+                        if (tempCountContracts == String.Empty) tempCountContracts = "0";
+                        string tempSumContracts = reader.GetValue(2).ToString();
+                        if (tempSumContracts == String.Empty) tempSumContracts = "0";
+
+                        countContracts = Convert.ToInt32(tempCountContracts);
+                        sumContracts = Convert.ToInt32(tempSumContracts);
+                        sumInsuranceEvents = Convert.ToInt32(tempSumInsuranceEvents);
+                    }
+                    reader.Close();
+                    var touple = (countContracts, sumContracts, sumInsuranceEvents);
+                    con.Close();
+                    return touple;
                 }
             }
             catch

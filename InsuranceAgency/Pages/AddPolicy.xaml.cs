@@ -18,6 +18,33 @@ namespace InsuranceAgency.Pages
             PolicyhilderID = policyhilderID;
             dpDateOfConclusion.SelectedDate = DateTime.Now;
         }
+
+        public AddPolicy(Struct.Policy policy)
+        {
+            InitializeComponent();
+
+            PolicyhilderID = policy.PolicyholderID;
+            AddInfoInTb(policy);
+        }
+        private void AddInfoInTb(Struct.Policy policy)
+        {
+            cbInsuranceType.Text = policy.InsuranceType;
+            tbInsurancePremium.Text = policy.InsurancePremium.ToString();
+            tbInsuranceAmount.Text = policy.InsuranceAmount.ToString();
+            dpDateOfConclusion.SelectedDate = policy.ExpirationDate;
+            tbVIN.Text = Database.SearchCarID(policy.CarID).VIN;
+
+            List<Connection> connections = Database.SearchConnection(policy.ID);
+            foreach (var item in connections)
+            {
+                PersonAllowedToDrive personAllowedToDrive = Database.SearchPersonAllowedToDriveID(item.PersonAllowedToDriveID);
+                list.Add(personAllowedToDrive);
+                cbPersonsAllowedToDrive.Items.Add(personAllowedToDrive.FullName);
+            }
+            cbPersonsAllowedToDrive.Text = "";
+            tbPersonsAllowedToDriveHint.Visibility = Visibility.Visible;
+        }
+
         private void cbPersonsAllowedToDrive_GotFocus(object sender, RoutedEventArgs e)
         {
             tbPersonsAllowedToDriveHint.Visibility = Visibility.Hidden;

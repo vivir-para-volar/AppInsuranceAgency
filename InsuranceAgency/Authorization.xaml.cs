@@ -10,12 +10,6 @@ namespace InsuranceAgency
         public Authorization()
         {
             InitializeComponent();
-
-            Database.Authorization("subLar", "subLar");
-
-            this.Hide();
-            MainWindow mainWindow = new MainWindow();
-            mainWindow.Show();
         }
 
         private void BtnClose_MouseDown(object sender, MouseButtonEventArgs e)

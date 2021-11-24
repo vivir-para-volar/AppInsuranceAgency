@@ -338,17 +338,23 @@
                 </Grid>
             </Border>
 
-            <StackPanel Margin="0,-160,300,0"
+            <StackPanel Margin="0,-160,600,0"
                         VerticalAlignment="Center">
                 <Button Width="200" Height="50"
                         Content="Страховые случаи" 
                         Click="btnInsuranceEvents_Click"/>
             </StackPanel>
-            <StackPanel Margin="300,-160,0,0"
+            <StackPanel Margin="0,-160,0,0"
                         VerticalAlignment="Center">
                 <Button Width="120" Height="50"
                         Content="Изменить" 
                         Click="btnChangePolicy_Click"/>
+            </StackPanel>
+            <StackPanel Margin="600,-160,0,0"
+                        VerticalAlignment="Center">
+                <Button Width="120" Height="50"
+                        Content="Продлить" 
+                        Click="btnExtendPolicy_Click"/>
             </StackPanel>
 
         </StackPanel>

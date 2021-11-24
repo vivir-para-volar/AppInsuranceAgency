@@ -57,6 +57,10 @@ namespace InsuranceAgency.Pages
                 int insurancePayment = 0;
                 try { insurancePayment = Convert.ToInt32(insurancePayment_temp); }
                 catch { throw new Exception("Страховая выплата должна быть целым числом"); }
+                if (insurancePayment > Policy.InsuranceAmount)
+                {
+                    throw new Exception("Страховая выплата долна быть меньше Страховой суммы");
+                }
 
 
                 InsuranceEvent insuranceEvent = new InsuranceEvent(date, insurancePayment, Policy.ID);

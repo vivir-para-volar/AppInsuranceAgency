@@ -81,7 +81,7 @@
             </Border>
         </StackPanel>
 
-        <StackPanel Grid.Row="3" Grid.Column="1"
+        <StackPanel Grid.Row="1" Grid.Column="1"
                     VerticalAlignment="Center">
             <Border Padding="5"
                     CornerRadius="10"
