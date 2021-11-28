@@ -123,7 +123,7 @@ namespace InsuranceAgency.Pages
                 
                 if(list.Count == 0)
                 {
-                    throw new Exception("Список лиц допущенных к управлению пуст");
+                    throw new Exception("Список лиц, допущенных к управлению пуст");
                 }
 
                 Database.AddPolicyWithConnections(policy, list);

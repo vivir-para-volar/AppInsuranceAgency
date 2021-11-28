@@ -59,7 +59,7 @@ namespace InsuranceAgency.Pages
                 catch { throw new Exception("Страховая выплата должна быть целым числом"); }
                 if (insurancePayment > Policy.InsuranceAmount)
                 {
-                    throw new Exception("Страховая выплата долна быть меньше Страховой суммы");
+                    throw new Exception("Страховая выплата должна быть меньше Страховой суммы");
                 }
 
 
@@ -77,7 +77,11 @@ namespace InsuranceAgency.Pages
                 dgInsuranceEvents.ItemsSource = view;
 
                 MessageBox.Show("Страховой случай успешно добавлен", "", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                dpDate.SelectedDate = DateTime.Now;
+                tbInsurancePayment.Text = "";
                 tbException.Visibility = Visibility.Hidden;
+
             }
             catch(Exception exp)
             {

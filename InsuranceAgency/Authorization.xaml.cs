@@ -56,18 +56,28 @@ namespace InsuranceAgency
 
         private void BtnEnter_Click(object sender, RoutedEventArgs e)
         {
-            string login = TbLogin.Text.Trim();
-            string password = TbPassword.Password.Trim();
-
             try
             {
+                string login = TbLogin.Text.Trim();
+                if (login == "")
+                {
+                    throw new Exception("Заполните поле Логин");
+                }
+
+                string password = TbPassword.Password.Trim();
+                if (password == "")
+                {
+                    throw new Exception("Заполните поле Пароль");
+                }
+
+
                 Database.Authorization(login, password);
 
                 this.Hide();
                 MainWindow mainWindow = new MainWindow();
                 mainWindow.Show();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 TbException.Text = ex.Message;
             }

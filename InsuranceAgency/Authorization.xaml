@@ -73,7 +73,7 @@
 
         <StackPanel VerticalAlignment="Center" Grid.Row="1"
                         Background="Transparent">
-            <Image Source="Resources/Main.png" Width="120"/>
+            <Image Source="/InsuranceAgency;component/Assets/Main.png" Width="120"/>
             <TextBlock Margin="0,15,0,0"
                            Text="СТРАХОВОЕ АГЕНТСТВО"
                            FontWeight="Normal"

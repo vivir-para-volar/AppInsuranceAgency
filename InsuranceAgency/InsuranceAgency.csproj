@@ -259,7 +259,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Main.png" />
+    <Resource Include="Assets\Main.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\car.jpg" />

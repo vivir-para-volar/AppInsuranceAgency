@@ -1,7 +1,6 @@
 ﻿using InsuranceAgency.Struct;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.Security.Cryptography;
 using System.Text;
@@ -524,7 +523,6 @@ namespace InsuranceAgency
 
                     string query = "UPDATE Employees " +
                                    "SET FullName = @fullName, " +
-                                       "Birthday = @birthday, " +
                                        "Telephone = @telephone, " +
                                        "Passport = @passport, " +
                                        "Login = @login, " +
@@ -537,7 +535,6 @@ namespace InsuranceAgency
 
                     command.Parameters.Add(new SqlParameter("@id", employee.ID));
                     command.Parameters.Add(new SqlParameter("@fullName", employee.FullName));
-                    command.Parameters.Add(new SqlParameter("@birthday", employee.Birthday));
                     command.Parameters.Add(new SqlParameter("@telephone", employee.Telephone));
                     command.Parameters.Add(new SqlParameter("@passport", employee.Passport));
                     command.Parameters.Add(new SqlParameter("@login", employee.Login));
@@ -708,7 +705,6 @@ namespace InsuranceAgency
 
                     string query = "UPDATE Policyholders " +
                                    "SET FullName = @fullName, " +
-                                       "Birthday = @birthday, " +
                                        "Telephone = @telephone, " +
                                        "Passport = @passport " +
                                    "WHERE ID = @id";
@@ -716,7 +712,6 @@ namespace InsuranceAgency
 
                     command.Parameters.Add(new SqlParameter("@id", policyholder.ID));
                     command.Parameters.Add(new SqlParameter("@fullName", policyholder.FullName));
-                    command.Parameters.Add(new SqlParameter("@birthday", policyholder.Birthday));
                     command.Parameters.Add(new SqlParameter("@telephone", policyholder.Telephone));
                     command.Parameters.Add(new SqlParameter("@passport", policyholder.Passport));
 
@@ -1635,32 +1630,6 @@ namespace InsuranceAgency
                 throw new Exception("Ошибка в работе БД");
             }
         }
-
-        //public static List<InsuranceEvent> AllInsuranceEvents()
-        //{
-        //    using (SqlConnection con = new SqlConnection(ConnectionString))
-        //    {
-        //        var list = new List<InsuranceEvent>();
-
-        //        string query = "SELECT * FROM InsuranceEvents";
-        //        SqlCommand command = new SqlCommand(query, con);
-
-        //        con.Open();
-        //        SqlDataReader reader = command.ExecuteReader();
-
-        //        while (reader.Read())
-        //        {
-        //            var insuranceEvent = new InsuranceEvent(reader["ID"].ToString(),
-        //                                                    Convert.ToDateTime(reader["Date"].ToString()),
-        //                                                    Convert.ToInt32(reader["InsurancePayment"].ToString()),
-        //                                                    reader["PolicyID"].ToString());
-        //            list.Add(insuranceEvent);
-        //        }
-        //        reader.Close();
-        //        con.Close();
-        //        return list;
-        //    }
-        //}
 
         public static List<PersonAllowedToDrive> AllPersonsAllowedToDrive()
         {
