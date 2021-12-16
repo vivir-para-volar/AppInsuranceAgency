@@ -32,8 +32,8 @@ namespace InsuranceAgency.Pages
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            tbSortHint.Visibility = Visibility.Visible;
             cbSort.Text = "";
+            tbSortHint.Visibility = Visibility.Visible;
 
             try
             {
@@ -69,6 +69,7 @@ namespace InsuranceAgency.Pages
 
         private void cbSort_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            tbSearch.Text = "";
             tbSortHint.Visibility = Visibility.Hidden;
 
             DataTable dt = DTColumn();
@@ -224,8 +225,9 @@ namespace InsuranceAgency.Pages
 
         private void btnTable_Click(object sender, RoutedEventArgs e)
         {
-            tbSortHint.Visibility = Visibility.Visible;
+            tbSearch.Text = "";
             cbSort.Text = "";
+            tbSortHint.Visibility = Visibility.Visible;
 
             AddDataInDG();
         }

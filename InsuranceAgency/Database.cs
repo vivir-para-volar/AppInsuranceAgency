@@ -306,6 +306,11 @@ namespace InsuranceAgency
                     SqlCommand command3 = new SqlCommand(query3, con);
                     command3.Parameters.Add(new SqlParameter("@id", policy.EmployeeID));
 
+                    string query4 = "SELECT MAX(ExpirationDate) FROM Policies WHERE InsuranceType = @insuranceType AND PolicyholderID = @policyholderID";
+                    SqlCommand command4 = new SqlCommand(query4, con);
+                    command4.Parameters.Add(new SqlParameter("@insuranceType", policy.InsuranceType));
+                    command4.Parameters.Add(new SqlParameter("@policyholderID", policy.PolicyholderID));
+
                     string query = "BEGIN TRANSACTION " +
                                    "INSERT INTO Policies(InsuranceType, InsurancePremium, InsuranceAmount, DateOfConclusion, ExpirationDate, PolicyholderID, CarID, EmployeeID) " +
                                    "VALUES(@insuranceType, " +
@@ -365,6 +370,20 @@ namespace InsuranceAgency
                     {
                         flag = true;
                         throw new Exception("Данного сотрудника нет");
+                    }
+                    reader.Close();
+
+                    reader = command4.ExecuteReader();
+                    reader.Read();
+                    string temp = reader.GetValue(0).ToString();
+                    if (temp != String.Empty)
+                    {
+                        DateTime date = Convert.ToDateTime(reader.GetValue(0));
+                        if (policy.DateOfConclusion <= date)
+                        {
+                            flag = true;
+                            throw new Exception("Нельзя оформить полис на заданный период, так как уже действует другой");
+                        }
                     }
                     reader.Close();
 

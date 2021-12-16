@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -55,18 +56,27 @@ namespace InsuranceAgency.Pages
                                     "|Tag Embroidery File Format (*.tif)|*.tif;*.tiff";
             if (openFileDialog.ShowDialog() == true)
             {
-                BitmapImage bi = new BitmapImage(new Uri(openFileDialog.FileName));
-                imgCar.Source = bi;
-                listPhotos.Add(bi);
-                currentIndex = listPhotos.Count - 1;
-                if(currentIndex == 1)
+                var size = new FileInfo(openFileDialog.FileName).Length;
+                if (size / 1024 > 512)
                 {
-                    btnLeft.Visibility = Visibility.Visible;
-                    btnRight.Visibility = Visibility.Visible;
+                    tbException.Visibility = Visibility.Visible;
+                    tbException.Text = "Размер фото не может быть больше 512Кб";
                 }
+                else
+                {
+                    BitmapImage bi = new BitmapImage(new Uri(openFileDialog.FileName));
+                    imgCar.Source = bi;
+                    listPhotos.Add(bi);
+                    currentIndex = listPhotos.Count - 1;
+                    if (currentIndex == 1)
+                    {
+                        btnLeft.Visibility = Visibility.Visible;
+                        btnRight.Visibility = Visibility.Visible;
+                    }
 
-                string image = DBImage.Encode(bi);
-                listEncodedPhotos.Add(image);
+                    string image = DBImage.Encode(bi);
+                    listEncodedPhotos.Add(image);
+                }
             }
         }
 
