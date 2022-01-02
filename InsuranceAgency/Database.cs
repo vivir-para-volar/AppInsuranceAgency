@@ -306,10 +306,10 @@ namespace InsuranceAgency
                     SqlCommand command3 = new SqlCommand(query3, con);
                     command3.Parameters.Add(new SqlParameter("@id", policy.EmployeeID));
 
-                    string query4 = "SELECT MAX(ExpirationDate) FROM Policies WHERE InsuranceType = @insuranceType AND PolicyholderID = @policyholderID";
+                    string query4 = "SELECT MAX(ExpirationDate) FROM Policies WHERE InsuranceType = @insuranceType AND CarID = @carID";
                     SqlCommand command4 = new SqlCommand(query4, con);
                     command4.Parameters.Add(new SqlParameter("@insuranceType", policy.InsuranceType));
-                    command4.Parameters.Add(new SqlParameter("@policyholderID", policy.PolicyholderID));
+                    command4.Parameters.Add(new SqlParameter("@carID", policy.CarID));
 
                     string query = "BEGIN TRANSACTION " +
                                    "INSERT INTO Policies(InsuranceType, InsurancePremium, InsuranceAmount, DateOfConclusion, ExpirationDate, PolicyholderID, CarID, EmployeeID) " +

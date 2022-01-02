@@ -57,10 +57,10 @@ namespace InsuranceAgency.Pages
             if (openFileDialog.ShowDialog() == true)
             {
                 var size = new FileInfo(openFileDialog.FileName).Length;
-                if (size / 1024 > 512)
+                if (size / 1024 > 1024)
                 {
                     tbException.Visibility = Visibility.Visible;
-                    tbException.Text = "Размер фото не может быть больше 512Кб";
+                    tbException.Text = "Размер фото не может быть больше 1 Mб";
                 }
                 else
                 {
